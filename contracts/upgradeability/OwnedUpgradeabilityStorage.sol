@@ -1,10 +1,14 @@
 pragma solidity ^0.4.18;
 
+
+import './UpgradeabilityStorage.sol';
+
+
 /**
- * @title UpgradeabilityOwnerStorage
+ * @title OwnedUpgradeabilityStorage
  * @dev This contract keeps track of the upgradeability owner
  */
-contract UpgradeabilityOwnerStorage {
+contract OwnedUpgradeabilityStorage is UpgradeabilityStorage {
   // Owner of the contract
   address private _upgradeabilityOwner;
 
