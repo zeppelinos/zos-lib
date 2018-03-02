@@ -1,6 +1,6 @@
 pragma solidity ^0.4.18;
 
-import '../upgradeability/OwnedUpgradeabilityProxy.sol';
+import '../upgradeability/Proxy.sol';
 
 
 /**
@@ -40,7 +40,7 @@ interface IRegistry {
   * @param version representing the first version to be set for the proxy
   * @return address of the new proxy created
   */
-  function createProxy(string version) public returns (OwnedUpgradeabilityProxy);
+  function createProxy(string version) public returns (Proxy);
 
   /**
   * @dev Creates an upgradeable proxy upgraded to an initial version and call the new implementation
@@ -49,5 +49,5 @@ interface IRegistry {
   * signature of the implementation to be called with the needed payload
   * @return address of the new proxy created
   */
-  function createProxyAndCall(string version, bytes data) public payable returns (OwnedUpgradeabilityProxy);
+  function createProxyAndCall(string version, bytes data) public payable returns (Proxy);
 }

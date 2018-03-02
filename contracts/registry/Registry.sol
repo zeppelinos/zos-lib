@@ -38,7 +38,7 @@ contract Registry is IRegistry {
   * @param version representing the first version to be set for the proxy
   * @return address of the new proxy created
   */
-  function createProxy(string version) public returns (OwnedUpgradeabilityProxy) {
+  function createProxy(string version) public returns (Proxy) {
     OwnedUpgradeabilityProxy proxy = _createProxy();
     proxy.upgradeTo(version);
     proxy.transferProxyOwnership(msg.sender);
@@ -52,7 +52,7 @@ contract Registry is IRegistry {
   * signature of the implementation to be called with the needed payload
   * @return address of the new proxy created
   */
-  function createProxyAndCall(string version, bytes data) public payable returns (OwnedUpgradeabilityProxy) {
+  function createProxyAndCall(string version, bytes data) public payable returns (Proxy) {
     OwnedUpgradeabilityProxy proxy = _createProxy();
     proxy.upgradeToAndCall.value(msg.value)(version, data);
     proxy.transferProxyOwnership(msg.sender);
