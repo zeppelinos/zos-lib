@@ -20,7 +20,7 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy, OwnedUpgradeabilitySto
   */
   function OwnedUpgradeabilityProxy(Registry registry) 
     UpgradeabilityProxy(registry)
-    OwnedUpgradeabilityStorage()
+    OwnedUpgradeabilityStorage(registry)
     public
   {
     setUpgradeabilityOwner(msg.sender);
