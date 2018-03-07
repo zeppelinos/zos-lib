@@ -18,6 +18,14 @@ contract Factory {
   }
 
   /**
+  * @dev Tells the address of registry
+  * @return address of the registry
+  */
+  function registry() public view returns (Registry) {
+    return _registry;
+  }
+
+  /**
   * @dev This event will be emitted every time a new proxy is created
   * @param proxy representing the address of the proxy created
   */
