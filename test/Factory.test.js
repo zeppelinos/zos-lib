@@ -3,13 +3,16 @@
 const Registry = artifacts.require('Registry')
 const Factory = artifacts.require('Factory')
 const OwnedUpgradeabilityProxy = artifacts.require('OwnedUpgradeabilityProxy')
+const InitializableMock = artifacts.require('InitializableMock')
 const assertRevert = require('./helpers/assertRevert')
+const abi = require('ethereumjs-abi')
 
 contract('Factory', ([_, owner, implementation]) => {
   beforeEach(async function () {
     this.registry = await Registry.new()
     this.factory = await Factory.new(this.registry.address)
   })
+
   it('sets the correct registry', async function () {
     const registry = await this.factory.registry();
     assert.equal(registry, this.registry.address);
@@ -55,4 +58,43 @@ contract('Factory', ([_, owner, implementation]) => {
       })
     })
   })
+  describe('createProxyAndCall', function () {
+    const version = '0'
+    const value = 42;
+    const type = 'uint256';
+    const methodId = abi.methodID('initialize', [type]).toString('hex')
+    const params = abi.rawEncode([type], [value]).toString('hex');
+    const initializeData = '0x' + methodId + params;
+
+    beforeEach(async function () {
+      const behavior = await InitializableMock.new()
+      await this.registry.addVersion(version, behavior.address)
+      const { logs } = await this.factory.createProxyAndCall(version, initializeData, { from: owner })
+      // assert proxy created correctly
+      assert.equal(logs.length, 1)
+      assert.equal(logs[0].event, 'ProxyCreated')
+
+      this.proxyAddress = logs.find(l => l.event === 'ProxyCreated').args.proxy
+      this.proxy = await OwnedUpgradeabilityProxy.at(this.proxyAddress)
+    })
+
+    it('calls "initialize" function', async function() {
+      const initializable = InitializableMock.at(this.proxyAddress);
+      const x = await initializable.x();
+      assert.equal(x, 42);
+    })
+
+    it('creates a proxy with the given registry', async function () {
+      const registry = await this.proxy.registry()
+      const factoryRegistry = await this.factory.registry()
+      assert.equal(registry, factoryRegistry)
+    })
+
+    it('sets registry correctly', async function() {
+      const initializable = InitializableMock.at(this.proxyAddress);
+      const registry = await initializable.registry()
+      assert.equal(registry, this.registry.address);
+    })
+  })
+
 })
