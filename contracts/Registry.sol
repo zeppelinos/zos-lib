@@ -1,8 +1,5 @@
 pragma solidity ^0.4.18;
 
-import './upgradeability/Proxy.sol';
-import './upgradeability/OwnedUpgradeabilityProxy.sol';
-
 
 /**
  * @title Registry

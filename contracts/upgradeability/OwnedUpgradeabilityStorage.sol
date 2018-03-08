@@ -11,7 +11,7 @@ import '../Registry.sol';
  */
 contract OwnedUpgradeabilityStorage is UpgradeabilityStorage {
   // Owner of the contract
-  address private _upgradeabilityOwner;
+  address public upgradeabilityOwner;
 
   function OwnedUpgradeabilityStorage(Registry registry) 
     UpgradeabilityStorage(registry)
@@ -19,17 +19,9 @@ contract OwnedUpgradeabilityStorage is UpgradeabilityStorage {
   {}
 
   /**
-   * @dev Tells the address of the owner
-   * @return the address of the owner
-   */
-  function upgradeabilityOwner() public view returns (address) {
-    return _upgradeabilityOwner;
-  }
-
-  /**
    * @dev Sets the address of the owner
    */
   function setUpgradeabilityOwner(address newUpgradeabilityOwner) internal {
-    _upgradeabilityOwner = newUpgradeabilityOwner;
+    upgradeabilityOwner = newUpgradeabilityOwner;
   }
 }
