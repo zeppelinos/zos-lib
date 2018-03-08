@@ -10,6 +10,10 @@ contract('Factory', ([_, owner, implementation]) => {
     this.registry = await Registry.new()
     this.factory = await Factory.new(this.registry.address)
   })
+  it('sets the correct registry', async function () {
+    const registry = await this.factory.registry();
+    assert.equal(registry, this.registry.address);
+  })
 
   describe('createProxy', function () {
     const version = '0'
