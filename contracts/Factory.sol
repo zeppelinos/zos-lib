@@ -1,6 +1,5 @@
 pragma solidity ^0.4.18;
 
-import './upgradeability/Proxy.sol';
 import './upgradeability/OwnedUpgradeabilityProxy.sol';
 import './Registry.sol';
 
@@ -11,7 +10,7 @@ import './Registry.sol';
  */
 contract Factory {
 
-  Registry public _registry;
+  Registry internal _registry;
 
   function Factory(Registry registry) public {
     _registry = registry;
@@ -36,7 +35,7 @@ contract Factory {
   * @param version representing the first version to be set for the proxy
   * @return address of the new proxy created
   */
-  function createProxy(string version) public returns (Proxy) {
+  function createProxy(string version) public returns (OwnedUpgradeabilityProxy) {
     OwnedUpgradeabilityProxy proxy = _createProxy();
     proxy.upgradeTo(version);
     proxy.transferProxyOwnership(msg.sender);
@@ -50,7 +49,7 @@ contract Factory {
   * signature of the implementation to be called with the needed payload
   * @return address of the new proxy created
   */
-  function createProxyAndCall(string version, bytes data) public payable returns (Proxy) {
+  function createProxyAndCall(string version, bytes data) public payable returns (OwnedUpgradeabilityProxy) {
     OwnedUpgradeabilityProxy proxy = _createProxy();
     proxy.upgradeToAndCall.value(msg.value)(version, data);
     proxy.transferProxyOwnership(msg.sender);

@@ -15,7 +15,7 @@ contract Registry {
 
 
   // Mapping of versions to implementations of different functions
-  mapping (string => address) private versions;
+  mapping (string => address) internal versions;
 
   /**
   * @dev Registers a new version with its implementation address
