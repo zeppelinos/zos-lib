@@ -24,6 +24,14 @@ contract UpgradeabilityStorage {
   }
 
   /**
+  * @dev Tells the address of registry
+  * @return address of the registry
+  */
+  function registry() public view returns (Registry) {
+    return _registry;
+  }
+
+  /**
   * @dev Tells the version name of the current implementation
   * @return string representing the name of the current version
   */
@@ -40,10 +48,9 @@ contract UpgradeabilityStorage {
   }
 
   /**
-  * @dev Tells the address of registry
-  * @return address of the registry
-  */
-  function registry() public view returns (Registry) {
-    return _registry;
+   * @dev Sets the address of the current implementation
+   */
+  function setImplementation(address newImplementation) internal {
+    _implementation = newImplementation;
   }
 }
