@@ -14,10 +14,7 @@ contract OwnedUpgradeabilityStorage is UpgradeabilityStorage {
   /**
   * @dev Constructor function
   */
-  function OwnedUpgradeabilityStorage(Registry registry) 
-    UpgradeabilityStorage(registry)
-    public
-  {}
+  function OwnedUpgradeabilityStorage() public {}
 
   /**
    * @dev Sets the address of the owner

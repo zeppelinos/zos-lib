@@ -25,14 +25,6 @@ contract('OwnedUpgradeabilityProxy', ([owner, anotherAccount, implementation_v0,
     })
   })
 
-  describe('version', function () {
-    it('returns the current version', async function () {
-      const version = await this.proxy.version()
-
-      assert.equal(version, '0')
-    })
-  })
-
   describe('implementation', function () {
     it('returns the current implementation address', async function () {
       const implementation = await this.proxy.implementation()
@@ -42,18 +34,15 @@ contract('OwnedUpgradeabilityProxy', ([owner, anotherAccount, implementation_v0,
   })
 
   describe('upgradeTo', function () {
-    it('returns the new version and implementation', async function () {
-      await this.proxy.upgradeTo('1')
+    it('returns the new implementation', async function () {
+      await this.proxy.upgradeTo(this.registry.address, '1')
 
-      const version = await this.proxy.version();
       const implementation = await this.proxy.implementation()
-
-      assert.equal(version, '1')
       assert.equal(implementation, implementation_v1)
     })
 
     it('emits an event', async function () {
-      const { logs } = await this.proxy.upgradeTo('1')
+      const { logs } = await this.proxy.upgradeTo(this.registry.address, '1')
 
       assert.equal(logs.length, 1)
       assert.equal(logs[0].event, 'Upgraded')

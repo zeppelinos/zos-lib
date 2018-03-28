@@ -39,7 +39,7 @@ contract Factory {
   */
   function createProxy(string version) public returns (OwnedUpgradeabilityProxy) {
     OwnedUpgradeabilityProxy proxy = _createProxy();
-    proxy.upgradeTo(version);
+    proxy.upgradeTo(_registry, version);
     proxy.transferProxyOwnership(msg.sender);
     return proxy;
   }
@@ -53,7 +53,7 @@ contract Factory {
   */
   function createProxyAndCall(string version, bytes data) public payable returns (OwnedUpgradeabilityProxy) {
     OwnedUpgradeabilityProxy proxy = _createProxy();
-    proxy.upgradeToAndCall.value(msg.value)(version, data);
+    proxy.upgradeToAndCall.value(msg.value)(_registry, version, data);
     proxy.transferProxyOwnership(msg.sender);
     return proxy;
   }
@@ -63,7 +63,7 @@ contract Factory {
   * @return address of the new proxy created
   */
   function _createProxy() internal returns (OwnedUpgradeabilityProxy) {
-    OwnedUpgradeabilityProxy proxy = new OwnedUpgradeabilityProxy(_registry);
+    OwnedUpgradeabilityProxy proxy = new OwnedUpgradeabilityProxy();
     ProxyCreated(proxy);
     return proxy;
   }

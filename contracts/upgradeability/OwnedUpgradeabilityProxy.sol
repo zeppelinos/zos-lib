@@ -16,22 +16,18 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy, OwnedUpgradeabilitySto
   event ProxyOwnershipTransferred(address previousOwner, address newOwner);
 
   /**
-  * @dev the constructor sets the original owner of the contract to the sender account.
-  */
-  function OwnedUpgradeabilityProxy(Registry registry) 
-    UpgradeabilityProxy(registry)
-    OwnedUpgradeabilityStorage(registry)
-    public
-  {
-    setUpgradeabilityOwner(msg.sender);
-  }
-
-  /**
   * @dev Throws if called by any account other than the owner.
   */
   modifier onlyProxyOwner() {
     require(msg.sender == proxyOwner());
     _;
+  }
+
+  /**
+  * @dev the constructor sets the original owner of the contract to the sender account.
+  */
+  function OwnedUpgradeabilityProxy() public {
+    setUpgradeabilityOwner(msg.sender);
   }
 
   /**
@@ -54,21 +50,23 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy, OwnedUpgradeabilitySto
 
   /**
    * @dev Allows the upgradeability owner to upgrade the current version of the proxy.
+   * @param registry representing the registry to query the implementation address of the requested version.
    * @param version representing the version name of the new implementation to be set.
    */
-  function upgradeTo(string version) public onlyProxyOwner {
-    _upgradeTo(version);
+  function upgradeTo(Registry registry, string version) public onlyProxyOwner {
+    _upgradeTo(registry, version);
   }
 
   /**
    * @dev Allows the upgradeability owner to upgrade the current version of the proxy and call the new implementation
    * to initialize whatever is needed through a low level call.
+   * @param registry representing the registry to query the implementation address of the requested version.
    * @param version representing the version name of the new implementation to be set.
    * @param data represents the msg.data to bet sent in the low level call. This parameter may include the function
    * signature of the implementation to be called with the needed payload
    */
-  function upgradeToAndCall(string version, bytes data) payable public onlyProxyOwner {
-    upgradeTo(version);
+  function upgradeToAndCall(Registry registry, string version, bytes data) payable public onlyProxyOwner {
+    upgradeTo(registry, version);
     require(this.call.value(msg.value)(data));
   }
 }

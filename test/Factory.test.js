@@ -1,11 +1,11 @@
 'use strict';
 
-const Registry = artifacts.require('Registry')
-const Factory = artifacts.require('Factory')
-const OwnedUpgradeabilityProxy = artifacts.require('OwnedUpgradeabilityProxy')
-const InitializableMock = artifacts.require('InitializableMock')
-const assertRevert = require('./helpers/assertRevert')
 const abi = require('ethereumjs-abi')
+const assertRevert = require('./helpers/assertRevert')
+const Factory = artifacts.require('Factory')
+const Registry = artifacts.require('Registry')
+const InitializableMock = artifacts.require('InitializableMock')
+const OwnedUpgradeabilityProxy = artifacts.require('OwnedUpgradeabilityProxy')
 
 contract('Factory', ([_, owner, implementation_v0]) => {
   beforeEach(async function () {
@@ -36,23 +36,13 @@ contract('Factory', ([_, owner, implementation_v0]) => {
         this.proxy = await OwnedUpgradeabilityProxy.at(this.proxyAddress)
       })
 
-      it('creates a proxy with the given registry', async function () {
-        const registry = await this.proxy.registry()
-        const factoryRegistry = await this.factory.registry()
-        assert.equal(registry, factoryRegistry)
-      })
-
       it('upgrades that proxy to the requested version', async function () {
-        const version = await this.proxy.version()
-        assert.equal(version, '0')
-
         const implementation = await this.proxy.implementation()
         assert.equal(implementation, implementation_v0)
       })
 
       it('emits an event', async function () {
         assert.equal(this.logs.length, 1)
-
         assert.equal(this.logs[0].event, 'ProxyCreated')
         assert.equal(this.logs[0].args.proxy, this.proxyAddress)
       })
@@ -68,33 +58,29 @@ contract('Factory', ([_, owner, implementation_v0]) => {
     const initializeData = '0x' + methodId + params;
 
     beforeEach(async function () {
-      const behavior = await InitializableMock.new()
-      await this.registry.addVersion(version, behavior.address)
+      this.behavior = await InitializableMock.new()
+      await this.registry.addVersion(version, this.behavior.address)
       const { logs } = await this.factory.createProxyAndCall(version, initializeData, { from: owner })
-      // assert proxy created correctly
-      assert.equal(logs.length, 1)
-      assert.equal(logs[0].event, 'ProxyCreated')
-
+      this.logs = logs
       this.proxyAddress = logs.find(l => l.event === 'ProxyCreated').args.proxy
       this.proxy = await OwnedUpgradeabilityProxy.at(this.proxyAddress)
+    })
+
+    it('upgrades that proxy to the requested version', async function () {
+      const implementation = await this.proxy.implementation()
+      assert.equal(implementation, this.behavior.address)
+    })
+
+    it('emits an event', async function () {
+      assert.equal(this.logs.length, 1)
+      assert.equal(this.logs[0].event, 'ProxyCreated')
+      assert.equal(this.logs[0].args.proxy, this.proxyAddress)
     })
 
     it('calls "initialize" function', async function() {
       const initializable = InitializableMock.at(this.proxyAddress);
       const x = await initializable.x();
       assert.equal(x, 42);
-    })
-
-    it('creates a proxy with the given registry', async function () {
-      const registry = await this.proxy.registry()
-      const factoryRegistry = await this.factory.registry()
-      assert.equal(registry, factoryRegistry)
-    })
-
-    it('sets registry correctly', async function() {
-      const initializable = InitializableMock.at(this.proxyAddress);
-      const registry = await initializable.registry()
-      assert.equal(registry, this.registry.address);
     })
   })
 })
