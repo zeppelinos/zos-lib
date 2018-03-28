@@ -39,7 +39,7 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy, OwnedUpgradeabilitySto
    * @return the address of the proxy owner
    */
   function proxyOwner() public view returns (address) {
-    return upgradeabilityOwner;
+    return _upgradeabilityOwner;
   }
 
   /**

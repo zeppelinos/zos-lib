@@ -9,7 +9,7 @@ import '../Registry.sol';
  */
 contract OwnedUpgradeabilityStorage is UpgradeabilityStorage {
   // Owner of the contract
-  address public upgradeabilityOwner;
+  address internal _upgradeabilityOwner;
 
   /**
   * @dev Constructor function
@@ -23,6 +23,6 @@ contract OwnedUpgradeabilityStorage is UpgradeabilityStorage {
    * @dev Sets the address of the owner
    */
   function setUpgradeabilityOwner(address newUpgradeabilityOwner) internal {
-    upgradeabilityOwner = newUpgradeabilityOwner;
+    _upgradeabilityOwner = newUpgradeabilityOwner;
   }
 }
