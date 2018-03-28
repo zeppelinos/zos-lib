@@ -1,16 +1,16 @@
 'use strict';
 
 const abi = require('ethereumjs-abi')
-const assertRevert = require('./helpers/assertRevert')
-const Factory = artifacts.require('Factory')
+const assertRevert = require('../helpers/assertRevert')
 const Registry = artifacts.require('Registry')
 const InitializableMock = artifacts.require('InitializableMock')
 const OwnedUpgradeabilityProxy = artifacts.require('OwnedUpgradeabilityProxy')
+const UpgradeabilityProxyFactory = artifacts.require('UpgradeabilityProxyFactory')
 
-contract('Factory', ([_, owner, implementation_v0]) => {
+contract('UpgradeabilityProxyFactory', ([_, owner, implementation_v0]) => {
   beforeEach(async function () {
     this.registry = await Registry.new()
-    this.factory = await Factory.new(this.registry.address)
+    this.factory = await UpgradeabilityProxyFactory.new(this.registry.address)
   })
 
   it('sets the correct registry', async function () {

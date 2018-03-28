@@ -2,13 +2,13 @@
 
 const assertRevert = require('../helpers/assertRevert')
 const Registry = artifacts.require('Registry')
-const Factory = artifacts.require('Factory')
 const OwnedUpgradeabilityProxy = artifacts.require('OwnedUpgradeabilityProxy')
+const UpgradeabilityProxyFactory = artifacts.require('UpgradeabilityProxyFactory')
 
 contract('OwnedUpgradeabilityProxy', ([owner, anotherAccount, implementation_v0, implementation_v1]) => {
   beforeEach(async function () {
     this.registry = await Registry.new()
-    this.factory = await Factory.new(this.registry.address)
+    this.factory = await UpgradeabilityProxyFactory.new(this.registry.address)
     await this.registry.addVersion('0', implementation_v0)
     await this.registry.addVersion('1', implementation_v1)
 
