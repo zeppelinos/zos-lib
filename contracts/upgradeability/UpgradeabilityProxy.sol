@@ -26,7 +26,7 @@ contract UpgradeabilityProxy is Proxy, UpgradeabilityStorage {
   * @param version representing the version name of the new implementation to be set
   */
   function _upgradeTo(Registry registry, string version) internal {
-    address newImplementation = registry.getVersion(version);
+    address newImplementation = registry.getImplementation(version);
     require(newImplementation != address(0));
     require(_implementation != newImplementation);
 
