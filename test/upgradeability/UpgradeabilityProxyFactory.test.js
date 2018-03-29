@@ -1,66 +1,46 @@
 'use strict';
 
-const abi = require('ethereumjs-abi')
-const assertRevert = require('../helpers/assertRevert')
-const Registry = artifacts.require('Registry')
+const encodeCall = require('../helpers/encodeCall')
 const InitializableMock = artifacts.require('InitializableMock')
 const OwnedUpgradeabilityProxy = artifacts.require('OwnedUpgradeabilityProxy')
 const UpgradeabilityProxyFactory = artifacts.require('UpgradeabilityProxyFactory')
 
 contract('UpgradeabilityProxyFactory', ([_, owner, implementation_v0]) => {
   beforeEach(async function () {
-    this.registry = await Registry.new()
-    this.factory = await UpgradeabilityProxyFactory.new(this.registry.address)
-  })
-
-  it('sets the correct registry', async function () {
-    const registry = await this.factory.registry();
-    assert.equal(registry, this.registry.address);
+    this.factory = await UpgradeabilityProxyFactory.new()
   })
 
   describe('createProxy', function () {
-    const version = '0'
-
-    describe('when the requested version was not registered', function () {
-      it('reverts', async function () {
-        await assertRevert(this.factory.createProxy(version, { from: owner }))
-      })
+    beforeEach(async function () {
+      const { logs } = await this.factory.createProxy(owner, implementation_v0)
+      this.logs = logs
+      this.proxyAddress = this.logs.find(l => l.event === 'ProxyCreated').args.proxy
+      this.proxy = await OwnedUpgradeabilityProxy.at(this.proxyAddress)
     })
 
-    describe('when the requested version was already registered', function () {
-      beforeEach(async function () {
-        await this.registry.addVersion(version, implementation_v0)
-        const { logs } = await this.factory.createProxy(version, { from: owner })
-        this.logs = logs
-        this.proxyAddress = this.logs.find(l => l.event === 'ProxyCreated').args.proxy
-        this.proxy = await OwnedUpgradeabilityProxy.at(this.proxyAddress)
-      })
+    it('upgrades that proxy to the requested version', async function () {
+      const implementation = await this.proxy.implementation()
+      assert.equal(implementation, implementation_v0)
+    })
 
-      it('upgrades that proxy to the requested version', async function () {
-        const implementation = await this.proxy.implementation()
-        assert.equal(implementation, implementation_v0)
-      })
+    it('transfers the ownership to the requested owner', async function () {
+      const proxyOwner = await this.proxy.proxyOwner()
+      assert.equal(proxyOwner, owner)
+    })
 
-      it('emits an event', async function () {
-        assert.equal(this.logs.length, 1)
-        assert.equal(this.logs[0].event, 'ProxyCreated')
-        assert.equal(this.logs[0].args.proxy, this.proxyAddress)
-      })
+    it('emits an event', async function () {
+      assert.equal(this.logs.length, 1)
+      assert.equal(this.logs[0].event, 'ProxyCreated')
+      assert.equal(this.logs[0].args.proxy, this.proxyAddress)
     })
   })
 
   describe('createProxyAndCall', function () {
-    const version = '0'
-    const value = 42;
-    const type = 'uint256';
-    const methodId = abi.methodID('initialize', [type]).toString('hex')
-    const params = abi.rawEncode([type], [value]).toString('hex');
-    const initializeData = '0x' + methodId + params;
+    const initializeData = encodeCall('initialize', ['uint256'], [42])
 
     beforeEach(async function () {
       this.behavior = await InitializableMock.new()
-      await this.registry.addVersion(version, this.behavior.address)
-      const { logs } = await this.factory.createProxyAndCall(version, initializeData, { from: owner })
+      const { logs } = await this.factory.createProxyAndCall(owner, this.behavior.address, initializeData)
       this.logs = logs
       this.proxyAddress = logs.find(l => l.event === 'ProxyCreated').args.proxy
       this.proxy = await OwnedUpgradeabilityProxy.at(this.proxyAddress)
@@ -69,6 +49,11 @@ contract('UpgradeabilityProxyFactory', ([_, owner, implementation_v0]) => {
     it('upgrades that proxy to the requested version', async function () {
       const implementation = await this.proxy.implementation()
       assert.equal(implementation, this.behavior.address)
+    })
+
+    it('transfers the ownership to the requested owner', async function () {
+      const proxyOwner = await this.proxy.proxyOwner()
+      assert.equal(proxyOwner, owner)
     })
 
     it('emits an event', async function () {

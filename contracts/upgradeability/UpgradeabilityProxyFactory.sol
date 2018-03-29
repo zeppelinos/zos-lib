@@ -1,6 +1,5 @@
 pragma solidity ^0.4.18;
 
-import '../Registry.sol';
 import './OwnedUpgradeabilityProxy.sol';
 
 /**
@@ -8,23 +7,10 @@ import './OwnedUpgradeabilityProxy.sol';
  * @dev This contracts provides required functionality to create upgradeability proxies
  */
 contract UpgradeabilityProxyFactory {
-  // Versions registry
-  Registry internal _registry;
-
   /**
   * @dev Constructor function
   */
-  function UpgradeabilityProxyFactory(Registry registry) public {
-    _registry = registry;
-  }
-
-  /**
-  * @dev Tells the address of the registry
-  * @return address of the registry
-  */
-  function registry() public view returns (Registry) {
-    return _registry;
-  }
+  function UpgradeabilityProxyFactory() public {}
 
   /**
   * @dev This event will be emitted every time a new proxy is created
@@ -34,27 +20,29 @@ contract UpgradeabilityProxyFactory {
 
   /**
   * @dev Creates an upgradeable proxy upgraded to an initial version
-  * @param version representing the first version to be set for the proxy
+  * @param owner representing the owner of the proxy to be set
+  * @param implementation representing the address of the initial implementation to be set
   * @return address of the new proxy created
   */
-  function createProxy(string version) public returns (OwnedUpgradeabilityProxy) {
+  function createProxy(address owner, address implementation) public returns (OwnedUpgradeabilityProxy) {
     OwnedUpgradeabilityProxy proxy = _createProxy();
-    proxy.upgradeTo(_registry, version);
-    proxy.transferProxyOwnership(msg.sender);
+    proxy.upgradeTo(implementation);
+    proxy.transferProxyOwnership(owner);
     return proxy;
   }
 
   /**
   * @dev Creates an upgradeable proxy upgraded to an initial version and call the new implementation
-  * @param version representing the first version to be set for the proxy
+  * @param owner representing the owner of the proxy to be set
+  * @param implementation representing the address of the initial implementation to be set
   * @param data represents the msg.data to bet sent in the low level call. This parameter may include the function
   * signature of the implementation to be called with the needed payload
   * @return address of the new proxy created
   */
-  function createProxyAndCall(string version, bytes data) public payable returns (OwnedUpgradeabilityProxy) {
+  function createProxyAndCall(address owner, address implementation, bytes data) public payable returns (OwnedUpgradeabilityProxy) {
     OwnedUpgradeabilityProxy proxy = _createProxy();
-    proxy.upgradeToAndCall.value(msg.value)(_registry, version, data);
-    proxy.transferProxyOwnership(msg.sender);
+    proxy.upgradeToAndCall.value(msg.value)(implementation, data);
+    proxy.transferProxyOwnership(owner);
     return proxy;
   }
 
