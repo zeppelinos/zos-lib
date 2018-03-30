@@ -1,7 +1,5 @@
 pragma solidity ^0.4.18;
 
-import '../Registry.sol';
-
 /**
  * @title UpgradeabilityStorage
  * @dev This contract holds all the necessary state variables to support the upgrade functionality

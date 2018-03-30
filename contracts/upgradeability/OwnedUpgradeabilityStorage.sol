@@ -1,7 +1,6 @@
 pragma solidity ^0.4.18;
 
 import './UpgradeabilityStorage.sol';
-import '../Registry.sol';
 
 /**
  * @title OwnedUpgradeabilityStorage
