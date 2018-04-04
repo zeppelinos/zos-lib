@@ -102,7 +102,7 @@ contract('OwnedUpgradeabilityProxy', ([_, owner, anotherAccount, implementation_
     })
   })
 
-  describe('transfer ownership', function () {
+  describe('transferOwnership', function () {
     describe('when the new proposed owner is not the zero address', function () {
       const newOwner = anotherAccount
 
