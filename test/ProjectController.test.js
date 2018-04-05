@@ -23,6 +23,12 @@ contract('ProjectController', ([_, anAddress, owner, anotherAccount, implementat
     this.controller = await ProjectController.new(projectName, this.registry.address, this.factory.address, this.fallbackProvider.address, { from: owner })
   })
 
+  it('a registry, factory and project name must be provided', async function () {
+    await assertRevert(ProjectController.new(projectName, 0x0, this.factory.address, this.fallbackProvider.address))
+    await assertRevert(ProjectController.new(projectName, this.registry.address, 0x0, this.fallbackProvider.address))
+    await assertRevert(ProjectController.new("", this.registry.address, this.factory.address, this.fallbackProvider.address))
+  })
+
   describe('owner', function () {
     it('sets the creator as the owner of the controller', async function () {
       const controllerOwner = await this.controller.owner()
@@ -84,6 +90,7 @@ contract('ProjectController', ([_, anAddress, owner, anotherAccount, implementat
   })
 
   describe('createAndCall', function () {
+    const value = 1e5
     const initializeData = encodeCall('initialize', ['uint256'], [42])
 
     beforeEach(async function () {
@@ -94,7 +101,7 @@ contract('ProjectController', ([_, anAddress, owner, anotherAccount, implementat
       beforeEach(async function () {
         await this.registry.addImplementation(version_0, contractName, this.behavior.address)
 
-        const { receipt } = await this.controller.createAndCall(projectName, version_0, contractName, initializeData)
+        const { receipt } = await this.controller.createAndCall(projectName, version_0, contractName, initializeData, { value })
         this.logs = decodeLogs([receipt.logs[0]], UpgradeabilityProxyFactory, this.factory.address);
         this.proxyAddress = this.logs.find(l => l.event === 'ProxyCreated').args.proxy
         this.proxy = await OwnedUpgradeabilityProxy.at(this.proxyAddress)
@@ -115,11 +122,16 @@ contract('ProjectController', ([_, anAddress, owner, anotherAccount, implementat
         const x = await initializable.x();
         assert.equal(x, 42);
       })
+
+      it('sends given value to the delegated implementation', async function() {
+        const balance = await web3.eth.getBalance(this.proxyAddress)
+        assert(balance.eq(value))
+      })
     })
 
     describe('when the given version was not registered', function () {
       it('reverts', async function () {
-        await assertRevert(this.controller.createAndCall(projectName, version_0, contractName, initializeData))
+        await assertRevert(this.controller.createAndCall(projectName, version_0, contractName, initializeData, { value }))
       })
     })
   })
@@ -180,6 +192,7 @@ contract('ProjectController', ([_, anAddress, owner, anotherAccount, implementat
 
     describe('when the sender is the owner', function () {
       const from = owner
+      const value = 1e5
 
       describe('when the given version was registered', function () {
         beforeEach(async function () {
@@ -187,24 +200,31 @@ contract('ProjectController', ([_, anAddress, owner, anotherAccount, implementat
         })
 
         it('upgrades to the requested implementation', async function () {
-          await this.controller.upgradeToAndCall(this.proxyAddress, projectName, version_1, contractName, initializeData, { from })
+          await this.controller.upgradeToAndCall(this.proxyAddress, projectName, version_1, contractName, initializeData, { from, value })
 
           const implementation = await this.proxy.implementation()
           assert.equal(implementation, this.behavior.address)
         })
 
         it('calls the "initialize" function', async function() {
-          await await this.controller.upgradeToAndCall(this.proxyAddress, projectName, version_1, contractName, initializeData, { from })
+          await await this.controller.upgradeToAndCall(this.proxyAddress, projectName, version_1, contractName, initializeData, { from, value })
 
           const initializable = InitializableMock.at(this.proxyAddress)
           const x = await initializable.x()
           assert.equal(x, 42)
         })
+
+        it('sends given value to the delegated implementation', async function() {
+          await await this.controller.upgradeToAndCall(this.proxyAddress, projectName, version_1, contractName, initializeData, { from, value })
+
+          const balance = await web3.eth.getBalance(this.proxyAddress)
+          assert(balance.eq(value))
+        })
       })
 
       describe('when the given version was not registered', function () {
         it('reverts', async function () {
-          await assertRevert(this.controller.upgradeToAndCall(this.proxyAddress, projectName, version_1, contractName, initializeData, { from }))
+          await assertRevert(this.controller.upgradeToAndCall(this.proxyAddress, projectName, version_1, contractName, initializeData, { from, value }))
         })
       })
     })

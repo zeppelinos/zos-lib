@@ -9,7 +9,7 @@ contract InitializableMock {
 
   function InitializableMock() public {}
   
-  function initialize(uint256 value) public {
+  function initialize(uint256 value) public payable {
     x = value;
   }
 }

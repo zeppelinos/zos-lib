@@ -38,6 +38,8 @@ contract ProjectController is ImplementationProvider, Ownable {
   ) public {
     require(factory != address(0));
     require(registry != address(0));
+    require(bytes(projectName).length != 0);
+
     _factory = factory;
     _registry = registry;
     _projectNameHash = keccak256(projectName);
@@ -98,7 +100,7 @@ contract ProjectController is ImplementationProvider, Ownable {
    */
   function upgradeToAndCall(OwnedUpgradeabilityProxy proxy, string distribution, string version, string contractName, bytes data) payable public onlyOwner {
     address _implementation = getImplementationOrRevert(distribution, version, contractName);
-    proxy.upgradeToAndCall(_implementation, data);
+    proxy.upgradeToAndCall.value(msg.value)(_implementation, data);
   }
 
   /**
@@ -124,7 +126,7 @@ contract ProjectController is ImplementationProvider, Ownable {
    */
   function createAndCall(string distribution, string version, string contractName, bytes data) payable public returns (OwnedUpgradeabilityProxy) {
     address _implementation = getImplementationOrRevert(distribution, version, contractName);
-    return _factory.createProxyAndCall(this, _implementation, data);
+    return _factory.createProxyAndCall.value(msg.value)(this, _implementation, data);
   }
 
   /**
