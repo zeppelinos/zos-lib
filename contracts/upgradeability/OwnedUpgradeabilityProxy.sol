@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.18;
 
 import './UpgradeabilityProxy.sol';
 
@@ -59,7 +59,7 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
    */
   function transferProxyOwnership(address newOwner) public onlyProxyOwner {
     require(newOwner != address(0));
-    emit ProxyOwnershipTransferred(proxyOwner(), newOwner);
+    ProxyOwnershipTransferred(proxyOwner(), newOwner);
     setUpgradeabilityOwner(newOwner);
   }
 
