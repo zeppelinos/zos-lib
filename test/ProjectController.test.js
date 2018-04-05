@@ -207,7 +207,7 @@ contract('ProjectController', ([_, anAddress, owner, anotherAccount, implementat
         })
 
         it('calls the "initialize" function', async function() {
-          await await this.controller.upgradeToAndCall(this.proxyAddress, projectName, version_1, contractName, initializeData, { from, value })
+          await this.controller.upgradeToAndCall(this.proxyAddress, projectName, version_1, contractName, initializeData, { from, value })
 
           const initializable = InitializableMock.at(this.proxyAddress)
           const x = await initializable.x()
@@ -215,7 +215,7 @@ contract('ProjectController', ([_, anAddress, owner, anotherAccount, implementat
         })
 
         it('sends given value to the delegated implementation', async function() {
-          await await this.controller.upgradeToAndCall(this.proxyAddress, projectName, version_1, contractName, initializeData, { from, value })
+          await this.controller.upgradeToAndCall(this.proxyAddress, projectName, version_1, contractName, initializeData, { from, value })
 
           const balance = await web3.eth.getBalance(this.proxyAddress)
           assert(balance.eq(value))
