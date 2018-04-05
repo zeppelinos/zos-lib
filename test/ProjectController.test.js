@@ -25,7 +25,7 @@ contract('ProjectController', ([_, controllerOwner, registryOwner, anAddress, an
   })
 
   describe('ownership', function () {
-    beforeEach(async function () {
+    beforeEach(function () {
       this.ownable = this.controller
     })
 

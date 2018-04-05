@@ -8,7 +8,7 @@ contract('Registry', ([_, owner, anotherAddress, implementation_v0, implementati
   })
 
   describe('ownership', function () {
-    beforeEach(async function () {
+    beforeEach(function () {
       this.ownable = this.registry
     })
 
