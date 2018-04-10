@@ -4,7 +4,9 @@ node_js:
 cache:
   directories:
   - node_modules
-script:
+env:
+  - SOLIDITY_COVERAGE=true
+  script:
 - npm test
 notifications:
   slack:

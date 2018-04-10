@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/zeppelinos/core#readme",
   "devDependencies": {
+    "coveralls": "^3.0.0",
     "ethereumjs-abi": "^0.6.5",
     "solidity-coverage": "^0.4.15",
     "truffle": "^4.1.5",
