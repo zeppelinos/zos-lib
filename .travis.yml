@@ -6,8 +6,8 @@ cache:
   - node_modules
 env:
   - SOLIDITY_COVERAGE=true
-  script:
-- npm test
+script:
+  - npm test
 notifications:
   slack:
     rooms:
