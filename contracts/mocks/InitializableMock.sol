@@ -14,4 +14,8 @@ contract InitializableMock is Initializable {
   function initialize(uint256 value) public payable isInitializer {
     x = value;
   }
+
+  function fail() public {
+    require(false);
+  }
 }
