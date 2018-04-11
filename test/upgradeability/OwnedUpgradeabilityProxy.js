@@ -153,4 +153,20 @@ contract('OwnedUpgradeabilityProxy', ([_, owner, anotherAccount, implementation_
       })
     })
   })
+
+  describe('storage', function () {
+    it('should store the implementation address in specified location', async function () {
+      const position = web3.sha3("org.zeppelinos.proxy.implementation");
+      const implementation = await web3.eth.getStorageAt(this.proxy.address, position);
+
+      assert.equal(implementation, implementation_v0);
+    })
+
+    it('should store the owner proxy in specified location', async function () {
+      const position = web3.sha3("org.zeppelinos.proxy.owner");
+      const proxyOwner = await web3.eth.getStorageAt(this.proxy.address, position);
+
+      assert.equal(proxyOwner, owner);
+    })
+  })
 })
