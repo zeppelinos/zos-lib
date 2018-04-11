@@ -278,7 +278,7 @@ contract('ProjectController', ([_, controllerOwner, registryOwner, anAddress, an
       })
     })
 
-    describe('when the given distribution name is not to the project name', function () {
+    describe('when the given distribution is not equal to the project name', function () {
       const distribution = 'Zeppelin'
 
       describe('when there is a fallback provider', function () {
