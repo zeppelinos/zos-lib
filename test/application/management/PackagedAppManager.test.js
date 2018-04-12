@@ -101,12 +101,12 @@ contract('PackagedAppManager', ([_, managerOwner, packageOwner, directoryOwner, 
         })
 
         it('creates a proxy pointing to the requested implementation', async function () {
-          const implementation = await this.proxy.implementation()
+          const implementation = await this.manager.getProxyImplementation(this.proxy.address)
           assert.equal(implementation, this.implementation_v0)
         })
 
         it('transfers the ownership to the manager', async function () {
-          const proxyOwner = await this.proxy.proxyOwner()
+          const proxyOwner = await this.manager.getProxyOwner(this.proxy.address)
           assert.equal(proxyOwner, this.manager.address)
         })
       })
@@ -137,12 +137,12 @@ contract('PackagedAppManager', ([_, managerOwner, packageOwner, directoryOwner, 
         })
 
         it('creates a proxy pointing to the requested implementation', async function () {
-          const implementation = await this.proxy.implementation()
+          const implementation = await this.manager.getProxyImplementation(this.proxy.address)
           assert.equal(implementation, this.behavior.address)
         })
 
         it('transfers the ownership to the manager', async function () {
-          const proxyOwner = await this.proxy.proxyOwner()
+          const proxyOwner = await this.manager.getProxyOwner(this.proxy.address)
           assert.equal(proxyOwner, this.manager.address)
         })
 
@@ -195,7 +195,7 @@ contract('PackagedAppManager', ([_, managerOwner, packageOwner, directoryOwner, 
           it('upgrades to the requested implementation', async function () {
             await this.manager.upgradeTo(this.proxyAddress, contract, { from })
 
-            const implementation = await this.proxy.implementation()
+            const implementation = await this.manager.getProxyImplementation(this.proxy.address)
             assert.equal(implementation, this.implementation_v1)
           })
         })
@@ -244,7 +244,7 @@ contract('PackagedAppManager', ([_, managerOwner, packageOwner, directoryOwner, 
           })
 
           it('upgrades to the requested implementation', async function () {
-            const implementation = await this.proxy.implementation()
+            const implementation = await this.manager.getProxyImplementation(this.proxy.address)
             assert.equal(implementation, this.behavior.address)
           })
 

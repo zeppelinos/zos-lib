@@ -6,26 +6,25 @@ pragma solidity ^0.4.21;
  */
 contract Proxy {
   /**
-   * @dev Tells the address of the implementation where every call will be delegated.
-   * @return address of the implementation to which it will be delegated
+   * @return address of the implementation to which all calls will be delegated.
    */
-  function implementation() public view returns (address);
+  function _implementation() internal view returns (address);
 
   /**
-   * @dev Fallback function allowing to perform a delegatecall to the given implementation.
-   * This function will return whatever the implementation call returns
+   * @dev Performs a delegatecall to the address returned by _implementation().
+   * @dev This is a low level function that doesn't return to its internal caller.
+   * @dev It will return to the external caller whatever the implementation returns.
+   * @param _target address 
    */
-  function () payable public {
-    address _impl = implementation();
-
+  function _delegate(address _target) internal {
     assembly {
       // 0x40 contains the value for the next available free memory pointer.
       let ptr := mload(0x40)
       // Copy msg.data.
       calldatacopy(ptr, 0, calldatasize)
-      // Call the implementation.
+      // Call the target.
       // out and outsize are 0 because we don't know the size yet.
-      let result := delegatecall(gas, _impl, ptr, calldatasize, 0, 0)
+      let result := delegatecall(gas, _target, ptr, calldatasize, 0, 0)
       // Copy the returned data.
       returndatacopy(ptr, 0, returndatasize)
 
@@ -34,5 +33,20 @@ contract Proxy {
       case 0 { revert(ptr, returndatasize) }
       default { return(ptr, returndatasize) }
     }
+  }
+
+  /**
+   * @dev Delegates all incoming calls to the implementation.
+   * @dev Derived contracts can add functionality
+   */
+  function _fallback() internal {
+    _delegate(_implementation());
+  }
+
+  /**
+   * @dev Implemented in _fallback so as to be overrideable.
+   */
+  function () payable external {
+    _fallback();
   }
 }

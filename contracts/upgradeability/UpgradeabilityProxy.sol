@@ -29,8 +29,9 @@ contract UpgradeabilityProxy is Proxy {
    * @dev Tells the address of the current implementation
    * @return address of the current implementation
    */
-  function implementation() public view returns (address impl) {
+  function _implementation() internal view returns (address impl) {
     bytes32 slot = implementationSlot;
+
     assembly {
       impl := sload(slot)
     }
@@ -44,6 +45,7 @@ contract UpgradeabilityProxy is Proxy {
     require(AddressUtils.isContract(newImplementation));
 
     bytes32 slot = implementationSlot;
+
     assembly {
       sstore(slot, newImplementation)
     }

@@ -23,12 +23,12 @@ contract('UpgradeabilityProxyFactory', ([_, owner]) => {
     })
 
     it('creates a proxy pointing to the requested implementation', async function () {
-      const implementation = await this.proxy.implementation()
+      const implementation = await this.proxy.implementation({ from: owner })
       assert.equal(implementation, this.implementation_v0)
     })
 
     it('transfers the ownership to the requested owner', async function () {
-      const proxyOwner = await this.proxy.proxyOwner()
+      const proxyOwner = await this.proxy.proxyOwner({ from: owner })
       assert.equal(proxyOwner, owner)
     })
 
@@ -52,12 +52,12 @@ contract('UpgradeabilityProxyFactory', ([_, owner]) => {
     })
 
     it('creates a proxy pointing to the requested implementation', async function () {
-      const implementation = await this.proxy.implementation()
+      const implementation = await this.proxy.implementation({ from: owner })
       assert.equal(implementation, this.behavior.address)
     })
 
     it('transfers the ownership to the requested owner', async function () {
-      const proxyOwner = await this.proxy.proxyOwner()
+      const proxyOwner = await this.proxy.proxyOwner({ from: owner })
       assert.equal(proxyOwner, owner)
     })
 

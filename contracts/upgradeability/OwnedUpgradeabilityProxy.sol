@@ -21,8 +21,13 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
    * @dev Throws if called by any account other than the owner.
    */
   modifier onlyProxyOwner() {
-    require(msg.sender == proxyOwner());
-    _;
+    if (msg.sender == _proxyOwner()) {
+      _;
+    } else {
+      // We call super to skip the check that the sender isn't the proxyOwer.
+      // This should be optimized away by the compiler and not by us.
+      super._fallback();
+    }
   }
 
   /**
@@ -30,28 +35,32 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
    * @param _implementation representing the address of the initial implementation to be set
    */
   function OwnedUpgradeabilityProxy(address _implementation) UpgradeabilityProxy(_implementation) public {
-    setUpgradeabilityOwner(msg.sender);
+    _setUpgradeabilityOwner(msg.sender);
   }
 
   /**
    * @dev Tells the address of the owner
    * @return the address of the owner
    */
-  function proxyOwner() public view returns (address owner) {
-    bytes32 slot = proxyOwnerSlot;
-    assembly {
-      owner := sload(slot)
-    }
+  function proxyOwner() public view onlyProxyOwner returns (address owner) {
+    return _proxyOwner();
+  }
+
+  /**
+   * @return the address of the implementation
+   */
+  function implementation() public view onlyProxyOwner returns (address) {
+    return _implementation();
   }
 
   /**
    * @dev Allows the current owner to transfer control of the contract to a newOwner.
-   * @param newOwner The address to transfer ownership to.
+   * @param newOwner The address to transfer proxy ownership to.
    */
   function transferProxyOwnership(address newOwner) public onlyProxyOwner {
     require(newOwner != address(0));
     emit ProxyOwnershipTransferred(proxyOwner(), newOwner);
-    setUpgradeabilityOwner(newOwner);
+    _setUpgradeabilityOwner(newOwner);
   }
 
   /**
@@ -75,12 +84,33 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
   }
 
   /**
+   * @dev Tells the address of the owner
+   * @return the address of the owner
+   */
+  function _proxyOwner() internal returns (address owner) {
+    bytes32 slot = proxyOwnerSlot;
+    assembly {
+      owner := sload(slot)
+    }
+  }
+
+  /**
    * @dev Sets the address of the owner
    */
-  function setUpgradeabilityOwner(address newProxyOwner) internal {
+  function _setUpgradeabilityOwner(address newProxyOwner) internal {
     bytes32 slot = proxyOwnerSlot;
+
     assembly {
       sstore(slot, newProxyOwner)
     }
+  }
+
+  /**
+   * @dev Redefines Proxy's fallback to disallow delegation when caller is the proxy owner.
+   */
+  function _fallback() internal {
+    require(msg.sender != proxyOwner());
+
+    super._fallback();
   }
 }
