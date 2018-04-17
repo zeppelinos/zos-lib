@@ -11,8 +11,7 @@ contract UnversionedAppManager is BaseAppManager {
     BaseAppManager(_factory)
     public
   {
-    require(_provider != address(0));
-    provider = _provider;
+    setProvider(_provider);
   }
 
   function getProvider() internal view returns (ContractProvider) {
