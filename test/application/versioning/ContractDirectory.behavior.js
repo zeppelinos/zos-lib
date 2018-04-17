@@ -17,11 +17,20 @@ function shouldBehaveLikeContractDirectory(owner, anotherAddress, implementation
     describe('when the sender is the directory owner', function () {
       const from = owner
 
-      it('registers the given version', async function () {
+      it('registers the given contract', async function () {
         await this.directory.setImplementation(contract, implementation_v0, { from })
 
         const registeredImplementation = await this.directory.getImplementation(contract)
         assert.equal(registeredImplementation, implementation_v0)
+      })
+
+      it('emits an event', async function () {
+        const { logs } = await this.directory.setImplementation(contract, implementation_v0, { from })
+
+        assert.equal(logs.length, 1)
+        assert.equal(logs[0].event, 'ImplementationAdded')
+        assert.equal(logs[0].args.contractName, contract)
+        assert.equal(logs[0].args.implementation, implementation_v0)
       })
 
       it('allows to register a another implementation of the same contract', async function () {
