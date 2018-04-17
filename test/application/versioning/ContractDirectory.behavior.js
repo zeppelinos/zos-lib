@@ -43,6 +43,14 @@ function shouldBehaveLikeContractDirectory(owner, anotherAddress, implementation
         assert.equal(registeredImplementation, anotherImplementation)
       })
 
+      it('allows to register a another contract', async function () {
+        const anotherContract = 'anotherContract';
+        await this.directory.setImplementation(anotherContract, implementation_v1, { from })
+
+        const registeredImplementation = await this.directory.getImplementation(anotherContract)
+        assert.equal(registeredImplementation, implementation_v1)
+      })
+
       it('allows to unregister a contract', async function () {
         await this.directory.setImplementation(contract, implementation_v0, { from })
         await this.directory.setImplementation(contract, 0x0, { from })
