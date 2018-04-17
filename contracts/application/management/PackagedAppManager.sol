@@ -4,11 +4,11 @@ import "./BaseAppManager.sol";
 import "../versioning/Package.sol";
 import "../../upgradeability/UpgradeabilityProxyFactory.sol";
 
-contract AppManager is BaseAppManager {
+contract PackagedAppManager is BaseAppManager {
   Package public package;
   string public version;
 
-  function AppManager(Package _package, string _version, UpgradeabilityProxyFactory _factory)
+  function PackagedAppManager(Package _package, string _version, UpgradeabilityProxyFactory _factory)
     BaseAppManager(_factory)
     public
   {
