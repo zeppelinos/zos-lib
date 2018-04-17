@@ -6,7 +6,7 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 contract Package is Ownable {
   mapping (string => ContractProvider) internal versions;
 
-  function getVersion(string version) public returns (ContractProvider) {
+  function getVersion(string version) public view returns (ContractProvider) {
     return versions[version];
   }
 
@@ -21,6 +21,7 @@ contract Package is Ownable {
 
   function getImplementation(string version, string contractName) public view returns (address) {
     ContractProvider provider = getVersion(version);
+    require(provider != address(0));
     return provider.getImplementation(contractName);
   }
 }
