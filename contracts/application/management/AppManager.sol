@@ -23,7 +23,7 @@ contract AppManager is BaseAppManager {
     version = newVersion;
   }
 
-  function provider() internal view returns (ContractProvider) {
+  function getProvider() internal view returns (ContractProvider) {
     return package.getVersion(version);
   }
 }
