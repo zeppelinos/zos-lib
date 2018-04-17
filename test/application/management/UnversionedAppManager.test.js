@@ -8,7 +8,7 @@ const shouldBehaveLikeOwnable = require('../../ownership/Ownable.behavior')
 const OwnedUpgradeabilityProxy = artifacts.require('OwnedUpgradeabilityProxy')
 const UpgradeabilityProxyFactory = artifacts.require('UpgradeabilityProxyFactory')
 
-contract('UnversionedAppManager', ([_, managerOwner, directoryOwner, anAddress, anotherAccount, implementation_v0, implementation_v1]) => {
+contract('UnversionedAppManager', ([_, managerOwner, directoryOwner, anotherAccount, implementation_v0, implementation_v1]) => {
   const contract = 'ERC721'
 
   beforeEach(async function () {
@@ -39,7 +39,7 @@ contract('UnversionedAppManager', ([_, managerOwner, directoryOwner, anAddress, 
   })
 
   describe('create', function () {
-    describe('when the given contract was registered in the contract provider', function () {
+    describe('when the requested contract was registered in the contract provider', function () {
       beforeEach(async function () {
         await this.directory.setImplementation(contract, implementation_v0, { from: directoryOwner })
 
@@ -54,13 +54,13 @@ contract('UnversionedAppManager', ([_, managerOwner, directoryOwner, anAddress, 
         assert.equal(implementation, implementation_v0)
       })
 
-      it('transfers the ownership to the controller', async function () {
+      it('transfers the ownership to the manager', async function () {
         const proxyOwner = await this.proxy.proxyOwner()
         assert.equal(proxyOwner, this.manager.address)
       })
     })
 
-    describe('when the given contract was not registered', function () {
+    describe('when the requested contract was not registered', function () {
       it('reverts', async function () {
         await assertRevert(this.manager.create(contract))
       })
@@ -75,7 +75,7 @@ contract('UnversionedAppManager', ([_, managerOwner, directoryOwner, anAddress, 
       this.behavior = await InitializableMock.new()
     })
 
-    describe('when the given contract was registered in the contract provider', function () {
+    describe('when the requested contract was registered in the contract provider', function () {
       beforeEach(async function () {
         await this.directory.setImplementation(contract, this.behavior.address, { from: directoryOwner })
 
@@ -90,7 +90,7 @@ contract('UnversionedAppManager', ([_, managerOwner, directoryOwner, anAddress, 
         assert.equal(implementation, this.behavior.address)
       })
 
-      it('transfers the ownership to the controller', async function () {
+      it('transfers the ownership to the manager', async function () {
         const proxyOwner = await this.proxy.proxyOwner()
         assert.equal(proxyOwner, this.manager.address)
       })
@@ -113,7 +113,7 @@ contract('UnversionedAppManager', ([_, managerOwner, directoryOwner, anAddress, 
       })
     })
 
-    describe('when the given version was not registered', function () {
+    describe('when the requested contract was not registered', function () {
       it('reverts', async function () {
         await assertRevert(this.manager.createAndCall(contract, initializeData, { value }))
       })
@@ -132,7 +132,7 @@ contract('UnversionedAppManager', ([_, managerOwner, directoryOwner, anAddress, 
     describe('when the sender is the manager owner', function () {
       const from = managerOwner
 
-      describe('when the given version was registered', function () {
+      describe('when the requested contract was registered', function () {
         beforeEach(async function () {
           await this.directory.setImplementation(contract, implementation_v1, { from: directoryOwner })
         })
@@ -145,7 +145,7 @@ contract('UnversionedAppManager', ([_, managerOwner, directoryOwner, anAddress, 
         })
       })
 
-      describe('when the given version was not registered', function () {
+      describe('when the requested contract was not registered', function () {
         it('reverts', async function () {
           await assertRevert(this.manager.upgradeTo(this.proxyAddress, contract, { from }))
         })
@@ -178,7 +178,7 @@ contract('UnversionedAppManager', ([_, managerOwner, directoryOwner, anAddress, 
       const from = managerOwner
       const value = 1e5
 
-      describe('when the given version was registered', function () {
+      describe('when the requested contract was registered', function () {
         beforeEach(async function () {
           await this.directory.setImplementation(contract, this.behavior.address, { from: directoryOwner })
           await this.manager.upgradeToAndCall(this.proxyAddress, contract, initializeData, { from, value })
@@ -207,7 +207,7 @@ contract('UnversionedAppManager', ([_, managerOwner, directoryOwner, anAddress, 
         })
       })
 
-      describe('when the given version was not registered', function () {
+      describe('when the requested contract was not registered', function () {
         it('reverts', async function () {
           await assertRevert(this.manager.upgradeToAndCall(this.proxyAddress, contract, initializeData, { from, value }))
         })
