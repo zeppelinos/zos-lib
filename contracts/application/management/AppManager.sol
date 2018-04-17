@@ -1,0 +1,29 @@
+pragma solidity ^0.4.21;
+
+import "./BaseAppManager.sol";
+import "../versioning/Package.sol";
+import "../../upgradeability/UpgradeabilityProxyFactory.sol";
+
+contract AppManager is BaseAppManager {
+  Package internal package;
+  string internal version;
+
+  function
+    AppManager(Package _package, string _version, UpgradeabilityProxyFactory _factory)
+    BaseAppManager(_factory)
+  public {
+    require(_package != address(0));
+    require(_package.hasVersion(version));
+    package = _package;
+    version = _version;
+  }
+
+  function setVersion(string newVersion) public onlyOwner {
+    require(package.hasVersion(newVersion));
+    version = newVersion;
+  }
+
+  function provider() internal view returns (ContractProvider) {
+    return package.getVersion(version);
+  }
+}
