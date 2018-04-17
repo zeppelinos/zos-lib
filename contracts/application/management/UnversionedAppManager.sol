@@ -7,10 +7,10 @@ import "../../upgradeability/UpgradeabilityProxyFactory.sol";
 contract UnversionedAppManager is BaseAppManager {
   ContractProvider internal provider;
 
-  function
-    UnversionedAppManager(ContractProvider _provider, UpgradeabilityProxyFactory _factory)
+  function UnversionedAppManager(ContractProvider _provider, UpgradeabilityProxyFactory _factory)
     BaseAppManager(_factory)
-  public {
+    public
+  {
     require(_provider != address(0));
     provider = _provider;
   }

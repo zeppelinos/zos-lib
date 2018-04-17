@@ -8,10 +8,10 @@ contract AppManager is BaseAppManager {
   Package public package;
   string public version;
 
-  function
-    AppManager(Package _package, string _version, UpgradeabilityProxyFactory _factory)
+  function AppManager(Package _package, string _version, UpgradeabilityProxyFactory _factory)
     BaseAppManager(_factory)
-  public {
+    public
+  {
     require(_package != address(0));
     require(_package.hasVersion(_version));
     package = _package;
