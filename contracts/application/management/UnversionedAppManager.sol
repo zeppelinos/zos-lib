@@ -1,7 +1,7 @@
 pragma solidity ^0.4.21;
 
 import "./BaseAppManager.sol";
-import "./ContractProvider.sol";
+import "../versioning/ContractProvider.sol";
 import "../../upgradeability/UpgradeabilityProxyFactory.sol";
 
 contract UnversionedAppManager is BaseAppManager {
