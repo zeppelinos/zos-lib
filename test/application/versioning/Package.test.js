@@ -31,20 +31,39 @@ contract('Package', ([_, owner, anotherAddress, implementation_v0]) => {
           const registeredDirectory = await this.package.getVersion(version)
           assert.equal(registeredDirectory, this.directory_V0.address)
         })
+
+        it('emits an event', async function () {
+          const { logs } = await this.package.addVersion(version, this.directory_V0.address, { from })
+
+          assert.equal(logs.length, 1)
+          assert.equal(logs[0].event, 'VersionAdded')
+          assert.equal(logs[0].args.version, version)
+          assert.equal(logs[0].args.provider, this.directory_V0.address)
+        })
       })
 
       describe('when the given version was already set', function () {
+        const anotherVersion = '1'
+
         it('reverts', async function () {
           await this.package.addVersion(version, this.directory_V0.address, { from })
           await assertRevert(this.package.addVersion(version, this.directory_V1.address, { from }))
         })
 
         it('can register another version', async function () {
-          const anotherVersion = '1'
           await this.package.addVersion(anotherVersion, this.directory_V1.address, { from })
 
           const newRegisteredDirectory = await this.package.getVersion(anotherVersion)
           assert.equal(newRegisteredDirectory, this.directory_V1.address)
+        })
+
+        it('emits another event', async function () {
+          const { logs } = await this.package.addVersion(anotherVersion, this.directory_V1.address, { from })
+
+          assert.equal(logs.length, 1)
+          assert.equal(logs[0].event, 'VersionAdded')
+          assert.equal(logs[0].args.version, anotherVersion)
+          assert.equal(logs[0].args.provider, this.directory_V1.address)
         })
       })
     })

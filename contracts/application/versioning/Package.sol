@@ -4,6 +4,8 @@ import "./ContractProvider.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 contract Package is Ownable {
+  event VersionAdded(string version, ContractProvider indexed provider);
+
   mapping (string => ContractProvider) internal versions;
 
   function getVersion(string version) public view returns (ContractProvider) {
@@ -13,6 +15,7 @@ contract Package is Ownable {
   function addVersion(string version, ContractProvider provider) public onlyOwner {
     require(!hasVersion(version));
     versions[version] = provider;
+    emit VersionAdded(version, provider);
   }
 
   function hasVersion(string version) public view returns (bool) {
