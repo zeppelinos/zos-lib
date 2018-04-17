@@ -15,11 +15,11 @@ contract Package is Ownable {
     versions[version] = provider;
   }
 
-  function hasVersion(string version) public returns (bool) {
+  function hasVersion(string version) public view returns (bool) {
     return address(getVersion(version)) != address(0);
   }
 
-  function getImplementation(string version, string contractName) public returns (address) {
+  function getImplementation(string version, string contractName) public view returns (address) {
     ContractProvider provider = getVersion(version);
     return provider.getImplementation(contractName);
   }
