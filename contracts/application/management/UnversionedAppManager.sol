@@ -19,7 +19,7 @@ contract UnversionedAppManager is BaseAppManager {
   }
 
   function setProvider(ContractProvider _provider) public onlyOwner {
-    require(_provider != address(0));
+    require(address(_provider) != address(0));
     provider = _provider;
   }
 }

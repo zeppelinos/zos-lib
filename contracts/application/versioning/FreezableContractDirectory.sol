@@ -1,6 +1,5 @@
 pragma solidity ^0.4.21;
 
-import "./ContractProvider.sol";
 import "./ContractDirectory.sol";
 
 contract FreezableContractDirectory is ContractDirectory {

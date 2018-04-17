@@ -9,7 +9,7 @@ contract BaseAppManager is Ownable {
   UpgradeabilityProxyFactory public factory;
 
   function BaseAppManager(UpgradeabilityProxyFactory _factory) public {
-    require(_factory != address(0));
+    require(address(_factory) != address(0));
     factory = _factory;
   }
 

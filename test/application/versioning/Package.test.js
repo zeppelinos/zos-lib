@@ -68,7 +68,7 @@ contract('Package', ([_, owner, anotherAddress, implementation_v0]) => {
       })
     })
 
-    describe('when the sender is the owner of the contract', function () {
+    describe('when the sender is not the owner of the contract', function () {
       const from = anotherAddress
 
       it('reverts', async function () {
@@ -92,7 +92,7 @@ contract('Package', ([_, owner, anotherAddress, implementation_v0]) => {
     })
 
     describe('when the requested version was not set', function () {
-      it('returns the address zero', async function () {
+      it('returns the zero address', async function () {
         const registeredDirectory = await this.package.getVersion(version)
         assert.equal(registeredDirectory, 0x0)
       })
@@ -114,7 +114,7 @@ contract('Package', ([_, owner, anotherAddress, implementation_v0]) => {
     })
 
     describe('when the requested version was not set', function () {
-      it('returns the address zero', async function () {
+      it('returns the zero address', async function () {
         const hasVersion = await this.package.hasVersion(version)
         assert.isFalse(hasVersion)
       })
@@ -123,7 +123,7 @@ contract('Package', ([_, owner, anotherAddress, implementation_v0]) => {
 
   describe('getImplementation', function () {
     const version = '0'
-    const contract = 'ERC721'
+    const contractName = 'ERC721'
 
     describe('when the requested version was set', function () {
       beforeEach(async function () {
@@ -132,18 +132,18 @@ contract('Package', ([_, owner, anotherAddress, implementation_v0]) => {
 
       describe('when the requested version holds the requested contract name', function () {
         beforeEach(async function () {
-          await this.directory_V0.setImplementation(contract, implementation_v0, { from: owner })
+          await this.directory_V0.setImplementation(contractName, implementation_v0, { from: owner })
         })
 
         it('returns the requested implementation', async function () {
-          const implementation = await this.package.getImplementation(version, contract)
+          const implementation = await this.package.getImplementation(version, contractName)
           assert.equal(implementation, implementation_v0)
         })
       })
 
       describe('when the requested version does not hold the requested contract name', function () {
         it('returns the zero address', async function () {
-          const implementation = await this.package.getImplementation(version, contract)
+          const implementation = await this.package.getImplementation(version, contractName)
           assert.equal(implementation, 0x0)
         })
       })
@@ -151,7 +151,7 @@ contract('Package', ([_, owner, anotherAddress, implementation_v0]) => {
 
     describe('when the requested version was not set', function () {
       it('reverts', async function () {
-        await assertRevert(this.package.getImplementation(version, contract))
+        await assertRevert(this.package.getImplementation(version, contractName))
       })
     })
   })

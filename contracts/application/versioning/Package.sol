@@ -24,7 +24,7 @@ contract Package is Ownable {
 
   function getImplementation(string version, string contractName) public view returns (address) {
     ContractProvider provider = getVersion(version);
-    require(provider != address(0));
+    require(address(provider) != address(0));
     return provider.getImplementation(contractName);
   }
 }

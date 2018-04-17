@@ -3,32 +3,32 @@ const assertRevert = require('../../helpers/assertRevert')
 const ContractDirectory = artifacts.require('ContractDirectory')
 const shouldBehaveLikeContractDirectory = require('../versioning/ContractDirectory.behavior')
 
-contract('ContractDirectory', ([_, owner, fallbackOwner, anotherAddress, implementation_v0, implementation_v1, fallbackImplementation]) => {
+contract('AppDirectory', ([_, owner, stdlibOwner, anotherAddress, implementation_v0, implementation_v1, stdlibImplementation]) => {
   beforeEach(async function () {
     this.directory = await AppDirectory.new(0x0, { from: owner })
-    this.stdlib = await ContractDirectory.new({ from: fallbackOwner })
+    this.stdlib = await ContractDirectory.new({ from: stdlibOwner })
   })
 
   shouldBehaveLikeContractDirectory(owner, anotherAddress, implementation_v0, implementation_v1)
 
   describe('getImplementation', function () {
-    const contract = 'ERC721'
+    const contractName = 'ERC721'
 
     describe('when no stdlib was set', function () {
       describe('when the requested contract was registered in the directory', function () {
         beforeEach(async function () {
-          await this.directory.setImplementation(contract, implementation_v0, { from: owner })
+          await this.directory.setImplementation(contractName, implementation_v0, { from: owner })
         })
 
-        it('returns the implementation of the directory', async function () {
-          const implementation = await this.directory.getImplementation(contract)
+        it('returns the directory implementation', async function () {
+          const implementation = await this.directory.getImplementation(contractName)
           assert.equal(implementation, implementation_v0)
         })
       })
 
       describe('when the requested contract was not registered in the directory', function () {
         it('returns the zero address', async function () {
-          const implementation = await this.directory.getImplementation(contract)
+          const implementation = await this.directory.getImplementation(contractName)
           assert.equal(implementation, 0x0)
         })
       })
@@ -41,23 +41,23 @@ contract('ContractDirectory', ([_, owner, fallbackOwner, anotherAddress, impleme
 
       describe('when the requested contract was registered in the directory', function () {
         beforeEach(async function () {
-          await this.directory.setImplementation(contract, implementation_v0, { from: owner })
+          await this.directory.setImplementation(contractName, implementation_v0, { from: owner })
         })
 
         describe('when the requested contract was registered in the stdlib', function () {
           beforeEach(async function () {
-            await this.stdlib.setImplementation(contract, fallbackImplementation, { from: fallbackOwner })
+            await this.stdlib.setImplementation(contractName, stdlibImplementation, { from: stdlibOwner })
           })
 
-          it('returns the implementation of the directory', async function () {
-            const implementation = await this.directory.getImplementation(contract)
+          it('returns the directory implementation', async function () {
+            const implementation = await this.directory.getImplementation(contractName)
             assert.equal(implementation, implementation_v0)
           })
         })
 
         describe('when the requested contract was not registered in the stdlib', function () {
-          it('returns the implementation of the directory', async function () {
-            const implementation = await this.directory.getImplementation(contract)
+          it('returns the directory implementation', async function () {
+            const implementation = await this.directory.getImplementation(contractName)
             assert.equal(implementation, implementation_v0)
           })
         })
@@ -66,18 +66,18 @@ contract('ContractDirectory', ([_, owner, fallbackOwner, anotherAddress, impleme
       describe('when the requested contract was not registered in the directory', function () {
         describe('when the requested contract was registered in the stdlib', function () {
           beforeEach(async function () {
-            await this.stdlib.setImplementation(contract, fallbackImplementation, { from: fallbackOwner })
+            await this.stdlib.setImplementation(contractName, stdlibImplementation, { from: stdlibOwner })
           })
 
-          it('returns the implementation of the stdlib', async function () {
-            const implementation = await this.directory.getImplementation(contract)
-            assert.equal(implementation, fallbackImplementation)
+          it('returns the stdlib implementation', async function () {
+            const implementation = await this.directory.getImplementation(contractName)
+            assert.equal(implementation, stdlibImplementation)
           })
         })
 
         describe('when the requested contract was not registered in the stdlib', function () {
           it('returns the zero address', async function () {
-            const implementation = await this.directory.getImplementation(contract)
+            const implementation = await this.directory.getImplementation(contractName)
             assert.equal(implementation, 0x0)
           })
         })
@@ -93,12 +93,20 @@ contract('ContractDirectory', ([_, owner, fallbackOwner, anotherAddress, impleme
         await this.directory.setStdlib(this.stdlib.address, { from })
       })
 
-      it('a stdlib can be set', async function () {
+      it('can set a new stdlib', async function () {
         const stdlib = await this.directory.stdlib()
         assert.equal(stdlib, this.stdlib.address)
       })
 
-      it('a stdlib can be unset', async function () {
+      it('can reset a stdlib', async function () {
+        const anotherStdlib = await ContractDirectory.new({ from: stdlibOwner })
+        await this.directory.setStdlib(anotherStdlib.address, { from })
+
+        const stdlib = await this.directory.stdlib()
+        assert.equal(stdlib, anotherStdlib.address)
+      })
+
+      it('can unset a stdlib', async function () {
         await this.directory.setStdlib(0, { from })
         const stdlib = await this.directory.stdlib()
         assert.equal(stdlib, 0x0)

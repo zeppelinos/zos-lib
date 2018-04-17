@@ -12,7 +12,7 @@ contract PackagedAppManager is BaseAppManager {
     BaseAppManager(_factory)
     public
   {
-    require(_package != address(0));
+    require(address(_package) != address(0));
     require(_package.hasVersion(_version));
     package = _package;
     version = _version;
