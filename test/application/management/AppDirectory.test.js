@@ -1,11 +1,11 @@
 const assertRevert = require('../../helpers/assertRevert')
 const ContractDirectory = artifacts.require('ContractDirectory')
-const AppContractDirectory = artifacts.require('AppContractDirectory')
+const AppDirectory = artifacts.require('AppDirectory')
 const shouldBehaveLikeContractDirectory = require('./ContractDirectory.behavior')
 
 contract('ContractDirectory', ([_, owner, fallbackOwner, anotherAddress, implementation_v0, implementation_v1, fallbackImplementation]) => {
   beforeEach(async function () {
-    this.directory = await AppContractDirectory.new(0x0, { from: owner })
+    this.directory = await AppDirectory.new(0x0, { from: owner })
     this.fallbackProvider = await ContractDirectory.new({ from: fallbackOwner })
   })
 

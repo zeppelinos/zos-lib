@@ -1,5 +1,5 @@
 const Package = artifacts.require('Package')
-const AppManager = artifacts.require('AppManager')
+const PackagedAppManager = artifacts.require('PackagedAppManager')
 const encodeCall = require('../../helpers/encodeCall')
 const decodeLogs = require('../../helpers/decodeLogs')
 const assertRevert = require('../../helpers/assertRevert')
@@ -9,7 +9,7 @@ const shouldBehaveLikeOwnable = require('../../ownership/Ownable.behavior')
 const OwnedUpgradeabilityProxy = artifacts.require('OwnedUpgradeabilityProxy')
 const UpgradeabilityProxyFactory = artifacts.require('UpgradeabilityProxyFactory')
 
-contract('AppManager', ([_, managerOwner, packageOwner, directoryOwner, anotherAccount, implementation_v0, implementation_v1]) => {
+contract('PackagedAppManager', ([_, managerOwner, packageOwner, directoryOwner, anotherAccount, implementation_v0, implementation_v1]) => {
   const contract = 'ERC721'
   const version_0 = 'version_0'
   const version_1 = 'version_1'
@@ -23,14 +23,14 @@ contract('AppManager', ([_, managerOwner, packageOwner, directoryOwner, anotherA
 
   describe('when the given package does not support the required version', function () {
     it('reverts', async function () {
-      await assertRevert(AppManager.new(this.package.address, version_0, this.factory.address, { from: managerOwner }))
+      await assertRevert(PackagedAppManager.new(this.package.address, version_0, this.factory.address, { from: managerOwner }))
     })
   })
 
   describe('when the given package supports the required version', function () {
     beforeEach(async function () {
       await this.package.addVersion(version_0, this.zeroVersionDirectory.address, { from: packageOwner })
-      this.manager = await AppManager.new(this.package.address, version_0, this.factory.address, { from: managerOwner })
+      this.manager = await PackagedAppManager.new(this.package.address, version_0, this.factory.address, { from: managerOwner })
     })
 
     describe('ownership', function () {
