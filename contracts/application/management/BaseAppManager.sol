@@ -31,7 +31,7 @@ contract BaseAppManager is Ownable {
 
   function upgradeTo(OwnedUpgradeabilityProxy proxy, string contractName) public onlyOwner {
     address implementation = getImplementationOrRevert(contractName);
-    proxy.upgradeTo(_implementation);
+    proxy.upgradeTo(implementation);
   }
 
   function upgradeToAndCall(OwnedUpgradeabilityProxy proxy, string contractName, bytes data) payable public onlyOwner {
