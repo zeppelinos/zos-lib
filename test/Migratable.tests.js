@@ -1,6 +1,9 @@
-const OwnedUpgradeabilityProxy = artifacts.require('OwnedUpgradeabilityProxy');
-const Migratable = artifacts.require('Migratable');
+const assert = require('chai').assert;
+const encodeCall = require('./helpers/encodeCall');
+const decodeLogs = require('./helpers/decodeLogs');
+const assertRevert = require('./helpers/assertRevert');
 
+const Migratable = artifacts.require('Migratable');
 const SampleMotherV1 = artifacts.require('SampleMotherV1');
 const SampleMotherV2 = artifacts.require('SampleMotherV2');
 const SampleFatherV1 = artifacts.require('SampleFatherV1');
@@ -10,12 +13,7 @@ const SampleChildV2 = artifacts.require('SampleChildV2');
 const SampleChildV3 = artifacts.require('SampleChildV3');
 const SampleChildV4 = artifacts.require('SampleChildV4');
 const SampleChildV5 = artifacts.require('SampleChildV5');
-
-const assertRevert = require('./helpers/assertRevert');
-const encodeCall = require('./helpers/encodeCall');
-const decodeLogs = require('./helpers/decodeLogs');
-
-const assert = require('chai').assert;
+const OwnedUpgradeabilityProxy = artifacts.require('OwnedUpgradeabilityProxy');
 
 contract('Migratable', function ([_, owner, registrar]) {
   const from = owner;
@@ -34,21 +32,21 @@ contract('Migratable', function ([_, owner, registrar]) {
     this.contract = SampleChildV1.at(this.proxy.address);
   });
 
-  const getMigrationLogs = function(rawTx) {
-    return decodeLogs(rawTx.receipt.logs.slice(1), Migratable, '0x0')
+  const getMigrationLogs = (rawTx) => {
+    return decodeLogs(rawTx.receipt.logs.slice(1), Migratable)
         .filter(log => log.event === 'Migrated');
   };
 
-  const assertMigrationEvent = function(logs, contractName, version) {
+  const assertMigrationEvent = (logs, contractName, version) => {
     assert.deepInclude(logs.map(log => log.args), { contractName, version });
   };
 
-  const upgradeToAndCall = function(target, implementation, method, args, values, opts) {
+  const upgradeToAndCall = (target, implementation, method, args, values, opts) => {
     const data = encodeCall(method, args, values);
     return target.upgradeToAndCall(implementation.address, data, opts || {});
   };
 
-  const sendTransaction = function(target, method, args, values, opts) {
+  const sendTransaction = (target, method, args, values, opts) => {
     const data = encodeCall(method, args, values);
     return target.sendTransaction(Object.assign({ data }, opts));
   };
