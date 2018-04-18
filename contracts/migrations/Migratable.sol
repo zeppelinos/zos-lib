@@ -1,15 +1,11 @@
 pragma solidity ^0.4.21;
 
-contract Migratable {
-  // Alternatively, we could store contractName => currentVersionName
-  mapping(string => mapping(string => bool)) internal migrated;
 
-  // Should these events args be indexed?
+contract Migratable {
   event Migrated(string contractName, string version);
 
-  function isMigrated(string contractName, string version) public view returns(bool) {
-    return migrated[contractName][version];
-  }
+  // Mapping from Alternatively, we could store contractName => currentVersionName
+  mapping(string => mapping(string => bool)) internal migrated;
 
   modifier isInitializer(string contractName, string version) {
     require(!migrated[contractName][version]);
@@ -23,5 +19,9 @@ contract Migratable {
     _;
     emit Migrated(contractName, to);
     migrated[contractName][to] = true;
+  }
+
+  function isMigrated(string contractName, string version) public view returns(bool) {
+    return migrated[contractName][version];
   }
 }
