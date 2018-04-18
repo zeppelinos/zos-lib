@@ -2,26 +2,25 @@ pragma solidity ^0.4.21;
 
 
 contract Migratable {
-  event Migrated(string contractName, string version);
+  event Migrated(string contractName, string migrationId);
 
-  // Mapping from Alternatively, we could store contractName => currentVersionName
-  mapping(string => mapping(string => bool)) internal migrated;
+  mapping (string => mapping (string => bool)) internal migrated;
 
-  modifier isInitializer(string contractName, string version) {
-    require(!migrated[contractName][version]);
+  modifier isInitializer(string contractName, string migrationId) {
+    require(!isMigrated(contractName, migrationId));
     _;
-    emit Migrated(contractName, version);
-    migrated[contractName][version] = true;
+    emit Migrated(contractName, migrationId);
+    migrated[contractName][migrationId] = true;
   }
 
-  modifier isMigration(string contractName, string from, string to) {
-    require(migrated[contractName][from] && !migrated[contractName][to]);
+  modifier isMigration(string contractName, string requiredMigrationId, string newMigrationId) {
+    require(isMigrated(contractName, requiredMigrationId) && !isMigrated(contractName, newMigrationId));
     _;
-    emit Migrated(contractName, to);
-    migrated[contractName][to] = true;
+    emit Migrated(contractName, newMigrationId);
+    migrated[contractName][newMigrationId] = true;
   }
 
-  function isMigrated(string contractName, string version) public view returns(bool) {
-    return migrated[contractName][version];
+  function isMigrated(string contractName, string migrationId) public view returns(bool) {
+    return migrated[contractName][migrationId];
   }
 }

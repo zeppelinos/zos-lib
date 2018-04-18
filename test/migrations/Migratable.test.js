@@ -37,8 +37,8 @@ contract('Migratable', function ([_, owner, registrar]) {
         .filter(log => log.event === 'Migrated');
   };
 
-  const assertMigrationEvent = (logs, contractName, version) => {
-    assert.deepInclude(logs.map(log => log.args), { contractName, version });
+  const assertMigrationEvent = (logs, contractName, migrationId) => {
+    assert.deepInclude(logs.map(log => log.args), { contractName, migrationId });
   };
 
   const upgradeToAndCall = (target, implementation, method, args, values, opts) => {
@@ -77,20 +77,20 @@ contract('Migratable', function ([_, owner, registrar]) {
     it('should fire logs for all migrations', async function () {
       const logs = getMigrationLogs(this.tx);
       assert.equal(logs.length, 4);
-      assertMigrationEvent(logs, "Child", "V1");
-      assertMigrationEvent(logs, "Mother", "V1");
-      assertMigrationEvent(logs, "Father",  "V1");
-      assertMigrationEvent(logs, "Gramps", "V1");
+      assertMigrationEvent(logs, "Child", "migration_1");
+      assertMigrationEvent(logs, "Mother", "migration_1");
+      assertMigrationEvent(logs, "Father",  "migration_1");
+      assertMigrationEvent(logs, "Gramps", "migration_1");
     });
 
     it('should track migration for child contract', async function () {
-      assert.isTrue((await this.contract.isMigrated("Child", "V1")));
+      assert.isTrue((await this.contract.isMigrated("Child", "migration_1")));
     });
 
     it('should track migration for ancestor contracts', async function () {
-      assert.isTrue((await this.contract.isMigrated("Father", "V1")));
-      assert.isTrue((await this.contract.isMigrated("Mother", "V1")));
-      assert.isTrue((await this.contract.isMigrated("Gramps", "V1")));
+      assert.isTrue((await this.contract.isMigrated("Father", "migration_1")));
+      assert.isTrue((await this.contract.isMigrated("Mother", "migration_1")));
+      assert.isTrue((await this.contract.isMigrated("Gramps", "migration_1")));
     });
 
     it('should not allow initialization to be re-run', async function () {
@@ -124,11 +124,11 @@ contract('Migratable', function ([_, owner, registrar]) {
       it('should fire logs for all migrations', async function () {
         const logs = getMigrationLogs(this.tx);
         assert.equal(logs.length, 1);
-        assertMigrationEvent(logs, "Child", "V2");
+        assertMigrationEvent(logs, "Child", "migration_2");
       });
   
       it('should track migration for child contract', async function () {
-        assert.isTrue((await this.contract.isMigrated("Child", "V2")));
+        assert.isTrue((await this.contract.isMigrated("Child", "migration_2")));
       });
 
       it('should not allow to re-run migration', async function () {
@@ -165,13 +165,13 @@ contract('Migratable', function ([_, owner, registrar]) {
       it('should fire logs for all migrations', async function () {
         const logs = getMigrationLogs(this.tx);
         assert.equal(logs.length, 2);
-        assertMigrationEvent(logs, "Child", "V3");
-        assertMigrationEvent(logs, "Mother", "V2");
+        assertMigrationEvent(logs, "Child", "migration_3");
+        assertMigrationEvent(logs, "Mother", "migration_2");
       });
   
       it('should track migration for all contracts', async function () {
-        assert.isTrue((await this.contract.isMigrated("Child", "V3")));
-        assert.isTrue((await this.contract.isMigrated("Mother", "V2")));
+        assert.isTrue((await this.contract.isMigrated("Child", "migration_3")));
+        assert.isTrue((await this.contract.isMigrated("Mother", "migration_2")));
       });
 
       it('should not allow to re-run migration', async function () {
@@ -211,15 +211,15 @@ contract('Migratable', function ([_, owner, registrar]) {
       it('should fire logs for all migrations', async function () {
         const logs = getMigrationLogs(this.tx);
         assert.equal(logs.length, 3);
-        assertMigrationEvent(logs, "Child", "V4");
-        assertMigrationEvent(logs, "Gramps", "V2");
-        assertMigrationEvent(logs, "Father", "V2");
+        assertMigrationEvent(logs, "Child", "migration_4");
+        assertMigrationEvent(logs, "Gramps", "migration_2");
+        assertMigrationEvent(logs, "Father", "migration_2");
       });
   
       it('should track migration for all contracts', async function () {
-        assert.isTrue((await this.contract.isMigrated("Child", "V3")));
-        assert.isTrue((await this.contract.isMigrated("Gramps", "V2")));
-        assert.isTrue((await this.contract.isMigrated("Father", "V2")));
+        assert.isTrue((await this.contract.isMigrated("Child", "migration_3")));
+        assert.isTrue((await this.contract.isMigrated("Gramps", "migration_2")));
+        assert.isTrue((await this.contract.isMigrated("Father", "migration_2")));
       });
 
       it('should not allow to re-run migration', async function () {
@@ -261,11 +261,11 @@ contract('Migratable', function ([_, owner, registrar]) {
       it('should fire logs for all migrations', async function () {
         const logs = getMigrationLogs(this.tx);
         assert.equal(logs.length, 1);
-        assertMigrationEvent(logs, "Child", "V5");
+        assertMigrationEvent(logs, "Child", "migration_5");
       });
   
       it('should track migration for all contracts', async function () {
-        assert.isTrue((await this.contract.isMigrated("Child", "V5")));
+        assert.isTrue((await this.contract.isMigrated("Child", "migration_5")));
       });
 
       it('should not allow to re-run migration', async function () {
@@ -291,16 +291,16 @@ contract('Migratable', function ([_, owner, registrar]) {
       it('should fire logs for all migrations', async function () {
         const logs = getMigrationLogs(this.tx);
         assert.equal(logs.length, 4);
-        assertMigrationEvent(logs, "Child", "V4");
-        assertMigrationEvent(logs, "Child", "V5");
-        assertMigrationEvent(logs, "Gramps", "V2");
-        assertMigrationEvent(logs, "Father", "V2");
+        assertMigrationEvent(logs, "Child", "migration_4");
+        assertMigrationEvent(logs, "Child", "migration_5");
+        assertMigrationEvent(logs, "Gramps", "migration_2");
+        assertMigrationEvent(logs, "Father", "migration_2");
       });
   
       it('should track migration for all contracts', async function () {
-        assert.isTrue((await this.contract.isMigrated("Child", "V5")));
-        assert.isTrue((await this.contract.isMigrated("Gramps", "V2")));
-        assert.isTrue((await this.contract.isMigrated("Father", "V2")));
+        assert.isTrue((await this.contract.isMigrated("Child", "migration_5")));
+        assert.isTrue((await this.contract.isMigrated("Gramps", "migration_2")));
+        assert.isTrue((await this.contract.isMigrated("Father", "migration_2")));
       });
 
       it('should not allow to re-run migration', async function () {
@@ -324,19 +324,19 @@ contract('Migratable', function ([_, owner, registrar]) {
       it('should fire logs for all migrations', async function () {
         const logs = getMigrationLogs(this.tx);
         assert.equal(logs.length, 7);
-        assertMigrationEvent(logs, "Child", "V5");
-        assertMigrationEvent(logs, "Gramps", "V1");
-        assertMigrationEvent(logs, "Gramps", "V2");
-        assertMigrationEvent(logs, "Father", "V1");
-        assertMigrationEvent(logs, "Father", "V2");
-        assertMigrationEvent(logs, "Mother", "V1");
-        assertMigrationEvent(logs, "Mother", "V2");
+        assertMigrationEvent(logs, "Child", "migration_5");
+        assertMigrationEvent(logs, "Gramps", "migration_1");
+        assertMigrationEvent(logs, "Gramps", "migration_2");
+        assertMigrationEvent(logs, "Father", "migration_1");
+        assertMigrationEvent(logs, "Father", "migration_2");
+        assertMigrationEvent(logs, "Mother", "migration_1");
+        assertMigrationEvent(logs, "Mother", "migration_2");
       });
   
       it('should track migration for all contracts', async function () {
-        assert.isTrue((await this.contract.isMigrated("Child", "V5")));
-        assert.isTrue((await this.contract.isMigrated("Gramps", "V2")));
-        assert.isTrue((await this.contract.isMigrated("Father", "V2")));
+        assert.isTrue((await this.contract.isMigrated("Child", "migration_5")));
+        assert.isTrue((await this.contract.isMigrated("Gramps", "migration_2")));
+        assert.isTrue((await this.contract.isMigrated("Father", "migration_2")));
       });
     });
   });
