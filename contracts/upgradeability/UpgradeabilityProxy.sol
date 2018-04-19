@@ -1,6 +1,7 @@
 pragma solidity ^0.4.21;
 
 import './Proxy.sol';
+import 'zeppelin-solidity/contracts/AddressUtils.sol';
 
 /**
  * @title UpgradeabilityProxy
@@ -48,7 +49,7 @@ contract UpgradeabilityProxy is Proxy {
    * @param newImplementation representing the address of the new implementation to be set
    */
   function _upgradeTo(address newImplementation) internal {
-    require(newImplementation != address(0));
+    require(AddressUtils.isContract(newImplementation));
     address currentImplementation = implementation();
     require(currentImplementation != newImplementation);
     setImplementation(newImplementation);
