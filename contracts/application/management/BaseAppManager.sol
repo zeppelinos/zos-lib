@@ -24,7 +24,7 @@ contract BaseAppManager is Ownable {
   }
 
   /**
-   * @dev Prototype of function for fetching the manager's contract provider
+   * @dev Abstract function for fetching the manager's contract provider
    * @return The manager's contract provider
    */
   function getProvider() internal view returns (ContractProvider);
@@ -49,11 +49,11 @@ contract BaseAppManager is Ownable {
   }
 
   /**
-   * @dev Creates a new proxy for the given contract and forwards it the function call packed in data
+   * @dev Creates a new proxy for the given contract and forwards a function call to it
    * @dev Useful for initializing the proxied contract
    * @param contractName Name of the contract for which a proxy is desired
-   * @param data Data to be sent as msg.data in the forwarded function call to the proxy, packing the methodId and parameters
-   * @return Address of the new proxy
+   * @param data Data to be sent as msg.data in the low level call. It should include the signature of the function to be called in the implementation together with its parameters, as described in https://solidity.readthedocs.io/en/develop/abi-spec.html#function-selector-and-argument-encoding.
+   @return Address of the new proxy
    */
    function createAndCall(string contractName, bytes data) payable public returns (OwnedUpgradeabilityProxy) {
     address implementation = getImplementationOrRevert(contractName);
@@ -74,7 +74,7 @@ contract BaseAppManager is Ownable {
    * @dev Upgrades a proxy to a new implementation of a contract and forwards it the function call packed in data
    * @param proxy Proxy to be upgraded
    * @param contractName Name of the contract with a new implmentation
-   * @param data Data to be sent as msg.data in the forwarded function call to the proxy, packing the methodId and parameters
+   * @param data Data to be sent as msg.data in the low level call. It should include the signature of the function to be called in the implementation together with its parameters, as described in https://solidity.readthedocs.io/en/develop/abi-spec.html#function-selector-and-argument-encoding.
    */
   function upgradeToAndCall(OwnedUpgradeabilityProxy proxy, string contractName, bytes data) payable public onlyOwner {
     address implementation = getImplementationOrRevert(contractName);
