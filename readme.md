@@ -19,10 +19,15 @@ npm i zos-upgradeability
 ```
 
 Next, learn how to:
-- [Develop and deploy a single smart contract which can be upgraded (for bugfixing or adding new features).](#single)
+- [Develop and deploy a single smart contract which can be upgraded](#single) (for bugfixing or adding new features).
 - [Develop and operate a complex app with multiple upgradeable smart contracts which is connected to the zOS Kernel standard libraries.](#complex)
 - [Develop a zOS Kernel standard library release.](#kernel)
 
 ## <a name="single"></a> Develop and deploy a single upgradeable smart contract
+
+To work with a single upgradeable smart contract, you just need to deal with a simple upgradeability proxy. This is a special contract that will hold the storage of your upgradeable contract and redirect function calls to an `implementation` contract, which you can change (thus making it upgradeable). To learn more about how proxies work under the hood, [read this post on our blog](https://blog.zeppelinos.org/proxy-patterns/).
+
+
+
 ## <a name="complex"></a> Develop and operate a complex app with multiple upgradeable smart contracts and connect it to the zOS Kernel standard libraries
 ## <a name="kernel"></a> Develop a zOS Kernel standard library release.
