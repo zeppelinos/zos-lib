@@ -57,7 +57,7 @@ contract('OwnedUpgradeabilityProxy', ([_, owner, anotherAccount]) => {
       })
     })
 
-    describe('when there is no implementation set', function () {
+    describe.skip('when there is no implementation set', function () {
       it('reverts', async function () {
         await assertRevert(this.mock.initialize(42))
       })
