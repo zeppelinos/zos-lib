@@ -25,7 +25,12 @@ Next, learn how to:
 
 ## <a name="single"></a> Develop and deploy a single upgradeable smart contract
 
-To work with a single upgradeable smart contract, you just need to deal with a simple upgradeability proxy. This is a special contract that will hold the storage of your upgradeable contract and redirect function calls to an `implementation` contract, which you can change (thus making it upgradeable). To learn more about how proxies work under the hood, [read this post on our blog](https://blog.zeppelinos.org/proxy-patterns/).
+To work with a single upgradeable smart contract, you just need to deal with a simple upgradeability proxy. This is a special contract that will hold the storage of your upgradeable contract and redirect function calls to an `implementation` contract, which you can change (thus making it upgradeable). To learn more about how proxies work under the hood, [read this post on our blog](https://blog.zeppelinos.org/proxy-patterns/). To simply use them, do the following: 
+
+```js
+# 1. write the first implementation of your contract
+# 2. deploy your first implementation contract
+```
 
 
 
