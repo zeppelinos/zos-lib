@@ -4,7 +4,8 @@
   "description": "Example of using the upgradeability-lib's AppManager",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "rm -rf build && npx truffle compile",
+    "start": "npm run compile && npx truffle exec index.js"
   },
   "keywords": [
     "zos",
@@ -19,7 +20,5 @@
     "babel-preset-stage-3": "^6.24.1",
     "babel-register": "^6.26.0",
     "truffle": "^4.1.5",
-    "zos": "git://github.com/zeppelinos/cli.git#master",
-    "zeppelin-zos": "file:zeppelin-zos-1.9.0-beta.tgz"
   }
 }
