@@ -10,6 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "truffle": "^4.1.7",
-    "zos-lib": "0.0.3"
+    "zos-lib": "0.0.4"
   }
 }
