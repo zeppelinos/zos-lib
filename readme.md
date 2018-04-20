@@ -101,7 +101,7 @@ console.log(await myContract.y()); // 1337
 
 Wohoo! We've upgraded our contract's behavior while preserving it's storage.
 
-For a fully working project with this example, see the [`examples/single`]() folder.
+For a fully working project with this example, see the [`examples/single`](https://github.com/zeppelinos/zos-lib/tree/master/examples/single) folder.
 
 ## <a name="complex"></a> Develop and operate a complex upgradeable app
 Most real-world applications require more than a single smart contract. Here's how to build a complex upgradeable app with multiple smart contracts and connect it to the zOS Kernel standard libraries.
