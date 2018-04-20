@@ -5,7 +5,7 @@
 
 :warning: **Under heavy development: do not use in production** :warning: 
 
-`upgradeability-lib` is a library for writing upgradeable smart contracts on Ethereum. It can be used to create an upgradeable on-chain distributed application and is also used inside [the zOS Kernel](https://github.com/zeppelinos/kernel).
+`zos-lib` is a library for writing upgradeable smart contracts on Ethereum. It can be used to create an upgradeable on-chain distributed application and is also used inside [the zOS Kernel](https://github.com/zeppelinos/kernel).
 
 Use this library if you want to programmatically develop, deploy or operate an upgradeable smart contract system. 
 
@@ -13,9 +13,9 @@ If you want a CLI-aided development experience, see [the zOS CLI](https://github
 
 # Getting Started
 
-To install `upgradeability-lib` simply go to your project's root directory and run:
+To install `zos-lib` simply go to your project's root directory and run:
 ```sh
-npm i zos-upgradeability
+npm i zos-lib
 ```
 
 Next, learn how to:
