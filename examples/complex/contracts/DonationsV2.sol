@@ -1,15 +1,15 @@
 pragma solidity ^0.4.21;
 
-import "./Donations.sol";
-import "zeppelin-zos/contracts/token/ERC721/ERC721Token.sol";
+import "./DonationsV1.sol";
+/* import "zeppelin-zos/contracts/token/ERC721/ERC721Token.sol"; */
 
-contract DonationsWithTokens is Donations {
+contract DonationsV2 is DonationsV1 {
 
   // Keeps track of the highest donation.
   uint256 public highestDonation;
 
   // ERC721 non-fungible tokens to be emitted on donations.
-  ERC721Token public token;
+  /* ERC721Token public token; */
   uint256 public numEmittedTokens;
 
   function donate() payable public {
@@ -19,7 +19,7 @@ contract DonationsWithTokens is Donations {
     if(msg.value > highestDonation) {
 
       // Emit a token.
-      token.mint(msg.sender, numEmittedTokens);
+      /* token.mint(msg.sender, numEmittedTokens); */
       numEmittedTokens++;
 
       highestDonation = msg.value;

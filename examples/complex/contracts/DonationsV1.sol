@@ -3,8 +3,11 @@ pragma solidity ^0.4.21;
 import "zeppelin-zos/contracts/ownership/Ownable.sol";
 import "zeppelin-zos/contracts/math/SafeMath.sol";
 
-contract Donations is Ownable {
+contract DonationsV1 is Ownable {
   using SafeMath for uint256;
+
+  // TODO: remove after AppManager.createProxy's initArgs bug is fixed
+  function initialize() public {}
 
   // Keeps a mapping of total donor balances.
   mapping(address => uint256) public donorBalances;
