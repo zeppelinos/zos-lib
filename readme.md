@@ -20,7 +20,7 @@ npm i zos-lib
 
 Next, learn how to:
 - [Develop and deploy a single smart contract which can be upgraded](#single) (for bugfixing or adding new features).
-- [Develop and operate a complex app with multiple upgradeable smart contracts which is connected to the zOS Kernel standard libraries.](#complex)
+- [Develop and operate a complex upgradeable app](#complex) with multiple smart contracts which are connected to the zOS Kernel upgradeable standard libraries.
 - [Develop a zOS Kernel standard library release.](#kernel)
 
 ## <a name="single"></a> Develop and deploy a single upgradeable smart contract
