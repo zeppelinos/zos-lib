@@ -24,15 +24,49 @@ Next, learn how to:
 - [Develop a zOS Kernel standard library release.](#kernel)
 
 ## <a name="single"></a> Develop and deploy a single upgradeable smart contract
+Note: This shows a low-level manual method of developing a single upgradeable smart contract. You probably want to use [the higher-level CLI guide](https://github.com/zeppelinos/zos-cli/blob/master/README.md).
 
 To work with a single upgradeable smart contract, you just need to deal with a simple upgradeability proxy. This is a special contract that will hold the storage of your upgradeable contract and redirect function calls to an `implementation` contract, which you can change (thus making it upgradeable). To learn more about how proxies work under the hood, [read this post on our blog](https://blog.zeppelinos.org/proxy-patterns/). To simply use them, do the following: 
 
-```js
-# 1. write the first implementation of your contract
-# 2. deploy your first implementation contract
+1. Write the first implementation of your contract. Let's assume it's located in `MyContract.sol`. Most contracts require some sort of initialization, but upgradeable contracts can't use constructors ([for reasons explained in this blog post](https://blog.zeppelinos.org/proxy-patterns/)), so we need to use the `Initializable` pattern provided in `zos-lib`:
+
+```sol
+import "zos-lib/contracts/migrations/Initializable.sol";
+
+contract MyContract is Initializable {
+  bool internal initialized;
+
+  uint256 public x;
+  
+  function initialize(uint256 _x) public {
+    require(!initialized);
+    x = _x;
+    initialized = true;
+  }
+}
 ```
 
+2. Deploy your first implementation contract:
+```js
+const implementation_v0 = await MyContract.new();
+```
+3. Now we need to deploy the proxy contract that will manage our contract's upgradeability. We pass the implementation address in the constructor, to set the first version of the behavior.
+
+```js
+const proxy = await OwnedUpgradeabilityProxy.new(implementation_v0.address);
+```
+
+4. Next, we call initialize on the proxy, to initialize the storage variables. Note that we wrap the proxy in a `MyContract` interface, because all calls will be delegated to the behavior.
+```js
 
 
-## <a name="complex"></a> Develop and operate a complex app with multiple upgradeable smart contracts and connect it to the zOS Kernel standard libraries
+```
+
+For a fully working project with this example, see the [`examples/single`]() folder.
+
+## <a name="complex"></a> Develop and operate a complex upgradeable app
+Most real-world applications require more than a single smart contract. Here's how to build a complex upgradeable app with multiple smart contracts and connect it to the zOS Kernel standard libraries.
+
+
+
 ## <a name="kernel"></a> Develop a zOS Kernel standard library release.
