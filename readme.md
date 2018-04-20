@@ -58,9 +58,48 @@ const proxy = await OwnedUpgradeabilityProxy.new(implementation_v0.address);
 
 4. Next, we call initialize on the proxy, to initialize the storage variables. Note that we wrap the proxy in a `MyContract` interface, because all calls will be delegated to the behavior.
 ```js
+let myContract = await MyContract.at(proxy.address);
+const x0 = 42;
+await myContract.initialize(x0);
+console.log(await myContract.x()); // 42
+```
 
+5. We now want to add a function to our contract, so we edit the MyContract.sol file and add it: 
+```sol
+import "zos-lib/contracts/migrations/Initializable.sol";
+
+contract MyContract is Initializable {
+  bool internal initialized;
+
+  uint256 public x;
+  
+  function initialize(uint256 _x) public {
+    require(!initialized);
+    x = _x;
+    initialized = true;
+  }
+
+  function y() public pure returns (uint256) {
+    return 1337;  
+  }
+
+}
+```
+
+Note that when we update our contract's code, we can't change its pre-existing storage structure. This means we can't remove any previously existing contract variable. We can, however, remove functions we don't want to use anymore (in the code shown, all functions were preserved).
+
+6. Next, we deploy the new implementation contract, and upgrade our proxy to it:
+```js
+const implementation_v1 = await MyContract.new();
+await proxy.upgradeTo(implementation_v1.address);
+myContract = await MyContract_v1.at(proxy.address);
+
+console.log(await myContract.x()); // 42
+console.log(await myContract.y()); // 1337
 
 ```
+
+Wohoo! We've upgraded our contract's behavior while preserving it's storage.
 
 For a fully working project with this example, see the [`examples/single`]() folder.
 
