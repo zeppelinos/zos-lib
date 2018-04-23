@@ -9,7 +9,9 @@ contract('DonationsV1', (accounts) => {
   });
 });
 
-function shouldBehaveLikeDonations(ContractClass, accounts) {
+function shouldBehaveLikeDonations(ContractClass, accounts, extraBeforeEach) {
+
+  console.log('should behave like');
 
   const owner = accounts[0];
   const donor1 = accounts[1];
@@ -28,6 +30,7 @@ function shouldBehaveLikeDonations(ContractClass, accounts) {
   beforeEach(async function() {
     donations = await ContractClass.new();
     donations.initialize(owner);
+    if(extraBeforeEach) extraBeforeEach(donations);
   });
 
   describe('donate', function () {
@@ -92,3 +95,5 @@ function shouldBehaveLikeDonations(ContractClass, accounts) {
 
   });
 }
+
+module.exports = shouldBehaveLikeDonations;
