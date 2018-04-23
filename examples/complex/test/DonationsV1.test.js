@@ -69,7 +69,7 @@ function shouldBehaveLikeDonations(ContractClass, accounts) {
       it('reverts', async function() {
         await assertRevert(
           donations.withdraw(donor1, {from: donor1})
-        ); 
+        );
       });
     });
 
@@ -77,9 +77,18 @@ function shouldBehaveLikeDonations(ContractClass, accounts) {
 
   describe('getDonationBalance', function() {
 
-    // describe('when called for someone who has made a donation');
+    describe('when called for someone who has made a donation', function() {
+      it('returns the donors balance', async function() {
+        await donations.donate({from: donor1, value: web3.toWei(1, 'ether')});
+        (+web3.fromWei((await donations.getDonationBalance(donor1)).toNumber(), 'ether')).should.be.eq(1);
+      });
+    });
 
-    // describe('when called for someone who has not made a donation');
+    describe('when called for someone who has not made a donation', async function() {
+      it('returns the donors balance', async function() {
+        (+web3.fromWei((await donations.getDonationBalance(donor1)).toNumber(), 'ether')).should.be.eq(0);
+      });
+    });
 
   });
 }
