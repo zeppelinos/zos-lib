@@ -41,22 +41,33 @@ contract('DonationsV2', (accounts) => {
         this.donations.setToken(this.token.address, {from: owner})
       );
     });
+
+    it('is the token set in the donations contract', async function() {
+      (await this.donations.token()).should.be.eq(this.token.address);
+    });
+
   });
 
   describe('donate', function() {
 
-    it('has a token', async function() {
-      (await this.donations.token()).should.be.eq(this.token.address);
+    describe('when receiving a donation that is greater than zero', function() {
+
+      const donationValue = 1;
+      const donation = {from: donor1, value: web3.toWei(donationValue, 'ether')};
+
+      beforeEach(async function() {
+        await this.donations.donate(donation);
+      });
+
+      it('increments token id', async function() {
+        (await this.donations.numEmittedTokens()).toNumber().should.be.eq(donationValue);
+      });
+
+      it('mints tokens', async function() {
+        (await this.token.balanceOf(donor1)).toNumber().should.be.eq(donationValue);
+      });
+
     });
 
-    it('increments token id', async function() {
-      await this.donations.donate({from: donor1, value: web3.toWei(1, 'ether')});
-      (await this.donations.numEmittedTokens()).toNumber().should.be.eq(1);
-    });
-
-    it('mints tokens', async function() {
-      await this.donations.donate({from: donor1, value: web3.toWei(1, 'ether')});
-      (await this.token.balanceOf(donor1)).toNumber().should.be.eq(1);
-    });
   });
 });
