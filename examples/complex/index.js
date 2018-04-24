@@ -13,6 +13,10 @@ const DonationsV2 = artifacts.require('DonationsV2');
 const stdlib = "0xA739d10Cc20211B973dEE09DB8F0D75736E2D817";
 const owner = web3.eth.accounts[1];
 const contractName = "Donations";
+const tokenClass = 'MintableERC721Token';
+const tokenName = 'DonationToken';
+const tokenSymbol = 'DON';
+
 const txParams = {
   from: owner,
   gas: 2000000,
@@ -114,7 +118,12 @@ async function deployVersion2() {
 
   // Add an ERC721 token implementation to the project.
   console.log(`Creating proxy for ERC721 token, for use in ${contractName}...`);
-  const {receipt} = await this.appManager.create('MintableERC721Token', txParams);
+  const callData = encodeCall(
+    'initialize',
+    ['address', 'string', 'string'],
+    [this.proxy.address, tokenName, tokenSymbol]
+  );
+  const {receipt} = await this.appManager.createAndCall(tokenClass, callData, txParams);
   const logs = decodeLogs([receipt.logs[1]], UpgradeabilityProxyFactory, 0x0);
   const proxyAddress = logs.find(l => l.event === 'ProxyCreated').args.proxy;
   console.log(`Token proxy created at ${proxyAddress}`);

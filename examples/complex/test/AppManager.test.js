@@ -16,7 +16,7 @@ const shouldBehaveLikeDonations = require('./Donations.behavior.js');
 const shouldBehaveLikeDonationsWithTokens = require('./DonationsWithTokens.behavior.js');
 const should = require('chai').should();
 
-contractt ('AppManager', (accounts) => {
+contract('AppManager', (accounts) => {
 
   const owner = accounts[0];
   const initialVersion = '0.0.1';
