@@ -19,7 +19,7 @@ contract DonationsV2 is DonationsV1 {
     super.donate();
 
     // Emit a token.
-    /* token.mint(msg.sender, numEmittedTokens); */
+    token.mint(msg.sender, numEmittedTokens);
     numEmittedTokens++;
   }
 }

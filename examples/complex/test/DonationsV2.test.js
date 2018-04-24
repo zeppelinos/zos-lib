@@ -26,7 +26,7 @@ contract('DonationsV2', (accounts) => {
 
       // Set token on donations contract.
       donations = _donations;
-      donations.setToken(token.address, {from: owner});
+      await donations.setToken(token.address, {from: owner});
     }
 
     shouldBehaveLikeDonations(DonationsV2, accounts, setToken);
@@ -53,6 +53,10 @@ contract('DonationsV2', (accounts) => {
     });
 
     describe('donate', function() {
+
+      it('has a token', async function() {
+        (await donations.token()).should.be.eq(token.address);
+      });
 
       it('increments token id', async function() {
         await donations.donate({from: donor1, value: web3.toWei(1, 'ether')});
