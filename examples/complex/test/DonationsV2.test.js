@@ -11,7 +11,8 @@ contract('DonationsV2', (accounts) => {
   const tokenSymbol = 'DON';
 
   beforeEach(async function() {
-    this.donations = await DonationsV2.new(); await this.donations.initialize(owner);
+    this.donations = await DonationsV2.new();
+    await this.donations.initialize(owner);
     this.token = await MintableERC721Token.new();
     await this.token.initialize(this.donations.address, tokenName, tokenSymbol);
     await this.donations.setToken(this.token.address, {from: owner});
