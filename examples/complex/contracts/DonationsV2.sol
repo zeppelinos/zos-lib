@@ -22,13 +22,13 @@ contract DonationsV2 is DonationsV1 {
     super.donate();
 
     // Is this the highest donation?
-    if(msg.value > highestDonation) {
+    /* if(msg.value > highestDonation) { */
 
-      // Emit a token.
-      token.mint(msg.sender, numEmittedTokens);
-      numEmittedTokens++;
+    /*   // Emit a token. */
+    /*   token.mint(msg.sender, numEmittedTokens); */
+    /*   numEmittedTokens++; */
 
-      highestDonation = msg.value;
-    }
+    /*   highestDonation = msg.value; */
+    /* } */
   }
 }

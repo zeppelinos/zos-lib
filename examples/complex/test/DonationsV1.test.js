@@ -1,6 +1,7 @@
 const DonationsV1 = artifacts.require('DonationsV1');
 
 const assertRevert = require('./helpers/assertRevert.js');
+const getBalance = require('./helpers/getBalance.js');
 const should = require('chai').should();
 
 contract('DonationsV1', (accounts) => {
@@ -11,21 +12,11 @@ contract('DonationsV1', (accounts) => {
 
 function shouldBehaveLikeDonations(ContractClass, accounts, extraBeforeEach) {
 
-  console.log('should behave like');
-
   const owner = accounts[0];
   const donor1 = accounts[1];
+  const wallet = accounts[4];
 
   let donations;
-
-  async function getBalance(address) {
-    return new Promise(function(resolve, reject) {
-      web3.eth.getBalance(address, function(error, result) {
-        if(error) reject(error);
-        else resolve(+web3.fromWei(result.toNumber(), 'ether'));
-      });
-    });
-  }
 
   beforeEach(async function() {
     donations = await ContractClass.new();
@@ -43,7 +34,7 @@ function shouldBehaveLikeDonations(ContractClass, accounts, extraBeforeEach) {
       });
     });
 
-    describe('when the donation is greated than zero', function() {
+    describe('when the donation is greater than zero', function() {
 
       it('accepts the donation', async function() {
         await donations.donate({from: donor1, value: web3.toWei(1, 'ether')});
@@ -61,10 +52,10 @@ function shouldBehaveLikeDonations(ContractClass, accounts, extraBeforeEach) {
 
     describe('when called by the owner', function() {
       it('transfers all funds to the designated wallet', async function() {
-        const initialOwnerBalance = await getBalance(owner);
+        const initialWalletBalance = await getBalance(wallet);
         await donations.donate({from: donor1, value: web3.toWei(1, 'ether')});
-        await donations.withdraw(owner, {from: owner});
-        (await getBalance(owner)).should.be.closeTo(initialOwnerBalance + 1, 0.01); 
+        await donations.withdraw(wallet, {from: owner});
+        (await getBalance(wallet)).should.be.eqt (initialWalletBalance + 1);
       });
     });
 
