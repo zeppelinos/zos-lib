@@ -20,8 +20,8 @@ function shouldBehaveLikeDonations(ContractClass, accounts, extraBeforeEach) {
 
   beforeEach(async function() {
     donations = await ContractClass.new();
-    donations.initialize(owner);
-    if(extraBeforeEach) extraBeforeEach(donations);
+    await donations.initialize(owner);
+    if(extraBeforeEach) await extraBeforeEach(donations);
   });
 
   describe('donate', function () {
