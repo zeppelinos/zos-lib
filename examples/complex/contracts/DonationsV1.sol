@@ -21,8 +21,7 @@ contract DonationsV1 is Ownable {
   }
 
   function withdraw(address _wallet) onlyOwner {
-
     // Withdraw all donated funds.
-    _wallet.transfer(this.balance);
+    require(_wallet.transfer(this.balance));
   }
 }

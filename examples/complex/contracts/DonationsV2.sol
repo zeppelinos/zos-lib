@@ -25,7 +25,7 @@ contract DonationsV2 is DonationsV1 {
     if(msg.value > highestDonation) {
 
       // Emit a token.
-      token.mint(msg.sender, numEmittedTokens);
+      require(token.mint(msg.sender, numEmittedTokens));
       numEmittedTokens++;
 
       highestDonation = msg.value;
