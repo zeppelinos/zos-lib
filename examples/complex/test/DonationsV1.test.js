@@ -55,7 +55,7 @@ function shouldBehaveLikeDonations(ContractClass, accounts, extraBeforeEach) {
         const initialWalletBalance = await getBalance(wallet);
         await donations.donate({from: donor1, value: web3.toWei(1, 'ether')});
         await donations.withdraw(wallet, {from: owner});
-        (await getBalance(wallet)).should.be.eqt (initialWalletBalance + 1);
+        (await getBalance(wallet)).should.be.eq(initialWalletBalance + 1);
       });
     });
 
