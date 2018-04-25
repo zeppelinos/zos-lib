@@ -2,6 +2,8 @@ const decodeLogs = require('zos-lib').decodeLogs;
 const encodeCall = require('zos-lib').encodeCall;
 
 const OwnedUpgradeabilityProxy = artifacts.require('zos-lib/contracts/upgradeability/OwnedUpgradeabilityProxy.sol');
+const ContractDirectory = artifacts.require('ContractDirectory');
+const MintableERC721Token = artifacts.require('MintableERC721Token');
 const UpgradeabilityProxyFactory = artifacts.require('UpgradeabilityProxyFactory');
 const Package = artifacts.require('Package');
 const AppDirectory = artifacts.require('AppDirectory');
@@ -10,7 +12,6 @@ const AppManager = artifacts.require('PackagedAppManager');
 const DonationsV1 = artifacts.require('DonationsV1');
 const DonationsV2 = artifacts.require('DonationsV2');
 
-const stdlib = "0xA739d10Cc20211B973dEE09DB8F0D75736E2D817";
 const owner = web3.eth.accounts[1];
 const contractName = "Donations";
 const tokenClass = 'MintableERC721Token';
@@ -28,6 +29,7 @@ async function setupAppManager() {
   const initialVersion = '0.0.1';
 
   console.log("<< Setting up AppManager >>");
+  console.log('function scope owner', owner === web3.eth.accounts[1]);
 
   // Setup a proxy factory that will be in charge of creating proxy contracts
   // for all of the project's upgradeable contracts.
@@ -89,9 +91,14 @@ async function deployVersion2() {
 
   const versionName = '0.0.2';
 
+  // const stdlib = {address ;"0xA739d10Cc20211B973dEE09DB8F0D75736E2D817"};
+  this.stdlib = await ContractDirectory.new(txParams);
+  const tokenImplementation = await MintableERC721Token.new();
+  await this.stdlib.setImplementation(tokenClass, tokenImplementation.address, txParams);
+
   // Prepare a new version for the app that will hold the new implementation for the main contract.
   console.log(`Deploying new application directory...`);
-  this.directory = await AppDirectory.new(stdlib, txParams);
+  this.directory = await AppDirectory.new(this.stdlib.address, txParams);
   console.log(`Deployed application directory for new version ${versionName} at ${this.directory.address}`);
 
   // Deploy contract implementation.
@@ -126,6 +133,7 @@ async function deployVersion2() {
   const {receipt} = await this.appManager.createAndCall(tokenClass, callData, txParams);
   const logs = decodeLogs([receipt.logs[1]], UpgradeabilityProxyFactory, 0x0);
   const proxyAddress = logs.find(l => l.event === 'ProxyCreated').args.proxy;
+  this.tokenProxy = OwnedUpgradeabilityProxy.at(proxyAddress);
   console.log(`Token proxy created at ${proxyAddress}`);
 
   // Set the token in the new implementation.
@@ -140,3 +148,7 @@ module.exports = async function() {
   await deployVersion1Implementation();
   await deployVersion2();
 };
+
+module.exports.setupAppManager = setupAppManager;
+module.exports.deployVersion1Implementation = deployVersion1Implementation;
+module.exports.deployVersion2 = deployVersion2;

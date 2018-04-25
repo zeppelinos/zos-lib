@@ -1,17 +1,15 @@
 const getBalance = require('./helpers/getBalance.js');
 const assertRevert = require('./helpers/assertRevert.js');
 
-function shouldBehaveLikeDonations(accounts) {
-
-  const owner = accounts[0];
-  const donor1 = accounts[1];
-  const wallet = accounts[4];
+module.exports = function() {
 
   describe('donate', function () {
 
     describe('when the donation is zero', function() {
 
-      const donation = {from: donor1, value: web3.toWei(0, 'ether')};
+      beforeEach(function() {
+        this.donation = {from: this.donor1, value: web3.toWei(0, 'ether')};
+      });
 
       it('reverts', async function() {
         await assertRevert(
@@ -23,14 +21,16 @@ function shouldBehaveLikeDonations(accounts) {
 
     describe('when the donation is greater than zero', function() {
 
-      const donation = {from: donor1, value: web3.toWei(1, 'ether')};
+      beforeEach(function() {
+        this.donation = {from: this.donor1, value: web3.toWei(1, 'ether')};
+      });
 
       it('accepts the donation', async function() {
-        await this.donations.donate(donation);
+        await this.donations.donate(this.donation);
       });
 
       it('increases contract balance', async function() {
-        await this.donations.donate(donation);
+        await this.donations.donate(this.donation);
         (await getBalance(this.donations.address)).should.be.above(0);
       });
 
@@ -41,24 +41,28 @@ function shouldBehaveLikeDonations(accounts) {
 
     describe('when called by the owner', function() {
 
-      const caller = owner;
+      beforeEach(function() {
+        this.caller = this.owner;
+      });
 
       it('transfers all funds to the designated wallet', async function() {
-        const initialWalletBalance = await getBalance(wallet);
-        await this.donations.donate({from: donor1, value: web3.toWei(1, 'ether')});
-        await this.donations.withdraw(wallet, {from: caller});
-        (await getBalance(wallet)).should.be.eq(initialWalletBalance + 1);
+        const initialWalletBalance = await getBalance(this.wallet);
+        await this.donations.donate({from: this.donor1, value: web3.toWei(1, 'ether')});
+        await this.donations.withdraw(this.wallet, {from: this.caller});
+        (await getBalance(this.wallet)).should.be.eq(initialWalletBalance + 1);
       });
 
     });
 
     describe('when called by someone who is not the owner', function() {
 
-      const caller = donor1;
+      beforeEach(function() {
+        this.caller = this.donor1;
+      });
 
       it('reverts', async function() {
         await assertRevert(
-          this.donations.withdraw(donor1, {from: donor1})
+          this.donations.withdraw(this.donor1, {from: this.caller})
         );
       });
 
@@ -68,18 +72,19 @@ function shouldBehaveLikeDonations(accounts) {
 
   describe('getDonationBalance', function() {
 
-    const donor = donor1;
+    beforeEach(function() {
+      this.donor = this.donor1;
+    });
 
     describe('when called for someone who has made a donation', async function() {
 
-      const donation = {from: donor, value: web3.toWei(1, 'ether')};
-
       beforeEach(async function() {
-        await this.donations.donate(donation);
+        this.donation = {from: this.donor, value: web3.toWei(1, 'ether')};
+        await this.donations.donate(this.donation);
       });
 
       it('returns the donors balance', async function() {
-        (+web3.fromWei((await this.donations.getDonationBalance(donor)).toNumber(), 'ether')).should.be.eq(1);
+        (+web3.fromWei((await this.donations.getDonationBalance(this.donor)).toNumber(), 'ether')).should.be.eq(1);
       });
 
     });
@@ -87,12 +92,10 @@ function shouldBehaveLikeDonations(accounts) {
     describe('when called for someone who has not made a donation', function() {
 
       it('returns the donors balance', async function() {
-        (+web3.fromWei((await this.donations.getDonationBalance(donor)).toNumber(), 'ether')).should.be.eq(0);
+        (+web3.fromWei((await this.donations.getDonationBalance(this.donor)).toNumber(), 'ether')).should.be.eq(0);
       });
 
     });
 
   });
 }
-
-module.exports = shouldBehaveLikeDonations;

@@ -3,14 +3,9 @@ const assertRevert = require('./helpers/assertRevert.js');
 const getBalance = require('./helpers/getBalance.js');
 const should = require('chai').should();
 
-function shouldBehaveLikeDonationsWithTokens(accounts) {
+module.exports = function() {
 
-  const owner = accounts[0];
-  const donor1 = accounts[1];
-  const tokenName = 'DonationToken';
-  const tokenSymbol = 'DON';
-
-  shouldBehaveLikeDonations(accounts);
+  shouldBehaveLikeDonations();
 
   describe('token', function() {
 
@@ -19,16 +14,16 @@ function shouldBehaveLikeDonationsWithTokens(accounts) {
     });
 
     it('has the correct token name', async function() {
-      (await this.token.name()).should.be.eq(tokenName);
+      (await this.token.name()).should.be.eq(this.tokenName);
     });
 
     it('has the correct token symbol', async function() {
-      (await this.token.symbol()).should.be.eq(tokenSymbol);
+      (await this.token.symbol()).should.be.eq(this.tokenSymbol);
     });
 
     it('cannot be set a second time', async function() {
       await assertRevert(
-        this.donations.setToken(this.token.address, {from: owner})
+        this.donations.setToken(this.token.address, {from: this.owner})
       );
     });
 
@@ -42,19 +37,18 @@ function shouldBehaveLikeDonationsWithTokens(accounts) {
 
     describe('when receiving a donation that is greater than zero', function() {
 
-      const donationValue = 1;
-      const donation = {from: donor1, value: web3.toWei(donationValue, 'ether')};
-
       beforeEach(async function() {
-        await this.donations.donate(donation);
+        this.donationValue = 1;
+        this.donation = {from: this.donor1, value: web3.toWei(this.donationValue, 'ether')};
+        await this.donations.donate(this.donation);
       });
 
       it('increments token id', async function() {
-        (await this.donations.numEmittedTokens()).toNumber().should.be.eq(donationValue);
+        (await this.donations.numEmittedTokens()).toNumber().should.be.eq(this.donationValue);
       });
 
       it('mints tokens', async function() {
-        (await this.token.balanceOf(donor1)).toNumber().should.be.eq(donationValue);
+        (await this.token.balanceOf(this.donor1)).toNumber().should.be.eq(this.donationValue);
       });
 
     });
@@ -62,5 +56,3 @@ function shouldBehaveLikeDonationsWithTokens(accounts) {
   });
 
 }
-
-module.exports = shouldBehaveLikeDonationsWithTokens;

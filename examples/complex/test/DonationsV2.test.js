@@ -5,18 +5,18 @@ const shouldBehaveLikeDonationsWithTokens = require('./DonationsWithTokens.behav
 
 contract('DonationsV2', (accounts) => {
 
-  const owner = accounts[0];
-  const donor1 = accounts[1];
-  const tokenName = 'DonationToken';
-  const tokenSymbol = 'DON';
-
   beforeEach(async function() {
+    this.owner = accounts[1];
+    this.donor1 = accounts[2];
+    this.wallet = accounts[4];
+    this.tokenName = 'DonationToken';
+    this.tokenSymbol = 'DON';
     this.donations = await DonationsV2.new();
-    await this.donations.initialize(owner);
+    await this.donations.initialize(this.owner);
     this.token = await MintableERC721Token.new();
-    await this.token.initialize(this.donations.address, tokenName, tokenSymbol);
-    await this.donations.setToken(this.token.address, {from: owner});
+    await this.token.initialize(this.donations.address, this.tokenName, this.tokenSymbol);
+    await this.donations.setToken(this.token.address, {from: this.owner});
   });
 
-  shouldBehaveLikeDonationsWithTokens(accounts);
+  shouldBehaveLikeDonationsWithTokens();
 });
