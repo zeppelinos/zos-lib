@@ -274,7 +274,12 @@ What we need to do next is link our application to the zOS Kernel standard libra
 
   // Add an ERC721 token implementation to the project.
   console.log(`Creating proxy for ERC721 token, for use in ${contractName}...`);
-  const {receipt} = await this.appManager.create('MintableERC721Token', txParams);
+  const callData = encodeCall(
+    'initialize',
+    ['address', 'string', 'string'],
+    [this.proxy.address, tokenName, tokenSymbol]
+  );
+  const {receipt} = await this.appManager.createAndCall(tokenClass, callData, txParams);
   const logs = decodeLogs([receipt.logs[1]], UpgradeabilityProxyFactory, 0x0);
   const proxyAddress = logs.find(l => l.event === 'ProxyCreated').args.proxy;
   console.log(`Token proxy created at ${proxyAddress}`);
