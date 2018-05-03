@@ -36,6 +36,7 @@
     "web3": "^0.18.4"
   },
   "dependencies": {
+    "fs": "0.0.1-security",
     "zeppelin-solidity": "^1.8.0"
   }
 }
