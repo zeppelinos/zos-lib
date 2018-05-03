@@ -3,12 +3,18 @@
   "version": "0.1.5",
   "description": "zeppelin_os library",
   "scripts": {
+    "prepack": "truffle compile && babel src --out-dir lib",
     "test": "scripts/test.sh"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/zeppelinos/zos-lib.git"
   },
+  "files": [
+    "lib",
+    "build",
+    "contracts"
+  ],
   "keywords": [
     "zeppelin_os",
     "zeppelin",
@@ -21,7 +27,7 @@
     "evm"
   ],
   "author": "Manuel Araoz <manuel@zeppelinos.org>",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/zeppelinos/zos-lib/issues"
@@ -41,12 +47,12 @@
     "ethereumjs-abi": "^0.6.5",
     "solidity-coverage": "^0.4.15",
     "truffle": "^4.1.5",
-    "truffle-contract": "^3.0.5",
-    "truffle-provisioner": "^0.1.0",
     "web3": "^0.18.4"
   },
   "dependencies": {
     "fs": "0.0.1-security",
+    "truffle-contract": "^3.0.5",
+    "truffle-provisioner": "^0.1.0",
     "zeppelin-solidity": "^1.8.0"
   }
 }
