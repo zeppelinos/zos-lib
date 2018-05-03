@@ -12,6 +12,7 @@
   },
   "files": [
     "lib",
+    "test",
     "build",
     "contracts"
   ],
