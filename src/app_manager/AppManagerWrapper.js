@@ -1,7 +1,7 @@
 import Logger from '../utils/Logger'
+import decodeLogs from '../helpers/decodeLogs'
+import encodeCall from '../helpers/encodeCall'
 import ContractsProvider from '../utils/ContractsProvider'
-import decodeLogs from '../herlpers/decodeLogs'
-import encodeCall from '../herlpers/encodeCall'
 
 const log = new Logger('AppManager')
 
