@@ -33,6 +33,8 @@
     "ethereumjs-abi": "^0.6.5",
     "solidity-coverage": "^0.4.15",
     "truffle": "^4.1.5",
+    "truffle-contract": "^3.0.5",
+    "truffle-provisioner": "^0.1.0",
     "web3": "^0.18.4"
   },
   "dependencies": {
