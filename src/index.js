@@ -1,5 +1,3 @@
-'use strict';
-
 const zos = module.exports;
 
 // module information
