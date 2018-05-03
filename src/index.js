@@ -8,6 +8,7 @@ import assertRevert from './helpers/assertRevert'
 
 // utils
 import Logger from './utils/Logger'
+import FileSystem from './utils/FileSystem'
 import ContractsProvider from './utils/ContractsProvider'
 
 // app management
@@ -26,6 +27,7 @@ export {
   encodeCall,
   assertRevert,
   Logger,
+  FileSystem,
   ContractsProvider,
   AppManagerWrapper,
   AppManagerDeployer,

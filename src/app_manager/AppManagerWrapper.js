@@ -46,7 +46,7 @@ export default class AppManagerWrapper {
 
   async newVersion(versionName, stdlibAddress = 0) {
     log.info(`Adding version ${versionName}...`)
-    const AppDirectory = ContractsProvider.getByName('AppDirectory')
+    const AppDirectory = ContractsProvider.getFromLib('AppDirectory')
     const directory = await AppDirectory.new(stdlibAddress, this.txParams)
     log.info(` App directory: ${directory.address}`)
     await this.package.addVersion(versionName, directory.address, this.txParams)
@@ -64,7 +64,7 @@ export default class AppManagerWrapper {
       : await this._createProxyAndCall(contractClass, contractName, initMethodName, initArgs)
 
     log.info(` TX receipt received: ${receipt.transactionHash}`)
-    const UpgradeabilityProxyFactory = ContractsProvider.getByName('UpgradeabilityProxyFactory')
+    const UpgradeabilityProxyFactory = ContractsProvider.getFromLib('UpgradeabilityProxyFactory')
     const logs = decodeLogs(receipt.logs, UpgradeabilityProxyFactory)
     const address = logs.find(l => l.event === 'ProxyCreated').args.proxy
     log.info(` ${contractName} proxy: ${address}`)

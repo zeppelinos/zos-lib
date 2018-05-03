@@ -9,7 +9,7 @@ export default {
   },
 
   async _createPackage() {
-    const Package = ContractsProvider.getByName('Package')
+    const Package = ContractsProvider.getFromLib('Package')
     this.package = await Package.new(this.txParams)
   }
 }

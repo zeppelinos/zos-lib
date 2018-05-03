@@ -19,13 +19,13 @@ export default class DistributionWrapper {
 
   async getRelease(version) {
     const releaseAddress = await this.package.getVersion(version)
-    const Release = ContractsProvider.release()
+    const Release = ContractsProvider.getFromKernel('Release')
     return new Release(releaseAddress)
   }
 
   async newVersion(version) {
     log.info('Adding new version...')
-    const Release = ContractsProvider.release()
+    const Release = ContractsProvider.getFromKernel('Release')
     const release = await Release.new(this.txParams)
     await this.package.addVersion(version, release.address, this.txParams)
     log.info(' Added version:', version)

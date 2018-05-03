@@ -21,28 +21,28 @@ export default {
 
   async createAppManager(version) {
     log.info('Deploying new PackagedAppManager...')
-    const PackagedAppManager = ContractsProvider.getByName('PackagedAppManager')
+    const PackagedAppManager = ContractsProvider.getFromLib('PackagedAppManager')
     this.packagedAppManager = await PackagedAppManager.new(this.package.address, version, this.factory.address, this.txParams)
     log.info(`Deployed PackagedAppManager ${this.packagedAppManager.address}`)
   },
 
   async createFactory() {
     log.info('Deploying new UpgradeabilityProxyFactory...')
-    const UpgradeabilityProxyFactory = ContractsProvider.getByName('UpgradeabilityProxyFactory')
+    const UpgradeabilityProxyFactory = ContractsProvider.getFromLib('UpgradeabilityProxyFactory')
     this.factory = await UpgradeabilityProxyFactory.new(this.txParams)
     log.info(`Deployed UpgradeabilityProxyFactory ${this.factory.address}`)
   },
 
   async createPackage() {
     log.info('Deploying new Package...')
-    const Package = ContractsProvider.getByName('Package')
+    const Package = ContractsProvider.getFromLib('Package')
     this.package = await Package.new(this.txParams)
     log.info(`Deployed Package ${this.package.address}`)
   },
 
   async createAppDirectory(stdlibAddress) {
     log.info('Deploying new AppDirectory...')
-    const AppDirectory = ContractsProvider.getByName('AppDirectory')
+    const AppDirectory = ContractsProvider.getFromLib('AppDirectory')
     this.appDirectory = await AppDirectory.new(stdlibAddress, this.txParams)
     log.info(`Deployed AppDirectory ${this.appDirectory.address}`)
   },

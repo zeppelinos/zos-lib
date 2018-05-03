@@ -2,6 +2,11 @@ import truffleContract from 'truffle-contract'
 import truffleProvision from 'truffle-provisioner'
 
 export default {
+  getFromLib(contractName) {
+    // this function should be overwritten when used outside lib
+    return this.getByName(contractName)
+  },
+
   getFromKernel(contractName) {
     throw 'getFromKernel function must be implemented'
   },
