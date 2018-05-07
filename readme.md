@@ -140,6 +140,7 @@ We want to use `zos-lib` to deploy this contract with upgradeability capabilitie
 The first step to do so is to create and configure the `AppManager` contract. This contract will live in the blockchain and manage the different versions of our smart contract code and upgradeability proxies. It's the single entry point to manage our application's contract's upgradeability and instances. Let's set it up:
 
 ```js
+  // On-chain, single entry point of the entire application.
   log("<< Setting up AppManager >>")
   const initialVersion = '0.0.1'
   const appManager = AppManagerDeployer.call(initialVersion, txParams)
@@ -147,6 +148,7 @@ The first step to do so is to create and configure the `AppManager` contract. Th
 
 Next, we need to deploy the first version of the app contracts. To do so, we register the implementation of our `DonationsV1` in the `AppManager` and request it to create a new upgradeable proxy for it. Let's do it:
 ```js
+  // Register the first implementation of "Basil", and request a proxy for it.
   log("\n<< Deploying version 1 >>")
   const DonationsV1 = ContractsProvider.getByName('DonationsV1')
   await appManager.setImplementation(DonationsV1, contractName);
@@ -195,7 +197,17 @@ contract DonationsV2 is DonationsV1 {
 What we need to do next is link our application to the zOS Kernel standard library release containing that mintable ERC721 implementation, and set it to our upgradeable contract. To do so, we create a new version of our application in the `AppManager`, register a new `AppDirectory` containing the new version of our contract implementation, and then set the standard library version of ERC721 to our upgradeable contract. Let's see how:
 
 ```js
-  // Add an ERC721 token implementation to the project.
+  // Create a new version of the app, liked to the zeppelin_os standard library.
+  // Register a new implementation for "Basil" and upgrade it's proxy to use the new implementation.
+  log("\n<< Deploying version 2 >>")
+  const secondVersion = '0.0.2'
+  await appManager.newVersion(secondVersion, stdlib)
+  const DonationsV2 = ContractsProvider.getByName('DonationsV2')
+  await appManager.setImplementation(DonationsV2, contractName);
+  const donations = await appManager.upgradeProxy(DonationsV1, contractName)
+
+  // Add an ERC721 token implementation to the project, request a proxy for it,
+  // and set the token on "Basil".
   log(`Creating ERC721 token proxy to use in ${contractName}...`)
   const {receipt} = await this.appManager.create('MintableERC721Token', txParams)
   const UpgradeabilityProxyFactory = ContractsProvider.getByName('UpgradeabilityProxyFactory')
