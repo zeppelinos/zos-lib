@@ -1,4 +1,8 @@
+require('babel-register')
+require('babel-polyfill')
+
 global.artifacts = artifacts;
+global.ContractsProvider = require('../../src/utils/ContractsProvider').default;
 
 const MintableERC721Token = artifacts.require('MintableERC721Token');
 const { decodeLogs, Logger, AppManagerDeployer, ContractsProvider } = require('zos-lib')
