@@ -21,6 +21,7 @@ npm i zos-lib
 Next, learn how to:
 - [Develop and deploy a single smart contract which can be upgraded](#single) (for bugfixing or adding new features).
 - [Develop and operate a complex upgradeable app](#complex) with multiple smart contracts which are connected to the zOS Kernel upgradeable standard libraries.
+- [Develop a zOS Kernel standard library release.](https://github.com/zeppelinos/kernel#developing-kernel-standard-libraries)
 
 ## <a name="single"></a> Develop and deploy a single upgradeable smart contract
 Note: This shows a low-level manual method of developing a single upgradeable smart contract. You probably want to use [the higher-level CLI guide](https://github.com/zeppelinos/zos-cli/blob/master/README.md).
@@ -227,5 +228,3 @@ contract DonationsV2 is DonationsV1 {
 ```
 
 That's it! We now have the same contract, retaining the original balance, and storage, but with an upgraded code. The upgradeable contract is also linked to an on-chain upgradeable standard library containing an implementation of a mintable ERC721 token. State of the art!
-
-[If you want to learn how to develop new zOS kernel standard library releases, see [this guide in the kernel repo](https://github.com/zeppelinos/kernel#developing-kernel-standard-libraries).
