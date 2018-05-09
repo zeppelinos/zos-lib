@@ -14,8 +14,4 @@ contract MigratableMock is Migratable {
   function initialize(uint256 value) public payable isInitializer("InitializableMock", "0") {
     x = value;
   }
-
-  function fail() public pure {
-    require(false);
-  }
 }
