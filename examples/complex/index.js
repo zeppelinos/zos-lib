@@ -1,6 +1,3 @@
-require('babel-register')
-require('babel-polyfill')
-
 global.artifacts = artifacts;
 global.ContractsProvider = require('../../src/utils/ContractsProvider').default;
 
