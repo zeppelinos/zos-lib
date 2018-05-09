@@ -1,4 +1,4 @@
-import assertRevert from 'zos-lib/lib/helpers/assertRevert';
+import assertRevert from 'zos-lib/src/helpers/assertRevert';
 
 const getBalance = require('./helpers/getBalance.js');
 const should = require('chai').should();
@@ -10,7 +10,7 @@ module.exports = function() {
     describe('when the donation is zero', function() {
 
       beforeEach(function() {
-        this.donation = {from: this.donor1, value: web3.toWei(0, 'ether')};
+        this.donation = {from: this.donor, value: web3.toWei(0, 'ether')};
       });
 
       it('reverts', async function() {
@@ -24,7 +24,7 @@ module.exports = function() {
     describe('when the donation is greater than zero', function() {
 
       beforeEach(function() {
-        this.donation = {from: this.donor1, value: web3.toWei(1, 'ether')};
+        this.donation = {from: this.donor, value: web3.toWei(1, 'ether')};
       });
 
       it('accepts the donation', async function() {
@@ -49,7 +49,7 @@ module.exports = function() {
 
       it('transfers all funds to the designated wallet', async function() {
         const initialWalletBalance = await getBalance(this.wallet);
-        await this.donations.donate({from: this.donor1, value: web3.toWei(1, 'ether')});
+        await this.donations.donate({from: this.donor, value: web3.toWei(1, 'ether')});
         await this.donations.withdraw(this.wallet, {from: this.caller});
         (await getBalance(this.wallet)).should.be.eq(initialWalletBalance + 1);
       });
@@ -59,12 +59,12 @@ module.exports = function() {
     describe('when called by someone who is not the owner', function() {
 
       beforeEach(function() {
-        this.caller = this.donor1;
+        this.caller = this.donor;
       });
 
       it('reverts', async function() {
         await assertRevert(
-          this.donations.withdraw(this.donor1, {from: this.caller})
+          this.donations.withdraw(this.donor, {from: this.caller})
         );
       });
 
@@ -75,7 +75,7 @@ module.exports = function() {
   describe('getDonationBalance', function() {
 
     beforeEach(function() {
-      this.donor = this.donor1;
+      this.donor = this.donor;
     });
 
     describe('when called for someone who has made a donation', async function() {
@@ -86,7 +86,8 @@ module.exports = function() {
       });
 
       it('returns the donors balance', async function() {
-        (+web3.fromWei((await this.donations.getDonationBalance(this.donor)).toNumber(), 'ether')).should.be.eq(1);
+        const donation = (await this.donations.getDonationBalance(this.donor)).toNumber(); 
+        (+web3.fromWei(donation, 'ether')).should.be.eq(1);
       });
 
     });
@@ -94,7 +95,8 @@ module.exports = function() {
     describe('when called for someone who has not made a donation', function() {
 
       it('returns the donors balance', async function() {
-        (+web3.fromWei((await this.donations.getDonationBalance(this.donor)).toNumber(), 'ether')).should.be.eq(0);
+        const donation = (await this.donations.getDonationBalance(this.donor)).toNumber(); 
+        (+web3.fromWei(donation, 'ether')).should.be.eq(0);
       });
 
     });
