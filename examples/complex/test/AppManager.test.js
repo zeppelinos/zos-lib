@@ -72,7 +72,7 @@ contract('AppManager', ([_, owner, donor, wallet]) => {
     });
   });
 
-  describe.only('version 0.0.2', function() {
+  describe('version 0.0.2', function() {
 
     let tokenName = 'DonationToken';
     let tokenSymbol = 'DON';
@@ -81,7 +81,10 @@ contract('AppManager', ([_, owner, donor, wallet]) => {
       this.appManager = await deploy.setupAppManager({owner});
       this.donations = await deploy.deployVersion1(this.appManager, {owner});
       this.token = await deploy.deployVersion2(this.appManager, this.donations, {owner});
+      this.donations = DonationsV2.at(this.donations.address);
     });
+
+    // TODO: check that token owner is donations
 
     describe('implementation', function() {
       shouldBehaveLikeDonationsWithTokens(owner, donor, wallet, tokenName, tokenSymbol);

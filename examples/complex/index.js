@@ -48,7 +48,7 @@ async function deployVersion2(appManager, donations, txParams) {
   const token = await appManager.createProxy(
     MintableERC721Token, 
     tokenClass,
-    'initialize'
+    'initialize',
     [donations.address, tokenName, tokenSymbol]
   )
   log.info(`Token proxy created at ${token.address}`)

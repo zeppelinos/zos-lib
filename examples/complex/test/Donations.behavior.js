@@ -31,7 +31,7 @@ module.exports = function(owner, donor, wallet) {
         donation = {from: donor, value: web3.toWei(1, 'ether')};
       });
 
-      it.only('accepts the donation', async function() {
+      it('accepts the donation', async function() {
         await this.donations.donate(donation);
       });
 
