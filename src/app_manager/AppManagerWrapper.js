@@ -90,6 +90,7 @@ export default class AppManagerWrapper {
   }
 
   async _updateProxy(proxyAddress, contractName) {
+    console.log('>> _upgradeProxy', proxyAddress, contractName, this.txParams);
     return this.appManager.upgradeTo(proxyAddress, contractName, this.txParams)
   }
 
