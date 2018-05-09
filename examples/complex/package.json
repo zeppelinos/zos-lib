@@ -6,7 +6,7 @@
   "scripts": {
     "compile": "rm -rf build && npx truffle compile",
     "start": "npm run compile && npx truffle exec index.js --network ropsten",
-    "test": "npx truffle test"
+    "test": "npm run compile && npx truffle test"
   },
   "keywords": [
     "zos",

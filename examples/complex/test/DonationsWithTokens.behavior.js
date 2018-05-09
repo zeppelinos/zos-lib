@@ -4,9 +4,9 @@ const shouldBehaveLikeDonations = require('./Donations.behavior.js');
 const getBalance = require('./helpers/getBalance.js');
 const should = require('chai').should();
 
-module.exports = function() {
+module.exports = function(owner, donor, wallet, tokenName, tokenSymbol) {
 
-  shouldBehaveLikeDonations();
+  shouldBehaveLikeDonations(owner, donor, wallet);
 
   describe('token', function() {
 
@@ -15,16 +15,16 @@ module.exports = function() {
     });
 
     it('has the correct token name', async function() {
-      (await this.token.name()).should.be.eq(this.tokenName);
+      (await this.token.name()).should.be.eq(tokenName);
     });
 
     it('has the correct token symbol', async function() {
-      (await this.token.symbol()).should.be.eq(this.tokenSymbol);
+      (await this.token.symbol()).should.be.eq(tokenSymbol);
     });
 
     it('cannot be set a second time', async function() {
       await assertRevert(
-        this.donations.setToken(this.token.address, {from: this.owner})
+        this.donations.setToken(this.token.address, {from: owner})
       );
     });
 
@@ -38,18 +38,19 @@ module.exports = function() {
 
     describe('when receiving a donation that is greater than zero', function() {
 
+      const donationValue = 1;
+
       beforeEach(async function() {
-        this.donationValue = 1;
-        this.donation = {from: this.donor, value: web3.toWei(this.donationValue, 'ether')};
-        await this.donations.donate(this.donation);
+        const donation = {from: donor, value: web3.toWei(donationValue, 'ether')};
+        await this.donations.donate(donation);
       });
 
       it('increments token id', async function() {
-        (await this.donations.numEmittedTokens()).toNumber().should.be.eq(this.donationValue);
+        (await this.donations.numEmittedTokens()).toNumber().should.be.eq(donationValue);
       });
 
       it('mints tokens', async function() {
-        (await this.token.balanceOf(this.donor)).toNumber().should.be.eq(this.donationValue);
+        (await this.token.balanceOf(donor)).toNumber().should.be.eq(donationValue);
       });
 
     });

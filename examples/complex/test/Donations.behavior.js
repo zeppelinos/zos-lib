@@ -3,14 +3,16 @@ import assertRevert from 'zos-lib/src/helpers/assertRevert';
 const getBalance = require('./helpers/getBalance.js');
 const should = require('chai').should();
 
-module.exports = function() {
+module.exports = function(owner, donor, wallet) {
 
   describe('donate', function () {
 
     describe('when the donation is zero', function() {
 
+      let donation;
+
       beforeEach(function() {
-        this.donation = {from: this.donor, value: web3.toWei(0, 'ether')};
+        donation = {from: donor, value: web3.toWei(0, 'ether')};
       });
 
       it('reverts', async function() {
@@ -23,16 +25,18 @@ module.exports = function() {
 
     describe('when the donation is greater than zero', function() {
 
+      let donation;
+
       beforeEach(function() {
-        this.donation = {from: this.donor, value: web3.toWei(1, 'ether')};
+        donation = {from: donor, value: web3.toWei(1, 'ether')};
       });
 
-      it('accepts the donation', async function() {
-        await this.donations.donate(this.donation);
+      it.only('accepts the donation', async function() {
+        await this.donations.donate(donation);
       });
 
       it('increases contract balance', async function() {
-        await this.donations.donate(this.donation);
+        await this.donations.donate(donation);
         (await getBalance(this.donations.address)).should.be.above(0);
       });
 
@@ -43,28 +47,32 @@ module.exports = function() {
 
     describe('when called by the owner', function() {
 
+      let caller;
+
       beforeEach(function() {
-        this.caller = this.owner;
+        caller = owner;
       });
 
       it('transfers all funds to the designated wallet', async function() {
-        const initialWalletBalance = await getBalance(this.wallet);
-        await this.donations.donate({from: this.donor, value: web3.toWei(1, 'ether')});
-        await this.donations.withdraw(this.wallet, {from: this.caller});
-        (await getBalance(this.wallet)).should.be.eq(initialWalletBalance + 1);
+        const initialWalletBalance = await getBalance(wallet);
+        await this.donations.donate({from: donor, value: web3.toWei(1, 'ether')});
+        await this.donations.withdraw(wallet, {from: caller});
+        (await getBalance(wallet)).should.be.eq(initialWalletBalance + 1);
       });
 
     });
 
     describe('when called by someone who is not the owner', function() {
 
+      let caller;
+
       beforeEach(function() {
-        this.caller = this.donor;
+        caller = donor;
       });
 
       it('reverts', async function() {
         await assertRevert(
-          this.donations.withdraw(this.donor, {from: this.caller})
+          this.donations.withdraw(donor, {from: caller})
         );
       });
 
@@ -74,19 +82,21 @@ module.exports = function() {
 
   describe('getDonationBalance', function() {
 
+    let caller;
+
     beforeEach(function() {
-      this.donor = this.donor;
+      caller = donor;
     });
 
     describe('when called for someone who has made a donation', async function() {
 
       beforeEach(async function() {
-        this.donation = {from: this.donor, value: web3.toWei(1, 'ether')};
-        await this.donations.donate(this.donation);
+        const donation = {from: caller, value: web3.toWei(1, 'ether')};
+        await this.donations.donate(donation);
       });
 
       it('returns the donors balance', async function() {
-        const donation = (await this.donations.getDonationBalance(this.donor)).toNumber(); 
+        const donation = (await this.donations.getDonationBalance(donor)).toNumber(); 
         (+web3.fromWei(donation, 'ether')).should.be.eq(1);
       });
 
@@ -95,7 +105,7 @@ module.exports = function() {
     describe('when called for someone who has not made a donation', function() {
 
       it('returns the donors balance', async function() {
-        const donation = (await this.donations.getDonationBalance(this.donor)).toNumber(); 
+        const donation = (await this.donations.getDonationBalance(donor)).toNumber(); 
         (+web3.fromWei(donation, 'ether')).should.be.eq(0);
       });
 

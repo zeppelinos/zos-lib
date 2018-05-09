@@ -17,67 +17,74 @@ const shouldBehaveLikeDonationsWithTokens = require('./DonationsWithTokens.behav
 const should = require('chai').should();
 const deploy = require('../index.js');
 
-contract.only('AppManager', (accounts) => {
+contract('AppManager', ([_, owner, donor, wallet]) => {
 
-  before(function() {
-    this.owner = accounts[1];
-    this.donor = accounts[2];
-    this.wallet = accounts[4];
-    this.initialVersion = '0.0.1';
-    this.updatedVersion = '0.0.2';
-    this.contractName = "Donations";
-    this.tokenClass = 'MintableERC721Token';
-    this.tokenName = 'DonationToken';
-    this.tokenSymbol = 'DON';
-    this.txParams = {
-      from: this.owner
-    };
-  });
+  let initialVersion = '0.0.1';
+  let updatedVersion = '0.0.2';
+  let contractName = "Donations";
+  let tokenClass = 'MintableERC721Token';
+  let tokenName = 'DonationToken';
+  let tokenSymbol = 'DON';
 
   describe('setup', function() {
 
-    beforeEach(deploy.setupAppManager);
+    beforeEach(async function() {
+      this.appManager = await deploy.setupAppManager({owner});
+    });
 
     describe('package', function() {
 
       describe('when queried for the initial version', function() {
         it('claims to have it', async function() {
-          (await this.appManager.package.hasVersion(this.initialVersion)).should.be.true;
+          (await this.appManager.package.hasVersion(initialVersion)).should.be.true;
         });
       });
 
       describe('when queried for the updated version', function() {
         it('doesnt claim to have it', async function() {
-          (await this.appManager.package.hasVersion(this.updatedVersion)).should.be.false;
+          (await this.appManager.package.hasVersion(updatedVersion)).should.be.false;
         });
       });
 
     });
 
-    describe('version 0.0.1', function() {
-      
-      beforeEach(deploy.deployVersion1);
-      
-      describe('directory', function() {
-        describe('when queried for the implementation', function() {
-          it('returns a valid address', async function() {
-            validateAddress(await this.appManager.directories[this.initialVersion].getImplementation(this.contractName)).should.be.true;
-          });
+  });
+
+  describe('version 0.0.1', function() {
+    
+    beforeEach(async function() {
+      this.appManager = await deploy.setupAppManager({owner});
+      this.donations = await deploy.deployVersion1(this.appManager, {owner});
+    });
+    
+    describe('directory', function() {
+
+      describe('when queried for the implementation', function() {
+
+        it('returns a valid address', async function() {
+          validateAddress(await this.appManager.directories[initialVersion].getImplementation(contractName)).should.be.true;
         });
       });
+    });
 
-      describe('implementation', function() {
-        shouldBehaveLikeDonations();
-      });
+    describe('implementation', function() {
+      shouldBehaveLikeDonations(owner, donor, wallet);
+    });
+  });
 
-      describe.only('version 0.0.2', function() {
+  describe.only('version 0.0.2', function() {
 
-        beforeEach(deploy.deployVersion2);
+    let tokenName = 'DonationToken';
+    let tokenSymbol = 'DON';
 
-        describe('implementation', function() {
-          shouldBehaveLikeDonationsWithTokens();
-        });
-      });
+    beforeEach(async function() {
+      this.appManager = await deploy.setupAppManager({owner});
+      this.donations = await deploy.deployVersion1(this.appManager, {owner});
+      this.token = await deploy.deployVersion2(this.appManager, this.donations, {owner});
+    });
+
+    describe('implementation', function() {
+      shouldBehaveLikeDonationsWithTokens(owner, donor, wallet, tokenName, tokenSymbol);
     });
   });
 });
