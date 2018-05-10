@@ -228,3 +228,6 @@ contract DonationsV2 is DonationsV1 {
 ```
 
 That's it! We now have the same contract, retaining the original balance, and storage, but with an upgraded code. The upgradeable contract is also linked to an on-chain upgradeable standard library containing an implementation of a mintable ERC721 token. State of the art!
+
+## Develop a zOS Kernel standard library release
+See [this guide in the zeppelinos/kernel repo](https://github.com/zeppelinos/kernel#developing-kernel-standard-libraries) to learn how to develop new zOS kernel standard library releases.
