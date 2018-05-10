@@ -4,7 +4,13 @@ import './UpgradeabilityProxy.sol';
 
 /**
  * @title OwnedUpgradeabilityProxy
- * @dev This contract combines an upgradeability proxy with basic authorization control functionalities
+ *
+ * @dev This contract combines an upgradeability proxy with an authorization
+ * @dev mechanism for administrative tasks.
+ *
+ * @dev All external functions in this contract must be guarded by the
+ * @dev onlyProxyOwner modifier. See ethereum/solidity#3864 for a Solidity
+ * @dev feature proposal that would enable this to be done automatically.
  */
 contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
   /**

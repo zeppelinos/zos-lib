@@ -5,12 +5,15 @@ import 'zeppelin-solidity/contracts/AddressUtils.sol';
 
 /**
  * @title UpgradeabilityProxy
- * @dev This contract represents a proxy where the implementation address to which it will delegate can be upgraded
+ *
+ * @dev This contract implements a proxy where the implementation address to
+ * @dev which it will delegate can be changed. Such a change is called an
+ * @dev implementation upgrade.
  */
 contract UpgradeabilityProxy is Proxy {
   /**
-   * @dev This event will be emitted every time the implementation gets upgraded
-   * @param implementation representing the address of the upgraded implementation
+   * @dev This event will be emitted every time the implementation is upgraded.
+   * @param implementation address of the new implementation
    */
   event Upgraded(address implementation);
 
@@ -19,14 +22,13 @@ contract UpgradeabilityProxy is Proxy {
 
   /**
    * @dev Constructor function
-   * @param _implementation representing the address of the initial implementation to be set
+   * @param _implementation address of the initial implementation
    */
   function UpgradeabilityProxy(address _implementation) public {
     _setImplementation(_implementation);
   }
 
   /**
-   * @dev Tells the address of the current implementation
    * @return address of the current implementation
    */
   function _implementation() internal view returns (address impl) {
@@ -38,7 +40,7 @@ contract UpgradeabilityProxy is Proxy {
   }
 
   /**
-   * @dev Sets the address of the current implementation
+   * @dev Sets the implementation address of the proxy
    * @param newImplementation address representing the new implementation to be set
    */
   function _setImplementation(address newImplementation) internal {

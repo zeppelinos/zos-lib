@@ -2,7 +2,11 @@ pragma solidity ^0.4.21;
 
 /**
  * @title Proxy
- * @dev Gives the possibility to delegate any call to a foreign implementation.
+ *
+ * @dev Provides the functionality to delegate a call to another contract.
+ *
+ * @dev Defines a fallback function that delegates all calls to the address
+ * @dev returned by the abstract _implementation() internal function.
  */
 contract Proxy {
   /**
@@ -11,12 +15,12 @@ contract Proxy {
   function _implementation() internal view returns (address);
 
   /**
-   * @dev Performs a delegatecall to the address returned by _implementation().
-   * @dev This is a low level function that doesn't return to its internal caller.
-   * @dev It will return to the external caller whatever the implementation returns.
-   * @param _target address 
+   * @dev Performs a delegatecall to target.
+   * @dev This is a low level function that doesn't return to its internal call site.
+   * @dev It will return to the external caller whatever target returns.
+   * @param target address 
    */
-  function _delegate(address _target) internal {
+  function _delegate(address target) internal {
     assembly {
       // 0x40 contains the value for the next available free memory pointer.
       let ptr := mload(0x40)
@@ -24,7 +28,7 @@ contract Proxy {
       calldatacopy(ptr, 0, calldatasize)
       // Call the target.
       // out and outsize are 0 because we don't know the size yet.
-      let result := delegatecall(gas, _target, ptr, calldatasize, 0, 0)
+      let result := delegatecall(gas, target, ptr, calldatasize, 0, 0)
       // Copy the returned data.
       returndatacopy(ptr, 0, returndatasize)
 
@@ -37,6 +41,9 @@ contract Proxy {
 
   /**
    * @dev Function that is run as the first thing in the fallback function.
+   *
+   * @dev Can be redefined in derived contracts to add functionality.
+   * @dev Redefinitions must call super._willFallback().
    */
   function _willFallback() internal {
   }
