@@ -42,7 +42,7 @@ contract UpgradeabilityProxy is Proxy {
    * @dev Sets the implementation address of the proxy
    * @param newImplementation address representing the new implementation to be set
    */
-  function _setImplementation(address newImplementation) internal {
+  function _setImplementation(address newImplementation) private {
     require(AddressUtils.isContract(newImplementation));
 
     bytes32 slot = implementationSlot;
