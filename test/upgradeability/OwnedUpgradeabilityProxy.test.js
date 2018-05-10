@@ -6,6 +6,8 @@ const MigratableMockV2 = artifacts.require('MigratableMockV2')
 const MigratableMockV3 = artifacts.require('MigratableMockV3')
 const MigratableMock = artifacts.require('MigratableMock')
 const DummyImplementation = artifacts.require('DummyImplementation')
+const ClashingImplementation = artifacts.require('ClashingImplementation')
+
 const OwnedUpgradeabilityProxy = artifacts.require('OwnedUpgradeabilityProxy')
 const UpgradeabilityProxyFactory = artifacts.require('UpgradeabilityProxyFactory')
 
@@ -301,4 +303,29 @@ contract('OwnedUpgradeabilityProxy', ([_, owner, anotherAccount]) => {
       assert.equal(proxyOwner, owner);
     })
   })
+
+  describe('transparent proxy', function () {
+    beforeEach('creating proxy', async function () {
+      this.impl = await ClashingImplementation.new();
+      this.proxy = await OwnedUpgradeabilityProxy.new(this.impl.address, { from: owner });
+
+      this.clashing = ClashingImplementation.at(this.proxy.address);
+    });
+
+    it('proxy owner cannot call delegated functions', async function () {
+      await assertRevert(this.clashing.delegatedFunction({ from: owner }));
+    });
+
+    context('when function names clash', function () {
+      it('when sender is proxy owner should run the proxy function', async function () {
+        const value = await this.proxy.proxyOwner({ from: owner });
+        assert.equal(value, owner);
+      });
+
+      it('when sender is other should delegate to implementation', async function () {
+        const value = await this.proxy.proxyOwner({ from: anotherAccount });
+        assert.equal(value, '0x0000000000000000000000000000000011111142')
+      });
+    });
+  });
 })
