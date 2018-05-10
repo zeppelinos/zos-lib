@@ -15,7 +15,7 @@ contract ContractDirectory is ContractProvider, Ownable {
    */
   event ImplementationChanged(string contractName, address implementation);
 
-  // mapping where the addresses of the implementations are stored
+  // Mapping where the addresses of the implementations are stored
   mapping (string => address) internal implementations;
   
   /**
