@@ -141,9 +141,9 @@ The first step to do so is to create and configure the `AppManager` contract. Th
 
 ```js
   // On-chain, single entry point of the entire application.
-  log("<< Setting up AppManager >>")
+  log.info("<< Setting up AppManager >>")
   const initialVersion = '0.0.1'
-  const appManager = AppManagerDeployer.call(initialVersion, txParams)
+  return await AppManagerDeployer.call(initialVersion)
 ```
 
 Next, we need to deploy the first version of the app contracts. To do so, we register the implementation of our `DonationsV1` in the `AppManager` and request it to create a new upgradeable proxy for it. Let's do it:
@@ -152,7 +152,7 @@ Next, we need to deploy the first version of the app contracts. To do so, we reg
   log.info("<< Deploying version 1 >>")
   const DonationsV1 = ContractsProvider.getByName('DonationsV1')
   await appManager.setImplementation(DonationsV1, contractName);
-  let donations = await appManager.createProxy(DonationsV1, contractName, 'initialize', [owner])
+  return await appManager.createProxy(DonationsV1, contractName, 'initialize', [owner])
 ```
 
 Now let's suppose we want to give some sort of retribution to people donating money to our donation campaign. We want to mint new ERC721 cryptocollectibles for every received donation. To do so, we'll link our application to a zOS Kernel standard library release that contains an implementation of a mintable ERC721 token. Here's the new contract code: 
@@ -164,15 +164,13 @@ import "./DonationsV1.sol";
 import "openzeppelin-zos/contracts/token/ERC721/MintableERC721Token.sol";
 
 contract DonationsV2 is DonationsV1 {
-
-  // Keeps track of the highest donation.
-  uint256 public highestDonation;
+  using SafeMath for uint256;
 
   // ERC721 non-fungible tokens to be emitted on donations.
   MintableERC721Token public token;
   uint256 public numEmittedTokens;
 
-  function setToken(MintableERC721Token _token) external onlyOwner {
+  function setToken(MintableERC721Token _token) external {
     require(_token != address(0));
     require(token == address(0));
     token = _token;
@@ -181,15 +179,9 @@ contract DonationsV2 is DonationsV1 {
   function donate() payable public {
     super.donate();
 
-    // Is this the highest donation?
-    if(msg.value > highestDonation) {
-
-      // Emit a token.
-      token.mint(msg.sender, numEmittedTokens);
-      numEmittedTokens++;
-
-      highestDonation = msg.value;
-    }
+    // Emit a token.
+    token.mint(msg.sender, numEmittedTokens);
+    numEmittedTokens = numEmittedTokens.add(1);
   }
 }
 ```
@@ -201,25 +193,26 @@ What we need to do next is link our application to the zOS Kernel standard libra
   // Register a new implementation for "Basil" and upgrade it's proxy to use the new implementation.
   log.info("<< Deploying version 2 >>")
   const secondVersion = '0.0.2'
-  await appManager.newVersion(secondVersion, stdlib_ropsten)
+  await appManager.newVersion(secondVersion, await getStdLib(txParams))
   const DonationsV2 = ContractsProvider.getByName('DonationsV2')
   await appManager.setImplementation(DonationsV2, contractName);
-  await appManager.upgradeProxy(donations.address, DonationsV1, contractName)
-  donations = DonationsV2.at(donations.address);
+  await appManager.upgradeProxy(donations.address, null, contractName)
+  donations = DonationsV2.at(donations.address)
 
   // Add an ERC721 token implementation to the project, request a proxy for it,
   // and set the token on "Basil".
   log.info(`Creating ERC721 token proxy to use in ${contractName}...`)
   const token = await appManager.createProxy(
     MintableERC721Token, 
-    'MintableERC721Token', 
-    'initialize'
-    [donations.address, 'BasilToken', 'BSL']
+    tokenClass,
+    'initialize',
+    [donations.address, tokenName, tokenSymbol]
   )
   log.info(`Token proxy created at ${token.address}`)
   log.info("Setting application's token...")
   await donations.setToken(token.address, txParams)
   log.info("Token set succesfully")
+  return token;
 ```
 
 That's it! We now have the same contract, retaining the original balance, and storage, but with an upgraded code. The upgradeable contract is also linked to an on-chain upgradeable standard library containing an implementation of a mintable ERC721 token. State of the art!
