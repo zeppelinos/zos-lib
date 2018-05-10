@@ -36,15 +36,21 @@ contract Proxy {
   }
 
   /**
-   * @dev Delegates all incoming calls to the implementation.
-   * @dev Derived contracts can add functionality
+   * @dev Function that is run as the first thing in the fallback function.
+   */
+  function _willFallback() internal {
+  }
+
+  /**
+   * @dev Extracted fallback function to enable manual triggering.
    */
   function _fallback() internal {
+    _willFallback();
     _delegate(_implementation());
   }
 
   /**
-   * @dev Implemented in _fallback so as to be overrideable.
+   * @dev Implemented in _fallback.
    */
   function () payable external {
     _fallback();

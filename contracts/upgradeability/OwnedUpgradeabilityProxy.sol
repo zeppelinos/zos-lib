@@ -18,15 +18,14 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
   bytes32 private constant proxyOwnerSlot = keccak256("org.zeppelinos.proxy.owner");
 
   /**
-   * @dev Throws if called by any account other than the owner.
+   * @dev Will run this function if the sender is the proxy owner.
+   * @dev Otherwise it will fall back to the implementation.
    */
   modifier onlyProxyOwner() {
     if (msg.sender == _proxyOwner()) {
       _;
     } else {
-      // We call super to skip the check that the sender isn't the proxyOwer.
-      // This should be optimized away by the compiler and not by us.
-      super._fallback();
+      _fallback();
     }
   }
 
@@ -106,11 +105,10 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
   }
 
   /**
-   * @dev Redefines Proxy's fallback to disallow delegation when caller is the proxy owner.
+   * @dev Only fall back when the sender is not the proxyOwner.
    */
-  function _fallback() internal {
-    require(msg.sender != proxyOwner());
-
-    super._fallback();
+  function _willFallback() internal {
+    require(msg.sender != _proxyOwner());
+    super._willFallback();
   }
 }
