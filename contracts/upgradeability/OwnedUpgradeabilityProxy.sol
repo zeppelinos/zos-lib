@@ -36,16 +36,15 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
   }
 
   /**
-   * @dev the constructor sets the original owner of the contract to the sender account.
-   * @param _implementation representing the address of the initial implementation to be set
+   * @dev The constructor assigns proxy ownership to the sender account.
+   * @param _implementation address of the initial implementation
    */
   function OwnedUpgradeabilityProxy(address _implementation) UpgradeabilityProxy(_implementation) public {
     _setUpgradeabilityOwner(msg.sender);
   }
 
   /**
-   * @dev Tells the address of the owner
-   * @return the address of the owner
+   * @return the address of the proxy owner
    */
   function proxyOwner() external view ifProxyOwner returns (address owner) {
     return _proxyOwner();
@@ -60,7 +59,7 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
 
   /**
    * @dev Allows the current owner to transfer control of the contract to a newOwner.
-   * @param newOwner The address to transfer proxy ownership to.
+   * @param newOwner the address which to transfer proxy ownership
    */
   function transferProxyOwnership(address newOwner) external ifProxyOwner {
     require(newOwner != address(0));
@@ -69,17 +68,19 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
   }
 
   /**
-   * @dev Allows the proxy owner to upgrade the current version of the proxy.
-   * @param implementation representing the address of the new implementation to be set.
+   * @dev Allows the proxy owner to upgrade the backing implementation.
+   * @param newImplementation the address of the new implementation
    */
-  function upgradeTo(address implementation) external ifProxyOwner {
-    _upgradeTo(implementation);
+  function upgradeTo(address newImplementation) external ifProxyOwner {
+    _upgradeTo(newImplementation);
   }
 
   /**
-   * @dev Allows the proxy owner to upgrade the current version of the proxy and call the new implementation
-   * to initialize whatever is needed through a low level call.
-   * @param implementation representing the address of the new implementation to be set.
+   * @dev Allows the proxy owner to upgrade the current version of the proxy
+   * @dev and call a function on the new implementation to initialize whatever
+   * @dev is needed.
+   *
+   * @param implementation the address of the new implementation to be set.
    * @param data represents the msg.data to bet sent in the low level call. This parameter may include the function
    * signature of the implementation to be called with the needed payload
    */

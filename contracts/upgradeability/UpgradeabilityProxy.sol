@@ -21,7 +21,6 @@ contract UpgradeabilityProxy is Proxy {
   bytes32 private constant implementationSlot = keccak256("org.zeppelinos.proxy.implementation");
 
   /**
-   * @dev Constructor function
    * @param _implementation address of the initial implementation
    */
   function UpgradeabilityProxy(address _implementation) public {
