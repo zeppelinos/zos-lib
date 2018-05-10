@@ -9,7 +9,7 @@ import './UpgradeabilityProxy.sol';
  * @dev mechanism for administrative tasks.
  *
  * @dev All external functions in this contract must be guarded by the
- * @dev onlyProxyOwner modifier. See ethereum/solidity#3864 for a Solidity
+ * @dev ifProxyOwner modifier. See ethereum/solidity#3864 for a Solidity
  * @dev feature proposal that would enable this to be done automatically.
  */
 contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
@@ -27,7 +27,7 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
    * @dev Will run this function if the sender is the proxy owner.
    * @dev Otherwise it will fall back to the implementation.
    */
-  modifier onlyProxyOwner() {
+  modifier ifProxyOwner() {
     if (msg.sender == _proxyOwner()) {
       _;
     } else {
@@ -47,14 +47,14 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
    * @dev Tells the address of the owner
    * @return the address of the owner
    */
-  function proxyOwner() external view onlyProxyOwner returns (address owner) {
+  function proxyOwner() external view ifProxyOwner returns (address owner) {
     return _proxyOwner();
   }
 
   /**
    * @return the address of the implementation
    */
-  function implementation() external view onlyProxyOwner returns (address) {
+  function implementation() external view ifProxyOwner returns (address) {
     return _implementation();
   }
 
@@ -62,7 +62,7 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
    * @dev Allows the current owner to transfer control of the contract to a newOwner.
    * @param newOwner The address to transfer proxy ownership to.
    */
-  function transferProxyOwnership(address newOwner) external onlyProxyOwner {
+  function transferProxyOwnership(address newOwner) external ifProxyOwner {
     require(newOwner != address(0));
     emit ProxyOwnershipTransferred(_proxyOwner(), newOwner);
     _setUpgradeabilityOwner(newOwner);
@@ -72,7 +72,7 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
    * @dev Allows the proxy owner to upgrade the current version of the proxy.
    * @param implementation representing the address of the new implementation to be set.
    */
-  function upgradeTo(address implementation) external onlyProxyOwner {
+  function upgradeTo(address implementation) external ifProxyOwner {
     _upgradeTo(implementation);
   }
 
@@ -83,7 +83,7 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
    * @param data represents the msg.data to bet sent in the low level call. This parameter may include the function
    * signature of the implementation to be called with the needed payload
    */
-  function upgradeToAndCall(address implementation, bytes data) payable external onlyProxyOwner {
+  function upgradeToAndCall(address implementation, bytes data) payable external ifProxyOwner {
     _upgradeTo(implementation);
     require(this.call.value(msg.value)(data));
   }
