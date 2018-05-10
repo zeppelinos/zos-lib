@@ -5,14 +5,14 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /**
  * @title Package
- * @dev Complex directory of contracts that groups contracts into versions
+ * @dev Complex collection of contracts that groups contracts into versions
  * @dev Contracts with the same name can have different implementation addresses in the different versions
  */
 contract Package is Ownable {
   /**
-   * @dev This event signals the addition of a version to the directory
+   * @dev This event signals the addition of a version to the package
    * @dev version is not indexed due to truffle testing constraints
-   * @param version Name of the version for which a directory was added
+   * @param version Name of the version added
    * @param provider ContractProvider associated to the added version
    */
   event VersionAdded(string version, ContractProvider provider);
@@ -32,7 +32,7 @@ contract Package is Ownable {
   }
 
   /**
-   * @dev Adds the contract provider of a new version to the directory
+   * @dev Adds the contract provider of a new version to the package
    * @param version Name of the new version
    * @param provider ContractProvider associated to the new version
    */
@@ -43,9 +43,9 @@ contract Package is Ownable {
   }
 
   /**
-   * @dev Checks whether a version is present in the directory
+   * @dev Checks whether a version is present in the package
    * @param version Name of the version to be checked for
-   * @return Whether the version is already in the directory
+   * @return Whether the version is already in the package
    */
   function hasVersion(string version) public view returns (bool) {
     return address(versions[version]) != address(0);
