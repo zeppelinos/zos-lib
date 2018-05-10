@@ -8,7 +8,7 @@ const DEFAULT_TX_PARAMS = {
   from: web3.eth.accounts[0]
 }
 
-muteLogging()
+// muteLogging()
 provideContractsFromTruffle()
 
 function muteLogging() {
