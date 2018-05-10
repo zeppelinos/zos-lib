@@ -41,14 +41,14 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
    * @dev Tells the address of the owner
    * @return the address of the owner
    */
-  function proxyOwner() public view onlyProxyOwner returns (address owner) {
+  function proxyOwner() external view onlyProxyOwner returns (address owner) {
     return _proxyOwner();
   }
 
   /**
    * @return the address of the implementation
    */
-  function implementation() public view onlyProxyOwner returns (address) {
+  function implementation() external view onlyProxyOwner returns (address) {
     return _implementation();
   }
 
@@ -56,9 +56,9 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
    * @dev Allows the current owner to transfer control of the contract to a newOwner.
    * @param newOwner The address to transfer proxy ownership to.
    */
-  function transferProxyOwnership(address newOwner) public onlyProxyOwner {
+  function transferProxyOwnership(address newOwner) external onlyProxyOwner {
     require(newOwner != address(0));
-    emit ProxyOwnershipTransferred(proxyOwner(), newOwner);
+    emit ProxyOwnershipTransferred(_proxyOwner(), newOwner);
     _setUpgradeabilityOwner(newOwner);
   }
 
@@ -66,7 +66,7 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
    * @dev Allows the proxy owner to upgrade the current version of the proxy.
    * @param implementation representing the address of the new implementation to be set.
    */
-  function upgradeTo(address implementation) public onlyProxyOwner {
+  function upgradeTo(address implementation) external onlyProxyOwner {
     _upgradeTo(implementation);
   }
 
@@ -77,8 +77,8 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
    * @param data represents the msg.data to bet sent in the low level call. This parameter may include the function
    * signature of the implementation to be called with the needed payload
    */
-  function upgradeToAndCall(address implementation, bytes data) payable public onlyProxyOwner {
-    upgradeTo(implementation);
+  function upgradeToAndCall(address implementation, bytes data) payable external onlyProxyOwner {
+    _upgradeTo(implementation);
     require(this.call.value(msg.value)(data));
   }
 
