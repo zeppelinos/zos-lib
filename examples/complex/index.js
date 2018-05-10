@@ -68,7 +68,6 @@ async function getStdLib(txParams) {
     return stdlib.address;
   }
   else if(network === 'ropsten') return "0xA739d10Cc20211B973dEE09DB8F0D75736E2D817";
-
 }
 
 module.exports = async function() {
