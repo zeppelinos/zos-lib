@@ -17,7 +17,7 @@ module.exports = function(owner, donor, wallet) {
 
       it('reverts', async function() {
         await assertRevert(
-          this.donations.donate()
+          this.donations.donate(donation)
         );
       });
 
@@ -97,7 +97,8 @@ module.exports = function(owner, donor, wallet) {
 
       it('returns the donors balance', async function() {
         const donation = (await this.donations.getDonationBalance(donor)).toNumber(); 
-        (+web3.fromWei(donation, 'ether')).should.be.eq(1);
+        const donationNum = parseInt(web3.fromWei(donation, 'ether'), 10);
+        donationNum.should.be.eq(1);
       });
 
     });
@@ -106,7 +107,8 @@ module.exports = function(owner, donor, wallet) {
 
       it('returns the donors balance', async function() {
         const donation = (await this.donations.getDonationBalance(donor)).toNumber(); 
-        (+web3.fromWei(donation, 'ether')).should.be.eq(0);
+        const donationNum = parseInt(web3.fromWei(donation, 'ether'), 10);
+        donationNum.should.be.eq(0);
       });
 
     });
