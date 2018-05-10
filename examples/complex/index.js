@@ -1,6 +1,8 @@
 global.artifacts = artifacts;
 global.ContractsProvider = require('zos-lib/src/utils/ContractsProvider').default;
-const network = process.argv[5];
+
+const args = require('minimist')(process.argv.slice(2));
+const network = args.network;
 
 const ContractDirectory = artifacts.require('ContractDirectory');
 const MintableERC721Token = artifacts.require('MintableERC721Token');
@@ -16,7 +18,7 @@ const tokenSymbol = 'DON';
 async function setupAppManager(txParams) {
 
   // On-chain, single entry point of the entire application.
-  log.info("<< Setting up AppManager >>")
+  log.info(`<< Setting up AppManager >> network: ${network}`)
   const initialVersion = '0.0.1'
   return await AppManagerDeployer.call(initialVersion, txParams)
 }
