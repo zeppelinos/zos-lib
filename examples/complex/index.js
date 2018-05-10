@@ -18,7 +18,7 @@ async function setupAppManager(txParams) {
   // On-chain, single entry point of the entire application.
   log.info("<< Setting up AppManager >>")
   const initialVersion = '0.0.1'
-  return await AppManagerDeployer.call(initialVersion)
+  return await AppManagerDeployer.call(initialVersion, txParams)
 }
 
 async function deployVersion1(appManager, txParams) {
@@ -74,7 +74,7 @@ module.exports = async function() {
 
   const txParams = {
     from: owner,
-    gas: 6721975,
+    gas: 3000000,
     gasPrice: 100000000000
   };
   const appManager = await setupAppManager(txParams);
