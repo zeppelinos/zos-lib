@@ -10,5 +10,5 @@ interface ContractProvider {
    * @param contractName Name of the contract whose address is being fetched
    * @return Implementation address of desired contract
    */
-  function getImplementation(string contractName) external view returns (address);
+  function getImplementation(string contractName) public view returns (address);
 }
