@@ -9,8 +9,8 @@ import './UpgradeabilityProxy.sol';
 contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
   /**
    * @dev Event to show ownership has been transferred
-   * @param previousOwner representing the address of the previous owner
-   * @param newOwner representing the address of the new owner
+   * @param previousOwner the address of the previous owner
+   * @param newOwner the address of the new owner
    */
   event ProxyOwnershipTransferred(address previousOwner, address newOwner);
 
@@ -27,7 +27,7 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
 
   /**
    * @dev the constructor sets the original owner of the contract to the sender account.
-   * @param _implementation representing the address of the initial implementation to be set
+   * @param _implementation the address of the initial implementation to be set
    */
   function OwnedUpgradeabilityProxy(address _implementation) UpgradeabilityProxy(_implementation) public {
     setUpgradeabilityOwner(msg.sender);
@@ -56,7 +56,7 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
 
   /**
    * @dev Allows the proxy owner to upgrade the current version of the proxy.
-   * @param implementation representing the address of the new implementation to be set.
+   * @param implementation the address of the new implementation to be set.
    */
   function upgradeTo(address implementation) public onlyProxyOwner {
     _upgradeTo(implementation);
@@ -65,7 +65,7 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
   /**
    * @dev Allows the proxy owner to upgrade the current version of the proxy and call the new implementation
    * to initialize whatever is needed through a low level call.
-   * @param implementation representing the address of the new implementation to be set.
+   * @param implementation the address of the new implementation to be set.
    * @param data represents the msg.data to bet sent in the low level call. This parameter may include the function
    * signature of the implementation to be called with the needed payload
    */
