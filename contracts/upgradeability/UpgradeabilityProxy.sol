@@ -5,12 +5,12 @@ import 'zeppelin-solidity/contracts/AddressUtils.sol';
 
 /**
  * @title UpgradeabilityProxy
- * @dev This contract represents a proxy where the implementation address to which it will delegate can be upgraded
+ * @dev A proxy where the implementation address can be upgraded
  */
 contract UpgradeabilityProxy is Proxy {
   /**
-   * @dev This event will be emitted every time the implementation gets upgraded
-   * @param implementation the address of the upgraded implementation
+   * @dev Event emitted every time the implementation gets upgraded
+   * @param implementation the address of the upgraded code
    */
   event Upgraded(address implementation);
 
@@ -26,7 +26,6 @@ contract UpgradeabilityProxy is Proxy {
   }
 
   /**
-   * @dev Tells the address of the current implementation
    * @return address of the current implementation
    */
   function implementation() public view returns (address impl) {
@@ -38,7 +37,7 @@ contract UpgradeabilityProxy is Proxy {
 
   /**
    * @dev Sets the address of the current implementation
-   * @param newImplementation address the new implementation to be set
+   * @param newImplementation Address the new implementation to be set
    */
   function _setImplementation(address newImplementation) internal {
     require(AddressUtils.isContract(newImplementation));
@@ -53,7 +52,7 @@ contract UpgradeabilityProxy is Proxy {
 
   /**
    * @dev Upgrades the implementation address
-   * @param newImplementation the address of the new implementation to be set
+   * @param newImplementation The address of the new implementation to be set
    */
   function _upgradeTo(address newImplementation) internal {
     _setImplementation(newImplementation);
