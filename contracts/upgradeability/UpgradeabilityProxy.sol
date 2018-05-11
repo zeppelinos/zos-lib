@@ -28,6 +28,7 @@ contract UpgradeabilityProxy is Proxy {
   }
 
   /**
+   * @dev Getter for the org.zeppelinos.proxy.implementation slot.
    * @return address of the current implementation
    */
   function _implementation() internal view returns (address impl) {
@@ -39,8 +40,19 @@ contract UpgradeabilityProxy is Proxy {
   }
 
   /**
-   * @dev Sets the implementation address of the proxy
-   * @param newImplementation address representing the new implementation to be set
+   * @dev Upgrades the proxy to a new implementation.
+   * @param newImplementation address of the new implementation
+   */
+  function _upgradeTo(address newImplementation) internal {
+    _setImplementation(newImplementation);
+
+    emit Upgraded(newImplementation);
+  }
+
+  /**
+   * @dev Setter for the org.zeppelinos.proxy.implementation slot.
+   * @dev Sets the implementation address of the proxy.
+   * @param newImplementation address of the new implementation
    */
   function _setImplementation(address newImplementation) private {
     require(AddressUtils.isContract(newImplementation));
@@ -50,15 +62,5 @@ contract UpgradeabilityProxy is Proxy {
     assembly {
       sstore(slot, newImplementation)
     }
-
-    emit Upgraded(newImplementation);
-  }
-
-  /**
-   * @dev Upgrades the implementation address
-   * @param newImplementation representing the address of the new implementation to be set
-   */
-  function _upgradeTo(address newImplementation) internal {
-    _setImplementation(newImplementation);
   }
 }

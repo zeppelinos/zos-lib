@@ -257,7 +257,6 @@ contract('OwnedUpgradeabilityProxy', ([_, owner, anotherAccount]) => {
         })
 
         it('assigns new proxy owner', async function () {
-          // [TODO] maybe we should test this by reading from storage
           const proxyOwner = await this.proxy.proxyOwner({ from: newOwner })
           assert.equal(proxyOwner, anotherAccount)
         })

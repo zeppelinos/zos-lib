@@ -11,6 +11,13 @@ pragma solidity ^0.4.21;
  */
 contract Proxy {
   /**
+   * @dev Implemented entirely in _fallback.
+   */
+  function () payable external {
+    _fallback();
+  }
+
+  /**
    * @return address of the implementation to which the fallback delegates all calls
    */
   function _implementation() internal view returns (address);
@@ -57,12 +64,5 @@ contract Proxy {
   function _fallback() internal {
     _willFallback();
     _delegate(_implementation());
-  }
-
-  /**
-   * @dev Implemented entirely in _fallback.
-   */
-  function () payable external {
-    _fallback();
   }
 }

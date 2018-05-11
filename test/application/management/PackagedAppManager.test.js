@@ -101,7 +101,7 @@ contract('PackagedAppManager', ([_, managerOwner, packageOwner, directoryOwner, 
           await this.zeroVersionDirectory.setImplementation(contract, this.implementation_v0, { from: directoryOwner })
 
           const { receipt } = await this.manager.create(contract)
-          this.logs = decodeLogs([receipt.logs[1]], UpgradeabilityProxyFactory)
+          this.logs = decodeLogs(receipt.logs, UpgradeabilityProxyFactory)
           this.proxyAddress = this.logs.find(l => l.event === 'ProxyCreated').args.proxy
           this.proxy = await OwnedUpgradeabilityProxy.at(this.proxyAddress)
         })
@@ -137,7 +137,7 @@ contract('PackagedAppManager', ([_, managerOwner, packageOwner, directoryOwner, 
           await this.zeroVersionDirectory.setImplementation(contract, this.behavior.address, { from: directoryOwner })
 
           const { receipt } = await this.manager.createAndCall(contract, initializeData, { value })
-          this.logs = decodeLogs([receipt.logs[1]], UpgradeabilityProxyFactory)
+          this.logs = decodeLogs(receipt.logs, UpgradeabilityProxyFactory)
           this.proxyAddress = this.logs.find(l => l.event === 'ProxyCreated').args.proxy
           this.proxy = await OwnedUpgradeabilityProxy.at(this.proxyAddress)
         })
@@ -181,7 +181,7 @@ contract('PackagedAppManager', ([_, managerOwner, packageOwner, directoryOwner, 
       beforeEach(async function () {
         await this.zeroVersionDirectory.setImplementation(contract, this.implementation_v0, { from: directoryOwner })
         const { receipt } = await this.manager.create(contract)
-        this.logs = decodeLogs([receipt.logs[1]], UpgradeabilityProxyFactory)
+        this.logs = decodeLogs(receipt.logs, UpgradeabilityProxyFactory)
         this.proxyAddress = this.logs.find(l => l.event === 'ProxyCreated').args.proxy
         this.proxy = await OwnedUpgradeabilityProxy.at(this.proxyAddress)
 
@@ -229,7 +229,7 @@ contract('PackagedAppManager', ([_, managerOwner, packageOwner, directoryOwner, 
       beforeEach(async function () {
         await this.zeroVersionDirectory.setImplementation(contract, this.implementation_v0, { from: directoryOwner })
         const { receipt } = await this.manager.create(contract)
-        this.logs = decodeLogs([receipt.logs[1]], UpgradeabilityProxyFactory)
+        this.logs = decodeLogs(receipt.logs, UpgradeabilityProxyFactory)
         this.proxyAddress = this.logs.find(l => l.event === 'ProxyCreated').args.proxy
         this.proxy = await OwnedUpgradeabilityProxy.at(this.proxyAddress)
         this.behavior = await MigratableMock.new()

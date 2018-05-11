@@ -40,7 +40,7 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
    * @param _implementation address of the initial implementation
    */
   function OwnedUpgradeabilityProxy(address _implementation) UpgradeabilityProxy(_implementation) public {
-    _setUpgradeabilityOwner(msg.sender);
+    _setProxyOwner(msg.sender);
   }
 
   /**
@@ -64,7 +64,7 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
   function transferProxyOwnership(address newOwner) external ifProxyOwner {
     require(newOwner != address(0));
     emit ProxyOwnershipTransferred(_proxyOwner(), newOwner);
-    _setUpgradeabilityOwner(newOwner);
+    _setProxyOwner(newOwner);
   }
 
   /**
@@ -90,8 +90,8 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
   }
 
   /**
-   * @dev Tells the address of the owner
-   * @return the address of the owner
+   * @dev Getter for the org.zeppelinos.proxy.owner slot.
+   * @return address of the proxy owner
    */
   function _proxyOwner() internal returns (address owner) {
     bytes32 slot = proxyOwnerSlot;
@@ -101,9 +101,11 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
   }
 
   /**
-   * @dev Sets the address of the owner
+   * @dev Setter for the org.zeppelinos.proxy.owner slot.
+   * @dev Sets the address of the proxy owner
+   * @param newProxyOwner address of the new proxy owner
    */
-  function _setUpgradeabilityOwner(address newProxyOwner) internal {
+  function _setProxyOwner(address newProxyOwner) internal {
     bytes32 slot = proxyOwnerSlot;
 
     assembly {
