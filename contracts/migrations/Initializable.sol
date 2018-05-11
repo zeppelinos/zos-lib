@@ -4,11 +4,13 @@ pragma solidity ^0.4.21;
 /**
  * @title Initializable
  * @dev Simple helper contract to support initialization outside of constructor.
- * Use Migratable for more complex migration mechanisms.
+ * @dev Use Migratable for more complex migration mechanisms.
  */
 contract Initializable {
 
-  // changed to true when contract has been initialized
+  /**
+   * @dev changed to true when contract has been initialized
+   */
   bool public initialized;
 
   /**

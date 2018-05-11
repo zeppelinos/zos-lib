@@ -4,8 +4,8 @@ pragma solidity ^0.4.21;
 /**
  * @title Migratable
  * @dev Helper contract to support migration schemes between different
- * implementations of a contract in the context of upgradeability.
- * See Initializable for a simpler version.
+ * @dev implementations of a contract in the context of upgradeability.
+ * @dev See Initializable for a simpler version.
  */
 contract Migratable {
   /**
@@ -15,8 +15,10 @@ contract Migratable {
    */
   event Migrated(string contractName, string migrationId);
 
-  // Stores which migrations have been applied already. 
-  // (contractName => (migrationId => bool))
+  /**
+   * @dev Stores which migrations have been applied already. 
+   * @dev (contractName => (migrationId => bool))
+   */
   mapping (string => mapping (string => bool)) internal migrated;
 
 
