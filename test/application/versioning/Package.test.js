@@ -2,7 +2,7 @@ import assertRevert from '../../../src/helpers/assertRevert'
 import shouldBehaveLikeOwnable from '../../../src/test/behaviors/Ownable'
 
 const Package = artifacts.require('Package')
-const ContractDirectory = artifacts.require('ContractDirectory')
+const ImplementationDirectory = artifacts.require('ImplementationDirectory')
 const DummyImplementation = artifacts.require('DummyImplementation')
 
 contract('Package', ([_, owner, anotherAddress]) => {
@@ -13,8 +13,8 @@ contract('Package', ([_, owner, anotherAddress]) => {
 
   beforeEach(async function () {
     this.package = await Package.new({ from: owner })
-    this.directory_V0 = await ContractDirectory.new({ from: owner })
-    this.directory_V1 = await ContractDirectory.new({ from: owner })
+    this.directory_V0 = await ImplementationDirectory.new({ from: owner })
+    this.directory_V1 = await ImplementationDirectory.new({ from: owner })
   })
 
   describe('ownership', function () {

@@ -1,6 +1,6 @@
 pragma solidity ^0.4.21;
 
-import "./ContractProvider.sol";
+import "./ImplementationProvider.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /**
@@ -13,20 +13,20 @@ contract Package is Ownable {
    * @dev This event signals the addition of a version to the package
    * @dev Version is not indexed due to truffle testing constraints
    * @param version Name of the version added
-   * @param provider ContractProvider associated with the added version
+   * @param provider ImplementationProvider associated with the added version
    */
-  event VersionAdded(string version, ContractProvider provider);
+  event VersionAdded(string version, ImplementationProvider provider);
 
   // Mapping that stores the association between versions and their contract providers
-  mapping (string => ContractProvider) internal versions;
+  mapping (string => ImplementationProvider) internal versions;
   
   /**
    * @dev Gets the contract provider for a given version
    * @param version name of the version
    * @return Contract provider for the given version
    */
-  function getVersion(string version) public view returns (ContractProvider) {
-    ContractProvider provider = versions[version];
+  function getVersion(string version) public view returns (ImplementationProvider) {
+    ImplementationProvider provider = versions[version];
     require(provider != address(0));
     return provider;
   }
@@ -34,9 +34,9 @@ contract Package is Ownable {
   /**
    * @dev Adds the contract provider of a new version to the package
    * @param version Name of the new version
-   * @param provider ContractProvider associated with the new version
+   * @param provider ImplementationProvider associated with the new version
    */
-  function addVersion(string version, ContractProvider provider) public onlyOwner {
+  function addVersion(string version, ImplementationProvider provider) public onlyOwner {
     require(!hasVersion(version));
     versions[version] = provider;
     emit VersionAdded(version, provider);
@@ -58,7 +58,7 @@ contract Package is Ownable {
    * @return Address where the contract is implemented
    */
   function getImplementation(string version, string contractName) public view returns (address) {
-    ContractProvider provider = getVersion(version);
+    ImplementationProvider provider = getVersion(version);
     return provider.getImplementation(contractName);
   }
 }

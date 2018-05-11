@@ -1,10 +1,12 @@
+'use strict';
+
 import decodeLogs from '../../../src/helpers/decodeLogs'
 import encodeCall from '../../../src/helpers/encodeCall'
 import assertRevert from '../../../src/helpers/assertRevert'
 import shouldBehaveLikeOwnable from '../../../src/test/behaviors/Ownable'
 
 const MigratableMock = artifacts.require('MigratableMock')
-const ContractDirectory = artifacts.require('ContractDirectory')
+const ImplementationDirectory = artifacts.require('ImplementationDirectory')
 const DummyImplementation = artifacts.require('DummyImplementation')
 const UnversionedAppManager = artifacts.require('UnversionedAppManager')
 const OwnedUpgradeabilityProxy = artifacts.require('OwnedUpgradeabilityProxy')
@@ -20,7 +22,7 @@ contract('UnversionedAppManager', ([_, managerOwner, directoryOwner, anotherAcco
 
   beforeEach(async function () {
     this.factory = await UpgradeabilityProxyFactory.new()
-    this.directory = await ContractDirectory.new({ from: directoryOwner })
+    this.directory = await ImplementationDirectory.new({ from: directoryOwner })
     this.manager = await UnversionedAppManager.new(this.directory.address, this.factory.address, { from: managerOwner })
   })
 
