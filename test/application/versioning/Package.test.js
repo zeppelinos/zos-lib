@@ -32,7 +32,7 @@ contract('Package', ([_, owner, anotherAddress]) => {
       const from = owner
 
       describe('when the given version was not set', function () {
-        it('registers given contract directory', async function () {
+        it('registers given implementation directory', async function () {
           await this.package.addVersion(version, this.directory_V0.address, { from })
 
           const registeredDirectory = await this.package.getVersion(version)

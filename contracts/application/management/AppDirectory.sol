@@ -6,7 +6,7 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /**
  * @title AppDirectory
- * @dev Contract directory with a standard library as a default provider
+ * @dev Implementation directory with a standard library as a default provider
  * @dev Will search the stdlib for an implementation if none is found in the directory
  */
 contract AppDirectory is ImplementationDirectory {

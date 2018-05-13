@@ -4,7 +4,7 @@ import "./ImplementationDirectory.sol";
 
 /**
  * @title FreezableImplementationDirectory
- * @dev Contract directory which can be made irreversibly immutable by the owner 
+ * @dev Implementation directory which can be made immutable by the owner 
  */
  contract FreezableImplementationDirectory is ImplementationDirectory {
   // Stores the mutability state of the directory

@@ -17,13 +17,16 @@ contract Package is Ownable {
    */
   event VersionAdded(string version, ImplementationProvider provider);
 
-  // Mapping that stores the association between versions and their contract providers
+  /*
+   * @dev Mapping that stores the association between versions 
+   * @dev and their implementation providers.
+   */
   mapping (string => ImplementationProvider) internal versions;
   
   /**
-   * @dev Gets the contract provider for a given version
+   * @dev Gets the implementation provider for a given version
    * @param version name of the version
-   * @return Contract provider for the given version
+   * @return Implementation provider for the given version
    */
   function getVersion(string version) public view returns (ImplementationProvider) {
     ImplementationProvider provider = versions[version];
@@ -32,7 +35,7 @@ contract Package is Ownable {
   }
 
   /**
-   * @dev Adds the contract provider of a new version to the package
+   * @dev Adds the implementation provider of a new version to the package
    * @param version Name of the new version
    * @param provider ImplementationProvider associated with the new version
    */

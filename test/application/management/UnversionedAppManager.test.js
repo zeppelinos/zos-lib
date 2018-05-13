@@ -26,7 +26,7 @@ contract('UnversionedAppManager', ([_, managerOwner, directoryOwner, anotherAcco
     this.manager = await UnversionedAppManager.new(this.directory.address, this.factory.address, { from: managerOwner })
   })
 
-  it('must receive a contract directory and a factory', async function () {
+  it('must receive an implementation directory and a factory', async function () {
     await assertRevert(UnversionedAppManager.new(0x0, this.factory.address))
     await assertRevert(UnversionedAppManager.new(this.directory.address, 0x0))
   })
@@ -48,7 +48,7 @@ contract('UnversionedAppManager', ([_, managerOwner, directoryOwner, anotherAcco
   })
 
   describe('create', function () {
-    describe('when the requested contract was registered in the contract provider', function () {
+    describe('when the requested contract was registered in the implementation provider', function () {
       beforeEach(async function () {
         await this.directory.setImplementation(contract, this.implementation_v0, { from: directoryOwner })
 
@@ -83,7 +83,7 @@ contract('UnversionedAppManager', ([_, managerOwner, directoryOwner, anotherAcco
       this.behavior = await MigratableMock.new()
     })
 
-    describe('when the requested contract was registered in the contract provider', function () {
+    describe('when the requested contract was registered in the implementation provider', function () {
       beforeEach(async function () {
         await this.directory.setImplementation(contract, this.behavior.address, { from: directoryOwner })
 
