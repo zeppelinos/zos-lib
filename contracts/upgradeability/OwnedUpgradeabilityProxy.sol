@@ -15,8 +15,8 @@ import './UpgradeabilityProxy.sol';
 contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
   /**
    * @dev Event to show ownership has been transferred
-   * @param previousOwner representing the address of the previous owner
-   * @param newOwner representing the address of the new owner
+   * @param previousOwner the address of the previous owner
+   * @param newOwner the address of the new owner
    */
   event ProxyOwnershipTransferred(address previousOwner, address newOwner);
 
