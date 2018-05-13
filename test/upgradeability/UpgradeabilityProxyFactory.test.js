@@ -1,8 +1,10 @@
+'use strict';
+
 import encodeCall from '../../src/helpers/encodeCall'
 import assertRevert from '../../src/helpers/assertRevert'
 
 const MigratableMock = artifacts.require('MigratableMock')
-const OwnedUpgradeabilityProxy = artifacts.require('OwnedUpgradeabilityProxy')
+const AdminUpgradeabilityProxy = artifacts.require('AdminUpgradeabilityProxy')
 const UpgradeabilityProxyFactory = artifacts.require('UpgradeabilityProxyFactory')
 const DummyImplementation = artifacts.require('DummyImplementation')
 
@@ -20,7 +22,7 @@ contract('UpgradeabilityProxyFactory', ([_, owner]) => {
       const { logs } = await this.factory.createProxy(owner, this.implementation_v0)
       this.logs = logs
       this.proxyAddress = this.logs.find(l => l.event === 'ProxyCreated').args.proxy
-      this.proxy = await OwnedUpgradeabilityProxy.at(this.proxyAddress)
+      this.proxy = await AdminUpgradeabilityProxy.at(this.proxyAddress)
     })
 
     it('creates a proxy pointing to the requested implementation', async function () {
@@ -62,7 +64,7 @@ contract('UpgradeabilityProxyFactory', ([_, owner]) => {
         const { logs } = await this.factory.createProxyAndCall(owner, this.behavior.address, initializeData, { value })
         this.logs = logs
         this.proxyAddress = logs.find(l => l.event === 'ProxyCreated').args.proxy
-        this.proxy = await OwnedUpgradeabilityProxy.at(this.proxyAddress)
+        this.proxy = await AdminUpgradeabilityProxy.at(this.proxyAddress)
       })
 
       it('creates a proxy pointing to the requested implementation', async function () {

@@ -9,7 +9,6 @@ const MigratableMock = artifacts.require('MigratableMock')
 const ImplementationDirectory = artifacts.require('ImplementationDirectory')
 const DummyImplementation = artifacts.require('DummyImplementation')
 const UnversionedAppManager = artifacts.require('UnversionedAppManager')
-const OwnedUpgradeabilityProxy = artifacts.require('OwnedUpgradeabilityProxy')
 const UpgradeabilityProxyFactory = artifacts.require('UpgradeabilityProxyFactory')
 
 contract('UnversionedAppManager', ([_, managerOwner, directoryOwner, anotherAccount]) => {

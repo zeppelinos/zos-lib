@@ -8,17 +8,17 @@ const MigratableMock = artifacts.require('MigratableMock')
 const DummyImplementation = artifacts.require('DummyImplementation')
 const ClashingImplementation = artifacts.require('ClashingImplementation')
 
-const OwnedUpgradeabilityProxy = artifacts.require('OwnedUpgradeabilityProxy')
+const AdminUpgradeabilityProxy = artifacts.require('AdminUpgradeabilityProxy')
 const UpgradeabilityProxyFactory = artifacts.require('UpgradeabilityProxyFactory')
 
-contract('OwnedUpgradeabilityProxy', ([_, owner, anotherAccount]) => {
+contract('AdminUpgradeabilityProxy', ([_, owner, anotherAccount]) => {
   before(async function () {
     this.implementation_v0 = (await DummyImplementation.new()).address
     this.implementation_v1 = (await DummyImplementation.new()).address
   })
 
   beforeEach(async function () {
-    this.proxy = await OwnedUpgradeabilityProxy.new(this.implementation_v0, { from: owner })
+    this.proxy = await AdminUpgradeabilityProxy.new(this.implementation_v0, { from: owner })
     this.proxyAddress = this.proxy.address;
   })
 
@@ -306,7 +306,7 @@ contract('OwnedUpgradeabilityProxy', ([_, owner, anotherAccount]) => {
   describe('transparent proxy', function () {
     beforeEach('creating proxy', async function () {
       this.impl = await ClashingImplementation.new();
-      this.proxy = await OwnedUpgradeabilityProxy.new(this.impl.address, { from: owner });
+      this.proxy = await AdminUpgradeabilityProxy.new(this.impl.address, { from: owner });
 
       this.clashing = ClashingImplementation.at(this.proxy.address);
     });

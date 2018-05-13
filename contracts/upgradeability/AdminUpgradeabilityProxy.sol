@@ -3,7 +3,7 @@ pragma solidity ^0.4.21;
 import './UpgradeabilityProxy.sol';
 
 /**
- * @title OwnedUpgradeabilityProxy
+ * @title AdminUpgradeabilityProxy
  *
  * @dev This contract combines an upgradeability proxy with an authorization
  * @dev mechanism for administrative tasks.
@@ -12,7 +12,7 @@ import './UpgradeabilityProxy.sol';
  * @dev ifProxyOwner modifier. See ethereum/solidity#3864 for a Solidity
  * @dev feature proposal that would enable this to be done automatically.
  */
-contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
+contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
   /**
    * @dev Event to show ownership has been transferred
    * @param previousOwner the address of the previous owner
@@ -39,7 +39,7 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
    * @dev The constructor assigns proxy ownership to the sender account.
    * @param _implementation address of the initial implementation
    */
-  function OwnedUpgradeabilityProxy(address _implementation) UpgradeabilityProxy(_implementation) public {
+  function AdminUpgradeabilityProxy(address _implementation) UpgradeabilityProxy(_implementation) public {
     _setProxyOwner(msg.sender);
   }
 
