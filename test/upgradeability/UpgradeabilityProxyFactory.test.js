@@ -31,8 +31,8 @@ contract('UpgradeabilityProxyFactory', ([_, owner]) => {
     })
 
     it('transfers the ownership to the requested owner', async function () {
-      const proxyOwner = await this.proxy.proxyOwner({ from: owner })
-      assert.equal(proxyOwner, owner)
+      const admin = await this.proxy.admin({ from: owner })
+      assert.equal(admin, owner)
     })
 
     it('emits an event', async function () {
@@ -73,8 +73,8 @@ contract('UpgradeabilityProxyFactory', ([_, owner]) => {
       })
 
       it('transfers the ownership to the requested owner', async function () {
-        const proxyOwner = await this.proxy.proxyOwner({ from: owner })
-        assert.equal(proxyOwner, owner)
+        const admin = await this.proxy.admin({ from: owner })
+        assert.equal(admin, owner)
       })
 
       it('emits an event', async function () {

@@ -62,8 +62,8 @@ contract('UnversionedAppManager', ([_, managerOwner, directoryOwner, anotherAcco
       })
 
       it('transfers the ownership to the manager', async function () {
-        const proxyOwner = await this.manager.getProxyOwner(this.proxyAddress)
-        assert.equal(proxyOwner, this.manager.address)
+        const admin = await this.manager.getProxyAdmin(this.proxyAddress)
+        assert.equal(admin, this.manager.address)
       })
     })
 
@@ -97,8 +97,8 @@ contract('UnversionedAppManager', ([_, managerOwner, directoryOwner, anotherAcco
       })
 
       it('transfers the ownership to the manager', async function () {
-        const proxyOwner = await this.manager.getProxyOwner(this.proxyAddress)
-        assert.equal(proxyOwner, this.manager.address)
+        const admin = await this.manager.getProxyAdmin(this.proxyAddress)
+        assert.equal(admin, this.manager.address)
       })
 
       it('calls "initialize" function', async function() {

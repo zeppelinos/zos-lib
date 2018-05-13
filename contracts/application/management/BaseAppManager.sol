@@ -97,10 +97,10 @@ contract BaseAppManager is Ownable {
   }
 
   /**
-   * @dev Gets an owned proxy's owner. Necessary because only the owner can query it.
-   * @return the address of the current proxy owner of the given proxy
+   * @dev Gets a proxy's admin. Necessary because only the admin can query it.
+   * @return the address of the current proxy admin of the given proxy
    */
-  function getProxyOwner(AdminUpgradeabilityProxy proxy) public view returns (address) {
-    return proxy.proxyOwner();
+  function getProxyAdmin(AdminUpgradeabilityProxy proxy) public view returns (address) {
+    return proxy.admin();
   }
 }

@@ -9,26 +9,26 @@ import './UpgradeabilityProxy.sol';
  * @dev mechanism for administrative tasks.
  *
  * @dev All external functions in this contract must be guarded by the
- * @dev ifProxyOwner modifier. See ethereum/solidity#3864 for a Solidity
+ * @dev ifAdmin modifier. See ethereum/solidity#3864 for a Solidity
  * @dev feature proposal that would enable this to be done automatically.
  */
 contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
   /**
-   * @dev Event to show ownership has been transferred
-   * @param previousOwner the address of the previous owner
-   * @param newOwner the address of the new owner
+   * @dev Event to show administration has been transferred
+   * @param previousAdmin the address of the previous admin
+   * @param newAdmin the address of the new admin
    */
-  event ProxyOwnershipTransferred(address previousOwner, address newOwner);
+  event AdminChanged(address previousAdmin, address newAdmin);
 
-  // Storage slot of the owner of the contract
-  bytes32 private constant proxyOwnerSlot = keccak256("org.zeppelinos.proxy.owner");
+  // Storage slot of the admin of the contract
+  bytes32 private constant ADMIN_SLOT = keccak256("org.zeppelinos.proxy.admin");
 
   /**
-   * @dev Will run this function if the sender is the proxy owner.
+   * @dev Will run this function if the sender is the admin.
    * @dev Otherwise it will fall back to the implementation.
    */
-  modifier ifProxyOwner() {
-    if (msg.sender == _proxyOwner()) {
+  modifier ifAdmin() {
+    if (msg.sender == _admin()) {
       _;
     } else {
       _fallback();
@@ -36,47 +36,47 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
   }
 
   /**
-   * @dev The constructor assigns proxy ownership to the sender account.
+   * @dev The constructor assigns proxy administration to the sender account.
    * @param _implementation address of the initial implementation
    */
   function AdminUpgradeabilityProxy(address _implementation) UpgradeabilityProxy(_implementation) public {
-    _setProxyOwner(msg.sender);
+    _setAdmin(msg.sender);
   }
 
   /**
-   * @return the address of the proxy owner
+   * @return the address of the proxy admin
    */
-  function proxyOwner() external view ifProxyOwner returns (address owner) {
-    return _proxyOwner();
+  function admin() external view ifAdmin returns (address) {
+    return _admin();
   }
 
   /**
    * @return the address of the implementation
    */
-  function implementation() external view ifProxyOwner returns (address) {
+  function implementation() external view ifAdmin returns (address) {
     return _implementation();
   }
 
   /**
-   * @dev Allows the current owner to transfer control of the contract to a newOwner.
-   * @param newOwner the address which to transfer proxy ownership
+   * @dev Allows the current admin to transfer control of the proxy.
+   * @param newAdmin the address which to transfer proxy administration 
    */
-  function transferProxyOwnership(address newOwner) external ifProxyOwner {
-    require(newOwner != address(0));
-    emit ProxyOwnershipTransferred(_proxyOwner(), newOwner);
-    _setProxyOwner(newOwner);
+  function changeAdmin(address newAdmin) external ifAdmin {
+    require(newAdmin != address(0));
+    emit AdminChanged(_admin(), newAdmin);
+    _setAdmin(newAdmin);
   }
 
   /**
-   * @dev Allows the proxy owner to upgrade the backing implementation.
+   * @dev Allows the proxy admin to upgrade the backing implementation.
    * @param newImplementation the address of the new implementation
    */
-  function upgradeTo(address newImplementation) external ifProxyOwner {
+  function upgradeTo(address newImplementation) external ifAdmin {
     _upgradeTo(newImplementation);
   }
 
   /**
-   * @dev Allows the proxy owner to upgrade the current version of the proxy
+   * @dev Allows the proxy admin to upgrade the current version of the proxy
    * @dev and call a function on the new implementation to initialize whatever
    * @dev is needed.
    *
@@ -84,40 +84,38 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
    * @param data represents the msg.data to bet sent in the low level call. This parameter may include the function
    * signature of the implementation to be called with the needed payload
    */
-  function upgradeToAndCall(address implementation, bytes data) payable external ifProxyOwner {
+  function upgradeToAndCall(address implementation, bytes data) payable external ifAdmin {
     _upgradeTo(implementation);
     require(this.call.value(msg.value)(data));
   }
 
   /**
-   * @dev Getter for the org.zeppelinos.proxy.owner slot.
-   * @return address of the proxy owner
+   * @return address of the proxy admin
    */
-  function _proxyOwner() internal returns (address owner) {
-    bytes32 slot = proxyOwnerSlot;
+  function _admin() internal returns (address admin) {
+    bytes32 slot = ADMIN_SLOT;
     assembly {
-      owner := sload(slot)
+      admin := sload(slot)
     }
   }
 
   /**
-   * @dev Setter for the org.zeppelinos.proxy.owner slot.
-   * @dev Sets the address of the proxy owner
-   * @param newProxyOwner address of the new proxy owner
+   * @dev Sets the address of the proxy admin
+   * @param newAdmin address of the new proxy admin
    */
-  function _setProxyOwner(address newProxyOwner) internal {
-    bytes32 slot = proxyOwnerSlot;
+  function _setAdmin(address newAdmin) internal {
+    bytes32 slot = ADMIN_SLOT;
 
     assembly {
-      sstore(slot, newProxyOwner)
+      sstore(slot, newAdmin)
     }
   }
 
   /**
-   * @dev Only fall back when the sender is not the proxyOwner.
+   * @dev Only fall back when the sender is not the admin.
    */
   function _willFallback() internal {
-    require(msg.sender != _proxyOwner());
+    require(msg.sender != _admin());
     super._willFallback();
   }
 }
