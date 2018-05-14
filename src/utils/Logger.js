@@ -6,7 +6,7 @@ export default class Logger {
   }
 
   out(msg) {
-    process.stdout.write(msg)
+    console.log(msg)
   }
 
   info(msg) {
