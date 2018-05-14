@@ -7,6 +7,10 @@ export default {
     return this.getByName(contractName)
   },
 
+  getFromKernel(contractName) {
+    throw 'getFromKernel function must be implemented'
+  },
+
   getFromArtifacts(name) {
     return artifacts.require(name)
   },
