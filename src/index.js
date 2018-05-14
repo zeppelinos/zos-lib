@@ -14,11 +14,10 @@ import Contracts from './utils/Contracts'
 // test behaviors
 import behaviors from './test'
 
-// app management
+// model objects
 import App from './app/App'
-
-// package
 import Package from './package/Package'
+import Release from './package/Release'
 
 export {
   version,
@@ -31,4 +30,5 @@ export {
   Contracts,
   App,
   Package,
+  Release,
 }
