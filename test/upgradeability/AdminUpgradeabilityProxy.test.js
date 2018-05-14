@@ -296,7 +296,6 @@ contract('AdminUpgradeabilityProxy', ([_, admin, anotherAccount]) => {
     })
 
     it('should store the admin proxy in specified location', async function () {
-      const key = await this.proxy.ADMIN_SLOT();
       const position = web3.sha3("org.zeppelinos.proxy.admin");
       const admin = await web3.eth.getStorageAt(this.proxyAddress, position);
 
