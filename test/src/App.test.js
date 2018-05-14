@@ -1,27 +1,28 @@
-import AppManagerDeployer from '../../src/app_manager/AppManagerDeployer';
-import AppManagerProvider from '../../src/app_manager/AppManagerProvider';
+'use strict';
+
+import AppDeployer from '../../src/app/AppDeployer';
+import AppProvider from '../../src/app/AppProvider';
 
 const ImplV1 = artifacts.require('DummyImplementation');
 const ImplV2 = artifacts.require('DummyImplementationV2');
 
-const should = require('chai')
-  .should();
+require('chai').should();
 
-contract('AppManager', function ([_, owner]) {
+contract('App', function ([_, owner]) {
   const txParams = { from: owner }
-  const initialVersion = "1.0";
+  const initialVersion = '1.0';
   const contractName = 'Impl';
-  const stdlibAddress = "0x0000000000000000000000000000000000000010";
+  const stdlibAddress = '0x0000000000000000000000000000000000000010';
 
   const shouldInitialize = function () {
     it('deploys all contracts', async function() {
-      this.app.appManager.address.should.not.be.null;
+      this.app.app.address.should.not.be.null;
       this.app.factory.address.should.not.be.null;
       this.app.package.address.should.not.be.null;
     });
 
-    it('sets app manager at initial version', async function () {
-      (await this.app.appManager.version()).should.eq(initialVersion);
+    it('sets app at initial version', async function () {
+      (await this.app.app.version()).should.eq(initialVersion);
     });
 
     it('registers initial version in package', async function () {
@@ -46,8 +47,8 @@ contract('AppManager', function ([_, owner]) {
   };
 
   describe('without stdlib', function () {
-    beforeEach("deploying", async function () {
-      this.app = await AppManagerDeployer.call(initialVersion, txParams)
+    beforeEach('deploying', async function () {
+      this.app = await AppDeployer.call(initialVersion, txParams)
     });
 
     describe('deploy', function () {
@@ -55,15 +56,15 @@ contract('AppManager', function ([_, owner]) {
     });
 
     describe('connect', function () {
-      beforeEach("connecting to existing instance", async function () {
-        const connectedApp = await AppManagerProvider.from(this.app.appManager.address, txParams);
+      beforeEach('connecting to existing instance', async function () {
+        const connectedApp = await AppProvider.from(this.app.app.address, txParams);
         this.app = connectedApp;
       });
 
       shouldInitialize();
     });
 
-    const newVersion = "2.0";
+    const newVersion = '2.0';
     const createVersion = async function () {
       await this.app.newVersion(newVersion);
     };
@@ -76,8 +77,8 @@ contract('AppManager', function ([_, owner]) {
         this.app.directories.should.include.key(newVersion);
       });
 
-      it('updates app manager version', async function () {
-        (await this.app.appManager.version()).should.eq(newVersion);
+      it('updates app version', async function () {
+        (await this.app.app.version()).should.eq(newVersion);
       });
 
       it('registers new version on package', async function () {
@@ -117,17 +118,17 @@ contract('AppManager', function ([_, owner]) {
       const shouldReturnProxy = function () {
         it('should return a proxy', async function () {
           this.proxy.address.should.be.not.null;
-          (await this.proxy.version()).should.eq("V1");
+          (await this.proxy.version()).should.eq('V1');
         });
       };
 
       describe('without initializer', function () {
-        beforeEach("creating a proxy", createProxy);
+        beforeEach('creating a proxy', createProxy);
         shouldReturnProxy();
       });
 
       describe('with initializer', function () {
-        beforeEach("creating a proxy", async function () {
+        beforeEach('creating a proxy', async function () {
           this.proxy = await this.app.createProxy(ImplV1, contractName, 'initialize', [10]);
         });
 
@@ -149,7 +150,7 @@ contract('AppManager', function ([_, owner]) {
 
       const shouldUpgradeProxy = function () {
         it('should upgrade proxy to ImplV2', async function () {
-          (await this.proxy.version()).should.eq("V2");
+          (await this.proxy.version()).should.eq('V2');
         });
       };
 
@@ -175,7 +176,7 @@ contract('AppManager', function ([_, owner]) {
     });
 
     describe('setStdlib', function () {
-      beforeEach("setting stdlib from name", async function () {
+      beforeEach('setting stdlib from name', async function () {
         await this.app.setStdlib(stdlibAddress);
       });
 
@@ -184,8 +185,8 @@ contract('AppManager', function ([_, owner]) {
   });
 
   describe('with stdlib', function () {
-    beforeEach("deploying", async function () {
-      this.app = await AppManagerDeployer.withStdlib(initialVersion, stdlibAddress, txParams);
+    beforeEach('deploying', async function () {
+      this.app = await AppDeployer.withStdlib(initialVersion, stdlibAddress, txParams);
     });
 
     describe('deploy', function () {
@@ -194,8 +195,8 @@ contract('AppManager', function ([_, owner]) {
     });
 
     describe('connect', function () {
-      beforeEach("connecting to existing instance", async function () {
-        const connectedApp = await AppManagerProvider.from(this.app.appManager.address, txParams);
+      beforeEach('connecting to existing instance', async function () {
+        const connectedApp = await AppProvider.from(this.app.app.address, txParams);
         this.app = connectedApp;
       });
 
@@ -205,8 +206,8 @@ contract('AppManager', function ([_, owner]) {
   });
 
   describe('with stdlib', function () {
-    beforeEach("deploying", async function () {
-      this.app = await AppManagerDeployer.withStdlib(initialVersion, stdlibAddress, txParams);
+    beforeEach('deploying', async function () {
+      this.app = await AppDeployer.withStdlib(initialVersion, stdlibAddress, txParams);
     });
 
     describe('deploy', function () {
