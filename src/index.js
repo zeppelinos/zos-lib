@@ -9,7 +9,7 @@ import assertRevert from './helpers/assertRevert'
 // utils
 import Logger from './utils/Logger'
 import FileSystem from './utils/FileSystem'
-import ContractsProvider from './utils/ContractsProvider'
+import Contracts from './utils/Contracts'
 
 // test behaviors
 import behaviors from './test'
@@ -32,7 +32,7 @@ export {
   behaviors,
   Logger,
   FileSystem,
-  ContractsProvider,
+  Contracts,
   AppWrapper,
   AppDeployer,
   AppProvider,

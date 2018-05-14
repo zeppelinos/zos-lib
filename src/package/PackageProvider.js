@@ -11,7 +11,7 @@ const PackageProvider = {
 
   _fetchPackage(address) {
     log.info('Deploying new Package...')
-    const Package = ContractsProvider.getFromLib('Package')
+    const Package = Contracts.getFromLib('Package')
     this.package = new Package(address)
     log.info(`Deployed Package ${this.package.address}`)
   }

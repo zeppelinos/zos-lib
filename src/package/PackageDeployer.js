@@ -11,7 +11,7 @@ const PackageDeployer = {
   },
 
   async _createPackage() {
-    const Package = ContractsProvider.getFromLib('Package')
+    const Package = Contracts.getFromLib('Package')
     this.package = await Package.new(this.txParams)
   }
 }

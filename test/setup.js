@@ -2,7 +2,7 @@
 
 import Logger from '../src/utils/Logger'
 import truffleContract from 'truffle-contract'
-import ContractsProvider from '../src/utils/ContractsProvider'
+import Contracts from '../src/utils/Contracts'
 
 const DEFAULT_TX_PARAMS = {
   gas: 6721975,
@@ -18,14 +18,14 @@ function muteLogging() {
 function provideContractsFromTruffle() {
   // need to do this because truffle gets contract
   // instances differently in test and production environments
-  ContractsProvider.getByJSONData = (data) => {
+  Contracts.getByJSONData = (data) => {
     const contract = truffleContract(data)
     contract.setProvider(web3.currentProvider)
     contract.defaults(DEFAULT_TX_PARAMS)
     return contract
   }
 
-  global.ContractsProvider = ContractsProvider
+  global.Contracts = Contracts
 }
 
 muteLogging()
