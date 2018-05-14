@@ -53,7 +53,7 @@ export default function shouldBehaveLikeImplementationDirectory(owner, anotherAd
 
       it('allows to unregister a contract', async function () {
         await this.directory.setImplementation(contractName, this.implementation_v0, { from })
-        await this.directory.setImplementation(contractName, ZERO_ADDRESS, { from })
+        await this.directory.unsetImplementation(contractName, { from })
 
         const registeredImplementation = await this.directory.getImplementation(contractName)
         assert.equal(registeredImplementation, ZERO_ADDRESS)
