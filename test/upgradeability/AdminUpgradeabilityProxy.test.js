@@ -9,7 +9,6 @@ const DummyImplementation = artifacts.require('DummyImplementation')
 const ClashingImplementation = artifacts.require('ClashingImplementation')
 
 const AdminUpgradeabilityProxy = artifacts.require('AdminUpgradeabilityProxy')
-const UpgradeabilityProxyFactory = artifacts.require('UpgradeabilityProxyFactory')
 
 contract('AdminUpgradeabilityProxy', ([_, admin, anotherAccount]) => {
   before(async function () {
@@ -96,13 +95,13 @@ contract('AdminUpgradeabilityProxy', ([_, admin, anotherAccount]) => {
             assert.equal(implementation, this.behavior.address)
           })
 
-          it('emits an event', async function () {
+          it('emits an event', function () {
             assert.equal(this.logs.length, 1)
             assert.equal(this.logs[0].event, 'Upgraded')
             assert.equal(this.logs[0].args.implementation, this.behavior.address)
           })
 
-          it('calls the "initialize" function', async function() {
+          it('calls the \'initialize\' function', async function() {
             const migratable = MigratableMock.at(this.proxyAddress)
             const x = await migratable.x()
             assert.equal(x, 42)
@@ -160,7 +159,7 @@ contract('AdminUpgradeabilityProxy', ([_, admin, anotherAccount]) => {
             assert.equal(this.logs[0].args.implementation, this.behavior_v1.address)
           })
 
-          it('calls the "initialize" function and sends given value to the proxy', async function() {
+          it('calls the \'initialize\' function and sends given value to the proxy', async function() {
             const migratable = MigratableMockV1.at(this.proxyAddress)
 
             const x = await migratable.x()
@@ -187,7 +186,7 @@ contract('AdminUpgradeabilityProxy', ([_, admin, anotherAccount]) => {
               assert.equal(this.logs[0].args.implementation, this.behavior_v2.address)
             })
 
-            it('calls the "migrate" function and sends given value to the proxy', async function() {
+            it('calls the \'migrate\' function and sends given value to the proxy', async function() {
               const migratable = MigratableMockV2.at(this.proxyAddress)
 
               const x = await migratable.x()
@@ -217,7 +216,7 @@ contract('AdminUpgradeabilityProxy', ([_, admin, anotherAccount]) => {
                 assert.equal(this.logs[0].args.implementation, this.behavior_v3.address)
               })
 
-              it('calls the "migrate" function and sends given value to the proxy', async function() {
+              it('calls the \'migrate\' function and sends given value to the proxy', async function() {
                 const migratable = MigratableMockV3.at(this.proxyAddress)
 
                 const x = await migratable.x()
@@ -257,11 +256,11 @@ contract('AdminUpgradeabilityProxy', ([_, admin, anotherAccount]) => {
         })
 
         it('assigns new proxy admin', async function () {
-          const admin = await this.proxy.admin({ from: newAdmin })
-          assert.equal(admin, anotherAccount)
+          const proxyAdmin = await this.proxy.admin({ from: newAdmin })
+          assert.equal(proxyAdmin, anotherAccount)
         })
 
-        it('emits an event', async function () {
+        it('emits an event', function () {
           assert.equal(this.logs.length, 1)
           assert.equal(this.logs[0].event, 'AdminChanged')
           assert.equal(this.logs[0].args.previousAdmin, admin)
@@ -289,17 +288,17 @@ contract('AdminUpgradeabilityProxy', ([_, admin, anotherAccount]) => {
 
   describe('storage', function () {
     it('should store the implementation address in specified location', async function () {
-      const position = web3.sha3("org.zeppelinos.proxy.implementation");
+      const position = web3.sha3('org.zeppelinos.proxy.implementation');
       const implementation = await web3.eth.getStorageAt(this.proxyAddress, position);
 
       assert.equal(implementation, this.implementation_v0);
     })
 
     it('should store the admin proxy in specified location', async function () {
-      const position = web3.sha3("org.zeppelinos.proxy.admin");
-      const admin = await web3.eth.getStorageAt(this.proxyAddress, position);
+      const position = web3.sha3('org.zeppelinos.proxy.admin');
+      const proxyAdmin = await web3.eth.getStorageAt(this.proxyAddress, position);
 
-      assert.equal(admin, admin);
+      assert.equal(proxyAdmin, admin);
     })
   })
 
