@@ -14,7 +14,7 @@ export default class Release {
   }
 
   static async deploy() {
-    return await ReleaseDeployer.deploy.apply(ReleaseDeployer, arguments);
+    return await ReleaseDeployer.deploy(...arguments);
   }
 
 

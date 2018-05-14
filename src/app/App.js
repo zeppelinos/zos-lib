@@ -21,11 +21,11 @@ export default class App {
   }
 
   static async fetch() {
-    return await AppProvider.from.apply(AppProvider, arguments);
+    return await AppProvider.from(...arguments);
   }
 
   static async deploy() {
-    return await AppDeployer.deploy.apply(AppDeployer, arguments);
+    return await AppDeployer.deploy(...arguments);
   }
 
   address() {

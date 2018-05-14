@@ -15,11 +15,11 @@ export default class Package {
   }
 
   static async fetch() {
-    return await PackageProvider.from.apply(PackageProvider, arguments);
+    return await PackageProvider.from(...arguments);
   }
 
   static async deploy() {
-    return await PackageDeployer.deploy.apply(PackageDeployer, arguments);
+    return await PackageDeployer.deploy(...arguments);
   }
 
 
