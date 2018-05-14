@@ -89,7 +89,7 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
    */
   function upgradeToAndCall(address implementation, bytes data) payable external ifAdmin {
     _upgradeTo(implementation);
-    require(this.call.value(msg.value)(data));
+    require(address(this).call.value(msg.value)(data));
   }
 
   /**
