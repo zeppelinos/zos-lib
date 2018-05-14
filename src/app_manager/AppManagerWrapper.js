@@ -36,11 +36,13 @@ export default class AppManagerWrapper {
     const directory = this.currentDirectory()
     await directory.setImplementation(contractName, implementation.address, this.txParams)
     log.info(` Implementation set: ${implementation.address}`)
+    log.out(implementation.address)
     return implementation
   }
 
   async setStdlib(stdlibAddress = 0x0) {
     log.info(`Setting stdlib ${stdlibAddress}...`)
+    log.out(stdlibAddress)
     await this.currentDirectory().setStdlib(stdlibAddress, this.txParams)
     return stdlibAddress
   }
@@ -50,6 +52,7 @@ export default class AppManagerWrapper {
     const AppDirectory = ContractsProvider.getFromLib('AppDirectory')
     const directory = await AppDirectory.new(stdlibAddress, this.txParams)
     log.info(` App directory: ${directory.address}`)
+    log.out(directory.address)
     await this.package.addVersion(versionName, directory.address, this.txParams)
     log.info(` Added version: ${versionName}`)
     await this.appManager.setVersion(versionName, this.txParams)
@@ -69,11 +72,13 @@ export default class AppManagerWrapper {
     const logs = decodeLogs(receipt.logs, UpgradeabilityProxyFactory)
     const address = logs.find(l => l.event === 'ProxyCreated').args.proxy
     log.info(` ${contractName} proxy: ${address}`)
+    log.out(address)
     return new contractClass(address)
   }
 
   async upgradeProxy(proxyAddress, contractClass, contractName, initMethodName, initArgs) {
-    log.info(`Updating ${contractName} proxy...`)
+    log.info(`Updating ${contractName} proxy with address ${proxyAddress}...`)
+    log.out(proxyAddress)
     const { receipt } = typeof(initArgs) === 'undefined'
       ? await this._updateProxy(proxyAddress, contractName)
       : await this._updateProxyAndCall(proxyAddress, contractClass, contractName, initMethodName, initArgs)
