@@ -18,9 +18,7 @@ import behaviors from './test'
 import App from './app/App'
 
 // package
-import PackageWrapper from './package/PackageWrapper'
-import PackageDeployer from './package/PackageDeployer'
-import PackageProvider from './package/PackageProvider'
+import Package from './package/Package'
 
 export {
   version,
@@ -32,7 +30,5 @@ export {
   FileSystem,
   Contracts,
   App,
-  PackageWrapper,
-  PackageDeployer,
-  PackageProvider,
+  Package,
 }
