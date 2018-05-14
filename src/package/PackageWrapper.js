@@ -1,8 +1,8 @@
 import Logger from '../utils/Logger'
 
-const log = new Logger('Distribution')
+const log = new Logger('Package')
 
-export default class DistributionWrapper {
+export default class PackageWrapper {
   constructor(_package, txParams = {}) {
     this.package = _package
     this.txParams = txParams

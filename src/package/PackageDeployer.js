@@ -1,10 +1,13 @@
-import DistributionWrapper from './DistributionWrapper'
+import PackageWrapper from './PackageWrapper'
 
-export default {
+/**
+ *
+ */
+const PackageDeployer = {
   async call(txParams = {}) {
     this.txParams = txParams
     await this._createPackage();
-    return new DistributionWrapper(this.package, txParams)
+    return new PackageWrapper(this.package, txParams)
   },
 
   async _createPackage() {
@@ -12,3 +15,5 @@ export default {
     this.package = await Package.new(this.txParams)
   }
 }
+
+export default PackageDeployer

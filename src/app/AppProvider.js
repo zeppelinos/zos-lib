@@ -1,6 +1,9 @@
 import AppWrapper from './AppWrapper'
 
-export default {
+/**
+ * 
+ */ 
+const AppProvider = {
   async from(address, txParams = {}) {
     this._fetchPackagedApp(address)
     await this._fetchFactory()
@@ -33,3 +36,5 @@ export default {
     this.factory = new UpgradeabilityProxyFactory(factoryAddress)
   }
 }
+
+export default AppProvider;

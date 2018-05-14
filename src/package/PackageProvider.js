@@ -1,12 +1,12 @@
 import Logger from '../utils/Logger'
-import DistributionWrapper from './DistributionWrapper'
+import PackageWrapper from './PackageWrapper'
 
-const log = new Logger('DistributionProvider')
+const log = new Logger('PackageProvider')
 
-export  default {
+const PackageProvider = {
   from(address, txParams = {}) {
     this._fetchPackage(address);
-    return new DistributionWrapper(this.package, txParams)
+    return new PackageWrapper(this.package, txParams)
   },
 
   _fetchPackage(address) {
@@ -16,3 +16,5 @@ export  default {
     log.info(`Deployed Package ${this.package.address}`)
   }
 }
+
+export default PackageProvider

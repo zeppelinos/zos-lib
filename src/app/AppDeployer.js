@@ -5,7 +5,7 @@ import AppWrapper from './AppWrapper'
 
 const log = new Logger('AppDeployer')
 
-export default {
+const AppDeployer = {
   async call(version, txParams = {}) {
     return this.withStdlib(version, 0x0, txParams)
   },
@@ -55,3 +55,5 @@ export default {
     log.info(`Added version ${version}`)
   }
 }
+
+export default AppDeployer

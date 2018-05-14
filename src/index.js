@@ -19,10 +19,10 @@ import AppWrapper from './app/AppWrapper'
 import AppDeployer from './app/AppDeployer'
 import AppProvider from './app/AppProvider'
 
-// distribution
-import DistributionWrapper from './distribution/DistributionWrapper'
-import DistributionDeployer from './distribution/DistributionDeployer'
-import DistributionProvider from './distribution/DistributionProvider'
+// package
+import PackageWrapper from './package/PackageWrapper'
+import PackageDeployer from './package/PackageDeployer'
+import PackageProvider from './package/PackageProvider'
 
 export {
   version,
@@ -36,7 +36,7 @@ export {
   AppWrapper,
   AppDeployer,
   AppProvider,
-  DistributionWrapper,
-  DistributionDeployer,
-  DistributionProvider,
+  PackageWrapper,
+  PackageDeployer,
+  PackageProvider,
 }
