@@ -1,7 +1,7 @@
 'use strict';
 
 import Logger from '../utils/Logger'
-import AppWrapper from './AppWrapper'
+import App from './App'
 
 const log = new Logger('AppDeployer')
 
@@ -17,7 +17,7 @@ const AppDeployer = {
     await this.createAppDirectory(stdlibAddress)
     await this.addVersion(version)
     await this.createApp(version)
-    return new AppWrapper(this.packagedApp, this.factory, this.appDirectory, this.package, this.version, this.txParams)
+    return new App(this.packagedApp, this.factory, this.appDirectory, this.package, this.version, this.txParams)
   },
 
   async createApp(version) {

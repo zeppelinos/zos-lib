@@ -15,7 +15,7 @@ import Contracts from './utils/Contracts'
 import behaviors from './test'
 
 // app management
-import AppWrapper from './app/AppWrapper'
+import App from './app/App'
 import AppDeployer from './app/AppDeployer'
 import AppProvider from './app/AppProvider'
 
@@ -33,7 +33,7 @@ export {
   Logger,
   FileSystem,
   Contracts,
-  AppWrapper,
+  App,
   AppDeployer,
   AppProvider,
   PackageWrapper,

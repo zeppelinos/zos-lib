@@ -6,9 +6,9 @@ import encodeCall from '../helpers/encodeCall'
 
 const log = new Logger('App')
 
-export default class AppWrapper {
-  constructor(app, factory, appDirectory, _package, version, txParams = {}) {
-    this.app = app
+export default class App {
+  constructor(_app, factory, appDirectory, _package, version, txParams = {}) {
+    this._app = _app
     this.factory = factory
     this.package = _package
     this.version = version
@@ -18,7 +18,7 @@ export default class AppWrapper {
   }
 
   address() {
-    return this.app.address
+    return this._app.address
   }
 
   currentDirectory() {
@@ -52,7 +52,7 @@ export default class AppWrapper {
     log.info(` App directory: ${directory.address}`)
     await this.package.addVersion(versionName, directory.address, this.txParams)
     log.info(` Added version: ${versionName}`)
-    await this.app.setVersion(versionName, this.txParams)
+    await this._app.setVersion(versionName, this.txParams)
     log.info(` Version set`)
     this.directories[versionName] = directory
     this.version = versionName
@@ -81,25 +81,25 @@ export default class AppWrapper {
   }
 
   async _createProxy(contractName) {
-    return this.app.create(contractName, this.txParams)
+    return this._app.create(contractName, this.txParams)
   }
 
   async _createProxyAndCall(contractClass, contractName, initMethodName, initArgs) {
     const initMethod = this._validateInitMethod(contractClass, initMethodName, initArgs)
     const initArgTypes = initMethod.inputs.map(input => input.type)
     const callData = encodeCall(initMethodName, initArgTypes, initArgs)
-    return this.app.createAndCall(contractName, callData, this.txParams)
+    return this._app.createAndCall(contractName, callData, this.txParams)
   }
 
   async _updateProxy(proxyAddress, contractName) {
-    return this.app.upgrade(proxyAddress, contractName, this.txParams)
+    return this._app.upgrade(proxyAddress, contractName, this.txParams)
   }
 
   async _updateProxyAndCall(proxyAddress, contractClass, contractName, initMethodName, initArgs) {
     const initMethod = this._validateInitMethod(contractClass, initMethodName, initArgs)
     const initArgTypes = initMethod.inputs.map(input => input.type)
     const callData = encodeCall(initMethodName, initArgTypes, initArgs)
-    return this.app.upgradeAndCall(proxyAddress, contractName, callData, this.txParams)
+    return this._app.upgradeAndCall(proxyAddress, contractName, callData, this.txParams)
   }
 
   _validateInitMethod(contractClass, initMethodName, initArgs) {
