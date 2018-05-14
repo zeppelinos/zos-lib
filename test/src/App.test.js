@@ -1,7 +1,6 @@
 'use strict';
 
-import AppDeployer from '../../src/app/AppDeployer';
-import AppProvider from '../../src/app/AppProvider';
+import App from '../../src/app/App';
 
 const ImplV1 = artifacts.require('DummyImplementation');
 const ImplV2 = artifacts.require('DummyImplementationV2');
@@ -48,7 +47,7 @@ contract('App', function ([_, owner]) {
 
   describe('without stdlib', function () {
     beforeEach('deploying', async function () {
-      this.app = await AppDeployer.call(initialVersion, txParams)
+      this.app = await App.deploy(initialVersion, txParams)
     });
 
     describe('deploy', function () {
@@ -57,7 +56,7 @@ contract('App', function ([_, owner]) {
 
     describe('connect', function () {
       beforeEach('connecting to existing instance', async function () {
-        const connectedApp = await AppProvider.from(this.app.address(), txParams);
+        const connectedApp = await App.fetch(this.app.address(), txParams);
         this.app = connectedApp;
       });
 
@@ -182,7 +181,7 @@ contract('App', function ([_, owner]) {
 
   describe('with stdlib', function () {
     beforeEach('deploying', async function () {
-      this.app = await AppDeployer.withStdlib(initialVersion, stdlibAddress, txParams);
+      this.app = await App.deployWithStdlib(initialVersion, stdlibAddress, txParams);
     });
 
     describe('deploy', function () {
@@ -192,7 +191,7 @@ contract('App', function ([_, owner]) {
 
     describe('connect', function () {
       beforeEach('connecting to existing instance', async function () {
-        const connectedApp = await AppProvider.from(this.app.address(), txParams);
+        const connectedApp = await App.fetch(this.app.address(), txParams);
         this.app = connectedApp;
       });
 
@@ -203,7 +202,7 @@ contract('App', function ([_, owner]) {
 
   describe('with stdlib', function () {
     beforeEach('deploying', async function () {
-      this.app = await AppDeployer.withStdlib(initialVersion, stdlibAddress, txParams);
+      this.app = await App.deployWithStdlib(initialVersion, stdlibAddress, txParams);
     });
 
     describe('deploy', function () {

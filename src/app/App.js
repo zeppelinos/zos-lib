@@ -4,6 +4,9 @@ import Logger from '../utils/Logger'
 import decodeLogs from '../helpers/decodeLogs'
 import encodeCall from '../helpers/encodeCall'
 
+import AppProvider from './AppProvider'
+import AppDeployer from './AppDeployer'
+
 const log = new Logger('App')
 
 export default class App {
@@ -16,6 +19,19 @@ export default class App {
     this.directories[version] = appDirectory
     this.txParams = txParams
   }
+
+  static async fetch() {
+    return await AppProvider.from.apply(AppProvider, arguments);
+  }
+
+  static async deploy() {
+    return await AppDeployer.call.apply(AppDeployer, arguments);
+  }
+
+  static async deployWithStdlib() {
+    return await AppDeployer.withStdlib.apply(AppDeployer, arguments);
+  }
+
 
   address() {
     return this._app.address

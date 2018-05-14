@@ -16,8 +16,6 @@ import behaviors from './test'
 
 // app management
 import App from './app/App'
-import AppDeployer from './app/AppDeployer'
-import AppProvider from './app/AppProvider'
 
 // package
 import PackageWrapper from './package/PackageWrapper'
@@ -34,8 +32,6 @@ export {
   FileSystem,
   Contracts,
   App,
-  AppDeployer,
-  AppProvider,
   PackageWrapper,
   PackageDeployer,
   PackageProvider,
