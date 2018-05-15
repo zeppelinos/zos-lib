@@ -4,7 +4,7 @@ import shouldBehaveLikeImplementationDirectory from '../../../src/test/behaviors
 const DummyImplementation = artifacts.require('DummyImplementation');
 const Release = artifacts.require('Release');
 
-contract('Release', ([_, developer, anotherAddress, implementation_v0, implementation_v1]) => {
+contract('Release', ([_, developer, anotherAddress]) => {
 
   beforeEach("initializing a new release", async function () {
     this.release = await Release.new({ from: developer });
