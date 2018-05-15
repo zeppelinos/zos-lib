@@ -41,5 +41,6 @@ contract ImplementationDirectory is ImplementationProvider, Ownable {
 
   function unsetImplementation(string contractName) public onlyOwner {
     implementations[contractName] = address(0);
+    emit ImplementationChanged(contractName, address(0));
   }
 }
