@@ -20,9 +20,12 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
    */
   event AdminChanged(address previousAdmin, address newAdmin);
 
-  // Storage slot of the admin of the contract
-  bytes32 private constant ADMIN_SLOT =
-    0x10d6a54a4754c8869d6886b5f5d7fbfa5b4522237ea5c60d11bc4e7a1ff9390b;
+  /**
+   * @dev Storage slot with the admin of the contract.
+   * @dev This is the hash of "org.zeppelinos.proxy.admin", and is validated in
+   * @dev the constructor.
+   */
+  bytes32 private constant ADMIN_SLOT = 0x10d6a54a4754c8869d6886b5f5d7fbfa5b4522237ea5c60d11bc4e7a1ff9390b;
 
   /**
    * @dev Will run this function if the sender is the admin.
