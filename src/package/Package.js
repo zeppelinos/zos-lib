@@ -1,12 +1,25 @@
 import Logger from '../utils/Logger'
+import Contracts from '../utils/Contracts'
 
-const log = new Logger('Distribution')
+import PackageDeployer from './PackageDeployer'
+import PackageProvider from './PackageProvider'
 
-export default class DistributionWrapper {
+const log = new Logger('Package')
+
+export default class Package {
   constructor(_package, txParams = {}) {
     this.package = _package
     this.txParams = txParams
   }
+
+  static async fetch() {
+    return await PackageProvider.from(...arguments);
+  }
+
+  static async deploy() {
+    return await PackageDeployer.deploy(...arguments);
+  }
+
 
   address() {
     return this.package.address
@@ -18,13 +31,13 @@ export default class DistributionWrapper {
 
   async getRelease(version) {
     const releaseAddress = await this.package.getVersion(version)
-    const Release = ContractsProvider.getByName('Release')
+    const Release = Contracts.getFromLib('Release')
     return new Release(releaseAddress)
   }
 
   async newVersion(version) {
     log.info('Adding new version...')
-    const Release = ContractsProvider.getByName('Release')
+    const Release = Contracts.getFromLib('Release')
     const release = await Release.new(this.txParams)
     await this.package.addVersion(version, release.address, this.txParams)
     log.info(' Added version:', version)
