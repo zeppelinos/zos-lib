@@ -1,6 +1,7 @@
 {
   "name": "zos-lib-complex-example",
   "version": "0.0.1",
+  "private": true,
   "description": "Example of using the upgradeability-lib's App",
   "main": "index.js",
   "scripts": {
