@@ -1,4 +1,7 @@
 module.exports = {
   copyPackages: ['zeppelin-solidity'],
-  skipFiles: ['lifecycle/Migrations.sol']
+  skipFiles: [
+    'lifecycle/Migrations.sol',
+    'mocks',
+  ]
 };

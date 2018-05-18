@@ -41,9 +41,17 @@ export default class App {
     return this.directories[this.version]
   }
 
+  async currentStdlib() {
+    return this.currentDirectory().stdlib()
+  }
+
   async getImplementation(contractName) {
     const directory = this.currentDirectory()
     return directory.getImplementation(contractName)
+  }
+
+  async getProxyImplementation(proxyAddress) {
+    return this._app.getProxyImplementation(proxyAddress, this.txParams)
   }
 
   async setImplementation(contractClass, contractName) {
