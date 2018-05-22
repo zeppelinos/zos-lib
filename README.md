@@ -15,6 +15,7 @@ This library is considered low level. For regular development, we recommend the 
   - [Install](#install)
   - [Examples](#examples)
 - [Links](#links)
+- [Security](#security)
 - [License](#license)
 
 ## Getting Started
@@ -40,6 +41,9 @@ npm install zos-lib --save
 
 ### Code
 - [ZeppelinOS Command Line Interface (`zos-cli`)](https://github.com/zeppelinos/zos-cli)
+
+## Security
+If you find a security issue, please contact us at security@zeppelinos.org. We give rewards for reported issues, according to impact and severity.
 
 ## License
 
