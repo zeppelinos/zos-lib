@@ -28,8 +28,8 @@ npm install zos-lib --save
 
 ### Examples
 
-- [Develop and deploy a single smart contract which can be upgraded](#single) (for bugfixing or adding new features).
-- [Develop and operate a complex upgradeable app](#complex) with multiple smart contracts which are connected to the zOS upgradeable standard libraries.
+- [Develop and deploy a single upgradeable smart contract](https://docs.zeppelinos.org/docs/low_level_contract.html) (for bugfixing or adding new features)
+- [Develop and operate a complex upgradeable app](https://docs.zeppelinos.org/docs/low_level_app.html) with multiple smart contracts which are connected to the ZeppelinOS upgradeable standard library
 
 ## Links
 
