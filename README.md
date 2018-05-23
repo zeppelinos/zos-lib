@@ -36,6 +36,7 @@ npm install zos-lib --save
 
 ### Documentation
 - [ZeppelinOS](http://zeppelinos.org)
+- [Documentation site](https://docs.zeppelinos.org/)
 - [ZeppelinOS Blog](https://blog.zeppelinos.org)
 - [Proxy Patterns](https://blog.zeppelinos.org/proxy-patterns)
 
