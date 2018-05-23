@@ -18,7 +18,7 @@ contract Package is Ownable {
   event VersionAdded(string version, ImplementationProvider provider);
 
   /*
-   * @dev Mapping for version and their implementation providers.
+   * @dev Mapping associating versions and their implementation providers.
    */
   mapping (string => ImplementationProvider) internal versions;
 
@@ -46,7 +46,7 @@ contract Package is Ownable {
   /**
    * @dev Checks whether a version is present in the package.
    * @param version Name of the version.
-   * @return true if the version is already in the package, otherwise, false.
+   * @return true if the version is already in the package, false otherwise.
    */
   function hasVersion(string version) public view returns (bool) {
     return address(versions[version]) != address(0);

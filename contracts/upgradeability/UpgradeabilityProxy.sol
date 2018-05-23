@@ -5,8 +5,8 @@ import 'openzeppelin-solidity/contracts/AddressUtils.sol';
 
 /**
  * @title UpgradeabilityProxy
- * @dev This contract implements a proxy that allows to change implementation
- * address on which it will delegate.
+ * @dev This contract implements a proxy that allows to change the
+ * implementation address to which it will delegate.
  * Such a change is called an implementation upgrade.
  */
 contract UpgradeabilityProxy is Proxy {

@@ -26,8 +26,9 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
   bytes32 private constant ADMIN_SLOT = 0x10d6a54a4754c8869d6886b5f5d7fbfa5b4522237ea5c60d11bc4e7a1ff9390b;
 
   /**
-   * @dev Modifier to ensure that the sender is the admin.
-   * Otherwise it will fall back to the implementation.
+   * @dev Modifier to check whether the `msg.sender` is the admin.
+   * If it is, it will run the function. Otherwise, it will delegate the call
+   * to the implementation.
    */
   modifier ifAdmin() {
     if (msg.sender == _admin()) {
@@ -39,7 +40,7 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
 
   /**
    * Contract constructor.
-   * It sets the sender as the proxy administrator.
+   * It sets the `msg.sender` as the proxy administrator.
    * @param _implementation address of the initial implementation.
    */
   function AdminUpgradeabilityProxy(address _implementation) UpgradeabilityProxy(_implementation) public {
@@ -65,7 +66,7 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
   /**
    * @dev Changes the admin of the proxy.
    * Only the current admin can call this function.
-   * @param newAdmin Address to transfer proxy administration.
+   * @param newAdmin Address to transfer proxy administration to.
    */
   function changeAdmin(address newAdmin) external ifAdmin {
     require(newAdmin != address(0));
@@ -75,7 +76,7 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
 
   /**
    * @dev Upgrade the backing implementation of the proxy.
-   * Only the current admin can call this function.
+   * Only the admin can call this function.
    * @param newImplementation Address of the new implementation.
    */
   function upgradeTo(address newImplementation) external ifAdmin {

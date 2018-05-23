@@ -15,7 +15,7 @@ contract UpgradeabilityProxyFactory {
 
   /**
    * @dev Creates an upgradeability proxy with an initial implementation.
-   * @param owner Owner of the proxy..
+   * @param owner Proxy owner.
    * @param implementation Address of the initial implementation.
    * @return Address of the new proxy.
    */
@@ -26,9 +26,9 @@ contract UpgradeabilityProxyFactory {
   }
 
   /**
-   * @dev Creates an upgradeability proxy with an initial implementation and calls the implementation.
+   * @dev Creates an upgradeability proxy with an initial implementation and calls it.
    * This is useful to initialize the proxied contract.
-   * @param owner Owner of the proxy.
+   * @param owner Proxy owner.
    * @param implementation Address of the initial implementation.
    * @param data Data to send as msg.data in the low level call.
    * It should include the signature and the parameters of the function to be

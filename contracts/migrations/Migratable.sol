@@ -24,7 +24,7 @@ contract Migratable {
   event Migrated(string contractName, string migrationId);
 
   /**
-   * @dev Mapping of the migrations already applied.
+   * @dev Mapping of the already applied migrations.
    * (contractName => (migrationId => bool))
    */
   mapping (string => mapping (string => bool)) internal migrated;
@@ -43,9 +43,9 @@ contract Migratable {
   }
 
   /**
-   * @dev Modifier to use for the migration of a contract.
+   * @dev Modifier to use in the migration of a contract.
    * @param contractName Name of the contract.
-   * @param requiredMigrationId Identifier of the previous migration required
+   * @param requiredMigrationId Identifier of the previous migration, required
    * to apply new one.
    * @param newMigrationId Identifier of the new migration to be applied.
    */
@@ -60,7 +60,7 @@ contract Migratable {
    * @dev Returns true if the contract migration was applied.
    * @param contractName Name of the contract.
    * @param migrationId Identifier of the migration.
-   * @return true if the contract migration was applied, otherwise, false.
+   * @return true if the contract migration was applied, false otherwise.
    */
   function isMigrated(string contractName, string migrationId) public view returns(bool) {
     return migrated[contractName][migrationId];

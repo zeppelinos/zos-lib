@@ -8,7 +8,7 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 /**
  * @title BaseApp
  * @dev Abstract base contract for upgradeable applications.
- * It handles the creation and upgrade of proxies.
+ * It handles the creation and upgrading of proxies.
  */
 contract BaseApp is Ownable {
   /// @dev Factory that creates proxies.
@@ -30,7 +30,7 @@ contract BaseApp is Ownable {
   function getProvider() internal view returns (ImplementationProvider);
 
   /**
-   * @dev Returns the implementation address for a given contract name, provided by the implementation provider
+   * @dev Returns the implementation address for a given contract name, provided by the `ImplementationProvider`.
    * @param contractName Name of the contract.
    * @return Address where the contract is implemented.
    */
@@ -90,7 +90,7 @@ contract BaseApp is Ownable {
 
   /**
    * @dev Returns the current implementation of a proxy.
-   * This is needed because only the proxy owner can query it.
+   * This is needed because only the proxy admin can query it.
    * @return The address of the current implementation of the proxy.
    */
   function getProxyImplementation(AdminUpgradeabilityProxy proxy) public view returns (address) {
@@ -99,7 +99,7 @@ contract BaseApp is Ownable {
 
   /**
    * @dev Returns the admin of a proxy.
-   * This is needed because only the admin can query it.
+   * Only the admin can query it.
    * @return The address of the current admin of the proxy.
    */
   function getProxyAdmin(AdminUpgradeabilityProxy proxy) public view returns (address) {

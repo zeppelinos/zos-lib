@@ -4,8 +4,8 @@ import "./FreezableImplementationDirectory.sol";
 
 /**
  * @title Release
- * @dev This contract represents a particular stdlib version from a developer
- * It has an immutable reference to the implementations of all contracts that comprise this release.
+ * @dev This contract represents a particular standard library version from a developer.
+ * It has an immutable reference to the implementations of all contracts that comprise it.
  */
 contract Release is FreezableImplementationDirectory {
 
@@ -17,7 +17,7 @@ contract Release is FreezableImplementationDirectory {
 
   /**
    * @dev Constructor function.
-   * It sets the sender as the developer of this release.
+   * It sets the `msg.sender` as the developer of this release.
    */
   function Release() public {
     developer = msg.sender;

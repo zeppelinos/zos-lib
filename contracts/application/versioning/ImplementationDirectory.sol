@@ -29,7 +29,7 @@ contract ImplementationDirectory is ImplementationProvider, Ownable {
   }
 
   /**
-   * @dev Sets the address of a contract implementation in the directory.
+   * @dev Sets the address of the implementation of a contract in the directory.
    * @param contractName Name of the contract.
    * @param implementation Address of the implementation.
    */

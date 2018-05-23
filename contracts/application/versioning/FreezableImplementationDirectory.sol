@@ -11,7 +11,7 @@ import "./ImplementationDirectory.sol";
   bool public frozen;
 
   /**
-   * @dev Modifier that allows functions to be called only when the contract is not frozen.
+   * @dev Modifier that allows functions to be called only before the contract is frozen.
    */
   modifier whenNotFrozen() {
     require(!frozen);

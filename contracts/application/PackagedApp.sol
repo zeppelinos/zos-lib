@@ -10,7 +10,7 @@ import "../upgradeability/UpgradeabilityProxyFactory.sol";
  * This is the standard entry point for an upgradeable app.
  */
 contract PackagedApp is BaseApp {
-  /// @dev Package that store the contract implementation addresses.
+  /// @dev Package that stores the contract implementation addresses.
   Package public package;
   /// @dev App version.
   string public version;
@@ -33,7 +33,7 @@ contract PackagedApp is BaseApp {
 
   /**
    * @dev Sets the current version of the application.
-   * Contract implementations for the given version must have been registered in the package.
+   * Contract implementations for the given version must already be registered in the package.
    * @param newVersion Name of the new version.
    */
   function setVersion(string newVersion) public onlyOwner {
