@@ -3,8 +3,6 @@
 [![Build Status](https://travis-ci.org/zeppelinos/zos-lib.svg?branch=master)](https://travis-ci.org/zeppelinos/zos-lib)
 [![Coverage Status](https://coveralls.io/repos/github/zeppelinos/zos-lib/badge.svg?branch=master)](https://coveralls.io/github/zeppelinos/zos-lib?branch=master)
 
-:warning: **Under heavy development: do not use in production** :warning:
-
 This package provides a library to develop, deploy and operate upgradeable smart contracts on Ethereum and every other EVM and eWASM-powered blockchain.
 
 This library is considered low level. For regular development, we recommend the CLI-aided development experience with the [ZeppelinOS CLI](https://github.com/zeppelinos/zos-cli).
@@ -24,7 +22,7 @@ This library is considered low level. For regular development, we recommend the 
 
 To install `zos-lib` simply go to your project's root directory and execute:
 ```sh
-npm install zos-lib --save
+npm install zos-lib
 ```
 
 ### Examples
@@ -41,6 +39,7 @@ npm install zos-lib --save
 - [Proxy Patterns](https://blog.zeppelinos.org/proxy-patterns)
 
 ### Code
+- [ZeppelinOS Library (this repository)](https://github.com/zeppelinos/zos-lib)
 - [ZeppelinOS Command Line Interface (`zos-cli`)](https://github.com/zeppelinos/zos-cli)
 
 ## Security
