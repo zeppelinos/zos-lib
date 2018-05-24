@@ -1,15 +1,14 @@
 'use strict'
 require('../../setup')
 
+import tmp from 'tmp';
 import FileSystem from '../../../src/utils/FileSystem'
 
-var tmp = require('tmp');
-
-contract.only('FileSystem', () => {
+contract('FileSystem', () => {
   it('can remove an empty directory', async function () {
     var testDir = tmp.dirSync()
     FileSystem.exists(testDir.name).should.be.true
-    FileSystem.rmtree(testDir.name)
+    FileSystem.removeTree(testDir.name)
     FileSystem.exists(testDir.name).should.be.false
   })
 
@@ -18,7 +17,7 @@ contract.only('FileSystem', () => {
     var testFilePath = `${testDir.name}/testfile`
     FileSystem.write(testFilePath, 'dummy')
     FileSystem.exists(testFilePath).should.be.true
-    FileSystem.rmtree(testDir.name)
+    FileSystem.removeTree(testDir.name)
     FileSystem.exists(testDir.name).should.be.false
   })
 
