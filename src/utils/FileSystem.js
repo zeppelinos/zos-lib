@@ -56,20 +56,20 @@ export function copy(source, target) {
 
 /**
  * Remove directory recursively
- * @param {string} dir_path
+ * @param {string} dirPath
  * @see https://stackoverflow.com/a/42505874/3027390
  */
 export function removeTree(dirPath) {
-  if (fs.existsSync(dir_path)) {
-    fs.readdirSync(dir_path).forEach(function(entry) {
-      var entry_path = path.join(dir_path, entry);
-      if (fs.lstatSync(entry_path).isDirectory()) {
-        rimraf(entry_path);
+  if (fs.existsSync(dirPath)) {
+    fs.readdirSync(dirPath).forEach(function(entry) {
+      var entryPath = path.join(dirPath, entry);
+      if (fs.lstatSync(entryPath).isDirectory()) {
+        removeTree(entryPath);
       } else {
-        fs.unlinkSync(entry_path);
+        fs.unlinkSync(entryPath);
       }
     });
-    fs.rmdirSync(dir_path);
+    fs.rmdirSync(dirPath);
   }
 }
 
