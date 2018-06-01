@@ -1,44 +1,44 @@
-import colors from 'colors'
+import colors from 'colors';
 
 const defaults = {
   verbose: false,
-  silent: true
+  silent: true,
 };
 
 export default class Logger {
-  static silent(value) {
+  static silent (value) {
     defaults.silent = value;
   }
 
-  static verbose(value) {
+  static verbose (value) {
     defaults.verbose = value;
   }
 
-  constructor(prefix, opts) {
+  constructor (prefix, opts) {
     this.prefix = prefix;
     this._opts = opts;
   }
 
-  info(msg) {
-    this.log(msg, 'green')
+  info (msg) {
+    this.log(msg, 'green');
   }
 
-  error(msg) {
-    this.log(msg, 'red')
+  error (msg) {
+    this.log(msg, 'red');
   }
 
-  log(msg, color) {
+  log (msg, color) {
     if (this.opts.silent) {
       return;
     }
     if (this.opts.verbose) {
-      console.error(`[${this.prefix}] ${msg}`[color])
+      console.error(`[${this.prefix}] ${msg}`[color]);
     } else {
-      console.error(msg[color])
+      console.error(msg[color]);
     }
   }
 
-  get opts() {
-    return Object.assign({}, this._opts, defaults)
+  get opts () {
+    return Object.assign({}, this._opts, defaults);
   }
 }

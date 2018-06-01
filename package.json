@@ -8,7 +8,11 @@
     "test_root": "scripts/test.sh",
     "test": "npm run test_root && npm run test_examples",
     "lint:sol": "solium -d contracts",
-    "lint:sol:fix": "solium -d contracts --fix"
+    "lint:sol:fix": "solium -d contracts --fix",
+    "lint:js": "eslint src",
+    "lint:js:fix": "eslint src --fix",
+    "lint": "npm run lint:sol && npm run lint:js",
+    "lint:fix": "npm run lint:sol:fix && npm run lint:js:fix"
   },
   "repository": {
     "type": "git",
@@ -49,6 +53,12 @@
     "chai-as-promised": "^7.1.1",
     "chai-bignumber": "^2.0.2",
     "coveralls": "^3.0.0",
+    "eslint": "^4.19.1",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0",
     "ethereumjs-abi": "^0.6.5",
     "mock-dependency": "file:test/mocks/mock-dependency",
     "solidity-coverage": "^0.4.15",
