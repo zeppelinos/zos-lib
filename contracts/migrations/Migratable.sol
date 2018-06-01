@@ -49,8 +49,14 @@ contract Migratable {
    * to apply new one.
    * @param newMigrationId Identifier of the new migration to be applied.
    */
-  modifier isMigration(string contractName, string requiredMigrationId, string newMigrationId) {
-    require(isMigrated(contractName, requiredMigrationId) && !isMigrated(contractName, newMigrationId));
+  modifier isMigration(
+    string contractName,
+    string requiredMigrationId,
+    string newMigrationId)
+  {
+    require(
+      isMigrated(contractName, requiredMigrationId) &&
+      !isMigrated(contractName, newMigrationId));
     _;
     emit Migrated(contractName, newMigrationId);
     migrated[contractName][newMigrationId] = true;
@@ -62,7 +68,9 @@ contract Migratable {
    * @param migrationId Identifier of the migration.
    * @return true if the contract migration was applied, false otherwise.
    */
-  function isMigrated(string contractName, string migrationId) public view returns(bool) {
+  function isMigrated(string contractName, string migrationId)
+    public view returns(bool)
+  {
     return migrated[contractName][migrationId];
   }
 }

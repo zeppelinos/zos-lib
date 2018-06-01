@@ -2,6 +2,7 @@ pragma solidity ^0.4.21;
 
 import "./FreezableImplementationDirectory.sol";
 
+
 /**
  * @title Release
  * @dev This contract represents a particular standard library version from a developer.

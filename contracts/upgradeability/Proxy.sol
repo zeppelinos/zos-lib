@@ -1,5 +1,6 @@
 pragma solidity ^0.4.21;
 
+
 /**
  * @title Proxy
  * @dev Implements delegation of calls to other contracts, with proper
@@ -28,6 +29,7 @@ contract Proxy {
    * @param implementation Address to delegate.
    */
   function _delegate(address implementation) internal {
+    // solium-disable-next-line security/no-inline-assembly
     assembly {
       // Copy msg.data. We take full control of memory in this inline assembly
       // block because it will not return to Solidity code. We overwrite the

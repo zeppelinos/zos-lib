@@ -2,11 +2,12 @@ pragma solidity ^0.4.21;
 
 import "./ImplementationDirectory.sol";
 
+
 /**
  * @title FreezableImplementationDirectory
  * @dev Implementation directory which can be made irreversibly immutable by the owner.
  */
- contract FreezableImplementationDirectory is ImplementationDirectory {
+contract FreezableImplementationDirectory is ImplementationDirectory {
   /// @dev Mutability state of the directory.
   bool public frozen;
 
@@ -32,7 +33,12 @@ import "./ImplementationDirectory.sol";
    * @param contractName Name of the contract.
    * @param implementation Address where the contract is implemented.
    */
-  function setImplementation(string contractName, address implementation) public whenNotFrozen {
+  function setImplementation(
+    string contractName,
+    address implementation
+  )
+    public whenNotFrozen
+  {
     super.setImplementation(contractName, implementation);
   }
 }
