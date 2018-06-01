@@ -4,6 +4,7 @@ import "./BaseApp.sol";
 import "./versioning/Package.sol";
 import "../upgradeability/UpgradeabilityProxyFactory.sol";
 
+
 /**
  * @title PackagedApp
  * @dev App for an upgradeable project that can use different versions.
@@ -21,7 +22,11 @@ contract PackagedApp is BaseApp {
    * @param _version Initial version of the app.
    * @param _factory Proxy factory.
    */
-  function PackagedApp(Package _package, string _version, UpgradeabilityProxyFactory _factory)
+  function PackagedApp(
+    Package _package,
+    string _version,
+    UpgradeabilityProxyFactory _factory
+  )
     BaseApp(_factory)
     public
   {

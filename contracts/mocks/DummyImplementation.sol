@@ -1,8 +1,10 @@
 pragma solidity ^0.4.21;
 
+
 contract Impl {
-  function version() public pure returns (string); 
+  function version() public pure returns (string);
 }
+
 
 contract DummyImplementation {
   uint256 public value;
@@ -27,6 +29,7 @@ contract DummyImplementation {
     return "V1";
   }
 }
+
 
 contract DummyImplementationV2 is DummyImplementation {
   function migrate(uint256 newVal) public {

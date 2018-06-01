@@ -2,6 +2,7 @@ pragma solidity ^0.4.21;
 
 import "../migrations/Migratable.sol";
 
+
 /**
  * @title MigratableMock
  * @dev This contract is a mock to test upgradeability functionality
@@ -11,7 +12,9 @@ contract MigratableMock is Migratable {
 
   function MigratableMock() public {}
 
-  function initialize(uint256 value) public payable isInitializer("InitializableMock", "0") {
+  function initialize(uint256 value)
+    public payable isInitializer("InitializableMock", "0")
+  {
     x = value;
   }
 

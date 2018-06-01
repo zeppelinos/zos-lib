@@ -3,6 +3,7 @@ pragma solidity ^0.4.21;
 import "./ImplementationProvider.sol";
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
+
 /**
  * @title Package
  * @dev Collection of contracts grouped into versions.
@@ -27,7 +28,9 @@ contract Package is Ownable {
    * @param version Name of the version.
    * @return The implementation provider of the version.
    */
-  function getVersion(string version) public view returns (ImplementationProvider) {
+  function getVersion(string version)
+    public view returns (ImplementationProvider)
+  {
     ImplementationProvider provider = versions[version];
     return provider;
   }
@@ -37,7 +40,13 @@ contract Package is Ownable {
    * @param version Name of the version.
    * @param provider ImplementationProvider associated with the version.
    */
-  function addVersion(string version, ImplementationProvider provider) public onlyOwner {
+  function addVersion(
+    string version,
+    ImplementationProvider provider
+  )
+    public
+    onlyOwner
+  {
     require(!hasVersion(version));
     versions[version] = provider;
     emit VersionAdded(version, provider);
@@ -58,7 +67,9 @@ contract Package is Ownable {
    * @param contractName Name of the contract.
    * @return Address where the contract is implemented.
    */
-  function getImplementation(string version, string contractName) public view returns (address) {
+  function getImplementation(string version, string contractName)
+    public view returns (address)
+  {
     ImplementationProvider provider = getVersion(version);
     return provider.getImplementation(contractName);
   }

@@ -1,6 +1,7 @@
 pragma solidity ^0.4.21;
 
-import './AdminUpgradeabilityProxy.sol';
+import "./AdminUpgradeabilityProxy.sol";
+
 
 /**
  * @title UpgradeabilityProxyFactory
@@ -19,7 +20,13 @@ contract UpgradeabilityProxyFactory {
    * @param implementation Address of the initial implementation.
    * @return Address of the new proxy.
    */
-  function createProxy(address owner, address implementation) public returns (AdminUpgradeabilityProxy) {
+  function createProxy(
+    address owner,
+    address implementation
+  )
+    public
+    returns (AdminUpgradeabilityProxy)
+  {
     AdminUpgradeabilityProxy proxy = _createProxy(implementation);
     proxy.changeAdmin(owner);
     return proxy;
@@ -36,9 +43,18 @@ contract UpgradeabilityProxyFactory {
    * https://solidity.readthedocs.io/en/develop/abi-spec.html#function-selector-and-argument-encoding.
    * @return Address of the new proxy.
    */
-  function createProxyAndCall(address owner, address implementation, bytes data) public payable returns (AdminUpgradeabilityProxy) {
+  function createProxyAndCall(
+    address owner,
+    address implementation,
+    bytes data
+  )
+    public
+    payable
+    returns (AdminUpgradeabilityProxy)
+  {
     AdminUpgradeabilityProxy proxy = _createProxy(implementation);
     proxy.changeAdmin(owner);
+    // solium-disable-next-line security/no-call-value
     require(address(proxy).call.value(msg.value)(data));
     return proxy;
   }
@@ -48,8 +64,11 @@ contract UpgradeabilityProxyFactory {
    * @param implementation Address of the initial implementation.
    * @return Address of the new proxy.
    */
-  function _createProxy(address implementation) internal returns (AdminUpgradeabilityProxy) {
-    AdminUpgradeabilityProxy proxy = new AdminUpgradeabilityProxy(implementation);
+  function _createProxy(address implementation)
+    internal returns (AdminUpgradeabilityProxy)
+  {
+    AdminUpgradeabilityProxy proxy = new AdminUpgradeabilityProxy(
+      implementation);
     emit ProxyCreated(proxy);
     return proxy;
   }
