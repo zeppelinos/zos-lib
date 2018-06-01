@@ -5,6 +5,7 @@ import "../upgradeability/AdminUpgradeabilityProxy.sol";
 import "../upgradeability/UpgradeabilityProxyFactory.sol";
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
+
 /**
  * @title BaseApp
  * @dev Abstract base contract for upgradeable applications.
@@ -24,17 +25,13 @@ contract BaseApp is Ownable {
   }
 
   /**
-   * @dev Abstract function to return the implementation provider.
-   * @return The implementation provider.
-   */
-  function getProvider() internal view returns (ImplementationProvider);
-
-  /**
    * @dev Returns the implementation address for a given contract name, provided by the `ImplementationProvider`.
    * @param contractName Name of the contract.
    * @return Address where the contract is implemented.
    */
-  function getImplementation(string contractName) public view returns (address) {
+  function getImplementation(string contractName)
+    public view returns (address)
+  {
     return getProvider().getImplementation(contractName);
   }
 
@@ -43,7 +40,10 @@ contract BaseApp is Ownable {
    * @param contractName Name of the contract.
    * @return Address of the new proxy.
    */
-  function create(string contractName) public returns (AdminUpgradeabilityProxy) {
+  function create(string contractName)
+    public
+    returns (AdminUpgradeabilityProxy)
+  {
     address implementation = getImplementation(contractName);
     return factory.createProxy(this, implementation);
   }
@@ -58,9 +58,17 @@ contract BaseApp is Ownable {
    * https://solidity.readthedocs.io/en/develop/abi-spec.html#function-selector-and-argument-encoding.
    * @return Address of the new proxy.
    */
-   function createAndCall(string contractName, bytes data) payable public returns (AdminUpgradeabilityProxy) {
+  function createAndCall(
+    string contractName,
+    bytes data
+  )
+    payable
+    public
+    returns (AdminUpgradeabilityProxy)
+  {
     address implementation = getImplementation(contractName);
-    return factory.createProxyAndCall.value(msg.value)(this, implementation, data);
+    return factory.createProxyAndCall.value(
+      msg.value)(this, implementation, data);
   }
 
   /**
@@ -68,7 +76,13 @@ contract BaseApp is Ownable {
    * @param proxy Proxy to be upgraded.
    * @param contractName Name of the contract.
    */
-  function upgrade(AdminUpgradeabilityProxy proxy, string contractName) public onlyOwner {
+  function upgrade(
+    AdminUpgradeabilityProxy proxy,
+    string contractName
+  )
+    public
+    onlyOwner
+  {
     address implementation = getImplementation(contractName);
     proxy.upgradeTo(implementation);
   }
@@ -83,7 +97,15 @@ contract BaseApp is Ownable {
    * called, as described in
    * https://solidity.readthedocs.io/en/develop/abi-spec.html#function-selector-and-argument-encoding.
    */
-  function upgradeAndCall(AdminUpgradeabilityProxy proxy, string contractName, bytes data) payable public onlyOwner {
+  function upgradeAndCall(
+    AdminUpgradeabilityProxy proxy,
+    string contractName,
+    bytes data
+  )
+    payable
+    public
+    onlyOwner
+  {
     address implementation = getImplementation(contractName);
     proxy.upgradeToAndCall.value(msg.value)(implementation, data);
   }
@@ -93,7 +115,9 @@ contract BaseApp is Ownable {
    * This is needed because only the proxy admin can query it.
    * @return The address of the current implementation of the proxy.
    */
-  function getProxyImplementation(AdminUpgradeabilityProxy proxy) public view returns (address) {
+  function getProxyImplementation(AdminUpgradeabilityProxy proxy)
+    public view returns (address)
+  {
     return proxy.implementation();
   }
 
@@ -102,7 +126,16 @@ contract BaseApp is Ownable {
    * Only the admin can query it.
    * @return The address of the current admin of the proxy.
    */
-  function getProxyAdmin(AdminUpgradeabilityProxy proxy) public view returns (address) {
+  function getProxyAdmin(AdminUpgradeabilityProxy proxy)
+    public view returns (address)
+  {
     return proxy.admin();
   }
+
+  /**
+   * @dev Abstract function to return the implementation provider.
+   * @return The implementation provider.
+   */
+  function getProvider() internal view returns (ImplementationProvider);
+
 }
