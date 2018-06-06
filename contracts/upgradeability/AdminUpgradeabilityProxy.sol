@@ -24,9 +24,7 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
    * This is the keccak-256 hash of "org.zeppelinos.proxy.admin", and is
    * validated in the constructor.
    */
-  bytes32 private constant ADMIN_SLOT = (
-    0x10d6a54a4754c8869d6886b5f5d7fbfa5b4522237ea5c60d11bc4e7a1ff9390b
-  );
+  bytes32 private constant ADMIN_SLOT = 0x10d6a54a4754c8869d6886b5f5d7fbfa5b4522237ea5c60d11bc4e7a1ff9390b;
 
   /**
    * @dev Modifier to check whether the `msg.sender` is the admin.
@@ -46,9 +44,7 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
    * It sets the `msg.sender` as the proxy administrator.
    * @param _implementation address of the initial implementation.
    */
-  function AdminUpgradeabilityProxy(address _implementation)
-    UpgradeabilityProxy(_implementation) public
-  {
+  function AdminUpgradeabilityProxy(address _implementation) UpgradeabilityProxy(_implementation) public {
     assert(ADMIN_SLOT == keccak256("org.zeppelinos.proxy.admin"));
 
     _setAdmin(msg.sender);
@@ -98,14 +94,7 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
    * called, as described in
    * https://solidity.readthedocs.io/en/develop/abi-spec.html#function-selector-and-argument-encoding.
    */
-  function upgradeToAndCall(
-    address implementation,
-    bytes data
-  )
-    payable
-    external
-    ifAdmin
-  {
+  function upgradeToAndCall(address implementation, bytes data) payable external ifAdmin {
     _upgradeTo(implementation);
     // solium-disable-next-line security/no-call-value
     require(address(this).call.value(msg.value)(data));

@@ -6,8 +6,8 @@
     "test": "NODE_ENV=test scripts/test.sh",
     "test_examples": "npm run prepack && cd examples/complex && npm i && npm test",
     "test_root": "scripts/test.sh",
-    "lint:sol": "solium -d contracts",
-    "lint:sol:fix": "solium -d contracts --fix"
+    "lint:sol": "solium -d .",
+    "lint:sol:fix": "solium -d . --fix"
   },
   "repository": {
     "type": "git",

@@ -33,12 +33,7 @@ contract FreezableImplementationDirectory is ImplementationDirectory {
    * @param contractName Name of the contract.
    * @param implementation Address where the contract is implemented.
    */
-  function setImplementation(
-    string contractName,
-    address implementation
-  )
-    public whenNotFrozen
-  {
+  function setImplementation(string contractName, address implementation) public whenNotFrozen {
     super.setImplementation(contractName, implementation);
   }
 }

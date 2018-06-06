@@ -25,9 +25,7 @@ contract ImplementationDirectory is ImplementationProvider, Ownable {
    * @param contractName Name of the contract.
    * @return Address of the implementation.
    */
-  function getImplementation(string contractName)
-    public view returns (address)
-  {
+  function getImplementation(string contractName) public view returns (address) {
     return implementations[contractName];
   }
 
@@ -36,13 +34,7 @@ contract ImplementationDirectory is ImplementationProvider, Ownable {
    * @param contractName Name of the contract.
    * @param implementation Address of the implementation.
    */
-  function setImplementation(
-    string contractName,
-    address implementation
-  )
-    public
-    onlyOwner
-  {
+  function setImplementation(string contractName, address implementation) public onlyOwner {
     require(AddressUtils.isContract(implementation));
     implementations[contractName] = implementation;
     emit ImplementationChanged(contractName, implementation);

@@ -39,9 +39,7 @@ contract AppDirectory is ImplementationDirectory {
    * @return Address where the contract is implemented, or 0 if it is not
    * found.
    */
-  function getImplementation(string contractName)
-    public view returns (address)
-  {
+  function getImplementation(string contractName) public view returns (address) {
     address implementation = super.getImplementation(contractName);
     if (implementation != address(0))
       return implementation;
