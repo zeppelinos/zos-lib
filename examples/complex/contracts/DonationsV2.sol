@@ -3,6 +3,7 @@ pragma solidity ^0.4.21;
 import "./DonationsV1.sol";
 import "openzeppelin-zos/contracts/token/ERC721/MintableERC721Token.sol";
 
+
 contract DonationsV2 is DonationsV1 {
   using SafeMath for uint256;
 

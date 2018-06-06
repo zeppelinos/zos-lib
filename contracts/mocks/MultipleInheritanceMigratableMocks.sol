@@ -101,8 +101,7 @@ contract SampleChildV1 is Migratable, SampleMotherV1, SampleFatherV1 {
  * ChildV2 extends from motherV1, fatherV1 (grampsV1)
  */
 contract SampleChildV2 is SampleChildV1 {
-  function migrate(uint256 _child) isMigration("Child", "migration_1", "migration_2") public
-  {
+  function migrate(uint256 _child) isMigration("Child", "migration_1", "migration_2") public {
     child = _child;
   }
 }
