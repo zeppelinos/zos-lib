@@ -53,8 +53,7 @@ contract UpgradeabilityProxyFactory {
    * @return Address of the new proxy.
    */
   function _createProxy(address implementation) internal returns (AdminUpgradeabilityProxy) {
-    AdminUpgradeabilityProxy proxy = new AdminUpgradeabilityProxy(
-      implementation);
+    AdminUpgradeabilityProxy proxy = new AdminUpgradeabilityProxy(implementation);
     emit ProxyCreated(proxy);
     return proxy;
   }

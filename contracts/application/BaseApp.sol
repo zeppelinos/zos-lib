@@ -97,9 +97,7 @@ contract BaseApp is Ownable {
    * Only the admin can query it.
    * @return The address of the current admin of the proxy.
    */
-  function getProxyAdmin(AdminUpgradeabilityProxy proxy)
-    public view returns (address)
-  {
+  function getProxyAdmin(AdminUpgradeabilityProxy proxy) public view returns (address) {
     return proxy.admin();
   }
 

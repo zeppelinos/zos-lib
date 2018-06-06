@@ -50,9 +50,7 @@ contract Migratable {
    * @param newMigrationId Identifier of the new migration to be applied.
    */
   modifier isMigration(string contractName, string requiredMigrationId, string newMigrationId) {
-    require(
-      isMigrated(contractName, requiredMigrationId) &&
-      !isMigrated(contractName, newMigrationId));
+    require(isMigrated(contractName, requiredMigrationId) && !isMigrated(contractName, newMigrationId));
     _;
     emit Migrated(contractName, newMigrationId);
     migrated[contractName][newMigrationId] = true;
