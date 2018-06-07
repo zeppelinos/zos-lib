@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "ZeppelinOS library",
   "scripts": {
-    "prepack": "truffle compile && babel src --out-dir lib",
+    "test": "npm run test_root && npm run test_examples",
+    "test_root": "NODE_ENV=test scripts/test.sh",
     "test_examples": "npm run prepack && cd examples/complex && npm i && npm test",
-    "test_root": "scripts/test.sh",
-    "test": "npm run test_root && npm run test_examples"
+    "prepack": "truffle compile && babel src --out-dir lib"
   },
   "repository": {
     "type": "git",
