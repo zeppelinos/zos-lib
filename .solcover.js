@@ -1,5 +1,5 @@
 module.exports = {
-  copyPackages: ['zeppelin-solidity'],
+  copyPackages: ['openzeppelin-solidity'],
   skipFiles: [
     'lifecycle/Migrations.sol',
     'mocks',
