@@ -2,10 +2,11 @@ import path from 'path'
 import truffleContract from 'truffle-contract'
 import truffleProvision from 'truffle-provisioner'
 
-const DEFAULT_TESTING_TX_PARAMS = {
-  gas: 6721975,
-  gasPrice: 100000000000
-}
+const DEFAULT_TESTING_TX_PARAMS =
+ (process.env.SOLIDITY_COVERAGE)
+    ? { gas: 0xfffffffffff, gasPrice: 0x01 }
+    : { gas: 6721975, gasPrice: 100000000000 }
+
 
 export default {
   getFromLocal(contractName) {
