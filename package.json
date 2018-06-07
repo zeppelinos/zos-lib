@@ -45,7 +45,6 @@
     "chai-as-promised": "^7.1.1",
     "chai-bignumber": "^2.0.2",
     "coveralls": "^3.0.0",
-    "ethereumjs-abi": "^0.6.5",
     "mock-dependency": "file:test/mocks/mock-dependency",
     "solidity-coverage": "^0.4.15",
     "tmp": "^0.0.33",
@@ -54,6 +53,7 @@
   },
   "dependencies": {
     "bignumber.js": "^7.2.0",
+    "ethereumjs-abi": "^0.6.5",
     "openzeppelin-solidity": "~1.9.0",
     "truffle-contract": "^3.0.5",
     "truffle-provisioner": "^0.1.0"
