@@ -1,14 +1,27 @@
 import Package from './Package'
 import Contracts from '../utils/Contracts'
+import PackageWithAppDirectories from './PackageWithAppDirectories'
+import PackageWithFreezableDirectories from './PackageWithFreezableDirectories'
+import PackageWithNonFreezableDirectories from './PackageWithNonFreezableDirectories'
 
 export default class PackageProvider {
   constructor(txParams = {}) {
     this.txParams = txParams
   }
 
-  from(address) {
+  fetch(address) {
     this._fetchPackage(address);
-    return new Package(this.package, this.txParams)
+    return new PackageWithNonFreezableDirectories(this.package, this.txParams)
+  }
+
+  fetchForFrezzableDirectories(address) {
+    this._fetchPackage(address);
+    return new PackageWithFreezableDirectories(this.package, this.txParams)
+  }
+
+  fetchForAppDirectories(address) {
+    this._fetchPackage(address);
+    return new PackageWithAppDirectories(this.package, this.txParams)
   }
 
   _fetchPackage(address) {
