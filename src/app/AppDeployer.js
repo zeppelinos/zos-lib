@@ -3,6 +3,8 @@
 import Logger from '../utils/Logger'
 import Contracts from '../utils/Contracts'
 import App from './App'
+import PackageDeployer from "../package/PackageDeployer";
+import AppDirectoryDeployer from "../directory/AppDirectoryDeployer";
 
 const log = new Logger('AppDeployer')
 
@@ -18,8 +20,7 @@ export default class AppDeployer {
   async deployWithStdlib(version, stdlibAddress) {
     await this.createFactory()
     await this.createPackage()
-    await this.createAppDirectory(stdlibAddress)
-    await this.addVersion(version)
+    await this.addVersion(version, stdlibAddress)
     await this.createApp(version)
     return new App(this.packagedApp, this.factory, this.appDirectory, this.package, this.version, this.txParams)
   }
@@ -27,7 +28,7 @@ export default class AppDeployer {
   async createApp(version) {
     log.info('Deploying new PackagedApp...')
     const PackagedApp = Contracts.getFromLib('PackagedApp')
-    this.packagedApp = await PackagedApp.new(this.package.address, version, this.factory.address, this.txParams)
+    this.packagedApp = await PackagedApp.new(this.package.address(), version, this.factory.address, this.txParams)
     log.info(`Deployed PackagedApp ${this.packagedApp.address}`)
   }
 
@@ -39,23 +40,12 @@ export default class AppDeployer {
   }
 
   async createPackage() {
-    log.info('Deploying new Package...')
-    const Package = Contracts.getFromLib('Package')
-    this.package = await Package.new(this.txParams)
-    log.info(`Deployed Package ${this.package.address}`)
+    const deployer = new PackageDeployer(this.txParams);
+    this.package = await deployer.deployForAppDirectories()
   }
 
-  async createAppDirectory(stdlibAddress) {
-    log.info('Deploying new AppDirectory...')
-    const AppDirectory = Contracts.getFromLib('AppDirectory')
-    this.appDirectory = await AppDirectory.new(stdlibAddress, this.txParams)
-    log.info(`Deployed AppDirectory ${this.appDirectory.address}`)
-  }
-
-  async addVersion(version) {
-    log.info('Adding new version...')
+  async addVersion(version, stdlibAddress) {
     this.version = version
-    await this.package.addVersion(version, this.appDirectory.address, this.txParams)
-    log.info(`Added version ${version}`)
+    this.appDirectory = await this.package.newVersion(version, stdlibAddress)
   }
 }
