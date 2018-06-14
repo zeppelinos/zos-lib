@@ -17,7 +17,7 @@ contract('FreezableImplementationDirectory', ([_, owner]) => {
     })
 
     it('has an address', async function () {
-      (await this.directory.address()).should.not.be.null
+      (await this.directory.address).should.not.be.null
     })
 
     it('has an owner', async function () {
@@ -55,7 +55,7 @@ contract('FreezableImplementationDirectory', ([_, owner]) => {
     })
     
     it('has an address', async function () {
-      (await this.directory.address()).should.not.be.null
+      (await this.directory.address).should.not.be.null
     })
 
     it('has an owner', async function () {

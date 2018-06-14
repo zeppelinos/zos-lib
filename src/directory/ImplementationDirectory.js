@@ -21,7 +21,7 @@ export default class ImplementationDirectory {
     this.log = log
   }
 
-  address() {
+  get address() {
     return this.directory.address
   }
 

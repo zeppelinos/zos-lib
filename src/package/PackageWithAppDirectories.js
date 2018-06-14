@@ -30,7 +30,7 @@ export default class PackageWithAppDirectories extends Package {
     log.info('Adding new version...')
     const deployer = new AppDirectoryDeployer(this.txParams)
     const directory = await deployer.deploy(stdlibAddress)
-    await this.package.addVersion(version, directory.address(), this.txParams)
+    await this.package.addVersion(version, directory.address, this.txParams)
     log.info(`Added version ${version}`)
     return directory
   }

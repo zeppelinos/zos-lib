@@ -9,7 +9,7 @@ export default class Package {
     this.txParams = txParams
   }
 
-  address() {
+  get address() {
     return this.package.address
   }
 

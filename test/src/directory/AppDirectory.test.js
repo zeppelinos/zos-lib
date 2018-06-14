@@ -16,7 +16,7 @@ contract('AppDirectory', ([_, appOwner, stdlibOwner, anotherAddress]) => {
   })
 
   it('has an address', async function () {
-    (await this.directory.address()).should.not.be.null
+    (await this.directory.address).should.not.be.null
   })
 
   it('has an stdlib', async function () {

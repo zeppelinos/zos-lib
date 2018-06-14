@@ -37,7 +37,7 @@ export default class App {
     this.txParams = txParams
   }
 
-  address() {
+  get address() {
     return this._app.address
   }
 

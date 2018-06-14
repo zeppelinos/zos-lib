@@ -28,7 +28,7 @@ export default class AppDeployer {
   async createApp(version) {
     log.info('Deploying new PackagedApp...')
     const PackagedApp = Contracts.getFromLib('PackagedApp')
-    this.packagedApp = await PackagedApp.new(this.package.address(), version, this.factory.address, this.txParams)
+    this.packagedApp = await PackagedApp.new(this.package.address, version, this.factory.address, this.txParams)
     log.info(`Deployed PackagedApp ${this.packagedApp.address}`)
   }
 

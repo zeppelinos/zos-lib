@@ -17,7 +17,7 @@ contract('App', function ([_, owner]) {
 
   const shouldInitialize = function () {
     it('deploys all contracts', async function() {
-      this.app.address().should.not.be.null;
+      this.app.address.should.not.be.null;
       this.app.factory.address.should.not.be.null;
       this.app.package.address.should.not.be.null;
     });
@@ -37,7 +37,7 @@ contract('App', function ([_, owner]) {
 
     it('returns the current directory', async function () {
       const directory = await this.app.currentDirectory()
-      directory.address().should.be.not.null;
+      directory.address.should.be.not.null;
     });
   };
 
@@ -66,7 +66,7 @@ contract('App', function ([_, owner]) {
 
     describe('fetch', function () {
       beforeEach('connecting to existing instance', async function () {
-        this.app = await App.fetch(this.app.address(), txParams);
+        this.app = await App.fetch(this.app.address, txParams);
       });
 
       shouldInitialize();
@@ -93,7 +93,7 @@ contract('App', function ([_, owner]) {
         const appDirectory = await this.app.package.getImplementationDirectory(this.app.version)
 
         const currentDirectory = this.app.currentDirectory()
-        currentDirectory.address().should.eq(appDirectory.address)
+        currentDirectory.address.should.eq(appDirectory.address)
       });
     });
 
@@ -233,7 +233,7 @@ contract('App', function ([_, owner]) {
 
     describe('fetch', function () {
       beforeEach('connecting to existing instance', async function () {
-        this.app = await App.fetch(this.app.address(), txParams);
+        this.app = await App.fetch(this.app.address, txParams);
       });
 
       shouldInitialize();
