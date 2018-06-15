@@ -31,11 +31,24 @@ export default class Package {
     return implementation
   }
 
-  async getImplementationDirectory() {
-    throw Error('Cannot call abstract method')
+  async newVersion(version, stdlibAddress) {
+    log.info('Adding new version...')
+    const directory = await this.newDirectory(stdlibAddress)
+    await this.package.addVersion(version, directory.address, this.txParams)
+    log.info(`Added version ${version}`)
+    return directory
   }
 
-  async newVersion() {
-    throw Error('Cannot call abstract method')
+  async getImplementationDirectory(version) {
+    const directoryAddress = await this.package.getVersion(version)
+    return this.wrapImplementationDirectory(directoryAddress)
+  }
+
+  async wrapImplementationDirectory() {
+    throw Error('Cannot call abstract method wrapImplementationDirectory()')
+  }
+
+  async newDirectory() {
+    throw Error('Cannot call abstract method newDirectory()')
   }
 }

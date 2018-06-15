@@ -19,14 +19,14 @@ export default class ImplementationDirectoryDeployer {
     this.txParams = txParams
   }
 
-  async deployLocal(contracts) {
+  async deployLocal(contracts = []) {
     await this.deployImplementationDirectory()
     const deployMethod = async contractName => this._deployLocalContract(contractName)
     await this.deployAndRegisterContracts(contracts, deployMethod)
     return this.directory
   }
 
-  async deployDependency(dependencyName, contracts) {
+  async deployDependency(dependencyName, contracts = []) {
     await this.deployImplementationDirectory()
     const deployMethod = async contractName => this._deployDependencyContract(dependencyName, contractName)
     await this.deployAndRegisterContracts(contracts, deployMethod)

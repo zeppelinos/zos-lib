@@ -14,7 +14,7 @@ export default class PackageProvider {
     return new PackageWithNonFreezableDirectories(this.package, this.txParams)
   }
 
-  fetchForFrezzableDirectories(address) {
+  fetchForFreezableDirectories(address) {
     this._fetchPackage(address);
     return new PackageWithFreezableDirectories(this.package, this.txParams)
   }
