@@ -37,7 +37,7 @@ export default class App {
     this.txParams = txParams
   }
 
-  address() {
+  get address() {
     return this._app.address
   }
 
@@ -50,8 +50,7 @@ export default class App {
   }
 
   async getImplementation(contractName) {
-    const directory = this.currentDirectory()
-    return directory.getImplementation(contractName)
+    return this.package.getImplementation(this.version, contractName)
   }
 
   async getProxyImplementation(proxyAddress) {
@@ -59,31 +58,19 @@ export default class App {
   }
 
   async setImplementation(contractClass, contractName) {
-    log.info(`Setting implementation of ${contractName} in directory...`)
-    const implementation = await contractClass.new(this.txParams)
-    const directory = this.currentDirectory()
-    await directory.setImplementation(contractName, implementation.address, this.txParams)
-    log.info(` Implementation set: ${implementation.address}`)
-    return implementation
+    return this.package.setImplementation(this.version, contractClass, contractName)
   }
 
   async setStdlib(stdlibAddress = 0x0) {
-    log.info(`Setting stdlib ${stdlibAddress}...`)
-    await this.currentDirectory().setStdlib(stdlibAddress, this.txParams)
-    return stdlibAddress
+    return this.currentDirectory().setStdlib(stdlibAddress)
   }
 
-  async newVersion(versionName, stdlibAddress = 0) {
-    log.info(`Adding version ${versionName}...`)
-    const AppDirectory = Contracts.getFromLib('AppDirectory')
-    const directory = await AppDirectory.new(stdlibAddress, this.txParams)
-    log.info(` App directory: ${directory.address}`)
-    await this.package.addVersion(versionName, directory.address, this.txParams)
-    log.info(` Added version: ${versionName}`)
-    await this._app.setVersion(versionName, this.txParams)
-    log.info(` Version set`)
-    this.directories[versionName] = directory
-    this.version = versionName
+  async newVersion(version, stdlibAddress = 0x0) {
+    const directory = await this.package.newVersion(version, stdlibAddress)
+    await this._app.setVersion(version, this.txParams)
+    log.info(`Version set`)
+    this.directories[version] = directory
+    this.version = version
   }
 
   async createProxy(contractClass, contractName, initMethodName, initArgs) {
@@ -92,11 +79,11 @@ export default class App {
       ? await this._createProxy(contractName)
       : await this._createProxyAndCall(contractClass, contractName, initMethodName, initArgs)
 
-    log.info(` TX receipt received: ${receipt.transactionHash}`)
+    log.info(`TX receipt received: ${receipt.transactionHash}`)
     const UpgradeabilityProxyFactory = Contracts.getFromLib('UpgradeabilityProxyFactory')
     const logs = decodeLogs(receipt.logs, UpgradeabilityProxyFactory)
     const address = logs.find(l => l.event === 'ProxyCreated').args.proxy
-    log.info(` ${contractName} proxy: ${address}`)
+    log.info(`${contractName} proxy: ${address}`)
     return new contractClass(address)
   }
 
@@ -105,7 +92,7 @@ export default class App {
     const { receipt } = typeof(initArgs) === 'undefined'
       ? await this._upgradeProxy(proxyAddress, contractName)
       : await this._upgradeProxyAndCall(proxyAddress, contractClass, contractName, initMethodName, initArgs)
-    log.info(` TX receipt received: ${receipt.transactionHash}`)
+    log.info(`TX receipt received: ${receipt.transactionHash}`)
   }
 
   async _createProxy(contractName) {

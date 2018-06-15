@@ -4,7 +4,7 @@
   "description": "ZeppelinOS library",
   "scripts": {
     "test": "NODE_ENV=test scripts/test.sh",
-    "prepack": "truffle compile && babel src --out-dir lib"
+    "prepack": "npx truffle compile && npx babel-cli src --out-dir lib"
   },
   "repository": {
     "type": "git",

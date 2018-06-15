@@ -3,8 +3,8 @@ set -o errexit
 
 run_lib_tests() {
   echo "Testing root project..."
-  node_modules/.bin/truffle compile
-  node_modules/.bin/truffle test "$@"
+  npx truffle compile
+  npx truffle test "$@"
 }
 
 run_example_tests() {
@@ -17,9 +17,9 @@ run_example_tests() {
 
 if [ "$SOLIDITY_COVERAGE" = true ]; then
   echo "Measuring coverage..."
-  node_modules/.bin/solidity-coverage
+  npx solidity-coverage
   if [ "$CONTINUOUS_INTEGRATION" = true ]; then
-    cat coverage/lcov.info | node_modules/.bin/coveralls
+    cat coverage/lcov.info | npx coveralls
   fi
 else
   run_lib_tests && run_example_tests

@@ -14,7 +14,7 @@ const DEFAULT_COVERAGE_TX_PARAMS = {
 
 export default {
   getFromLocal(contractName) {
-    const buildDir = `${process.cwd()}/build/contracts/`
+    const buildDir = `${process.cwd()}/build/contracts`
     return this._getFromBuildDir(buildDir, contractName)
   },
 
