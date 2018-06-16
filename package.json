@@ -4,10 +4,9 @@
   "description": "ZeppelinOS library",
   "scripts": {
     "test": "NODE_ENV=test scripts/test.sh",
-    "test_examples": "npm run prepack && cd examples/complex && npm i && npm test",
-    "test_root": "scripts/test.sh",
     "lint:sol": "solium -d .",
-    "lint:sol:fix": "solium -d . --fix"
+    "lint:sol:fix": "solium -d . --fix",
+    "prepack": "truffle compile && babel src --out-dir lib"
   },
   "repository": {
     "type": "git",
