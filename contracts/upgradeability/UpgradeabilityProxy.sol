@@ -1,7 +1,8 @@
 pragma solidity ^0.4.21;
 
-import './Proxy.sol';
-import 'openzeppelin-solidity/contracts/AddressUtils.sol';
+import "./Proxy.sol";
+import "openzeppelin-solidity/contracts/AddressUtils.sol";
+
 
 /**
  * @title UpgradeabilityProxy
@@ -39,6 +40,7 @@ contract UpgradeabilityProxy is Proxy {
    */
   function _implementation() internal view returns (address impl) {
     bytes32 slot = IMPLEMENTATION_SLOT;
+    // solium-disable-next-line security/no-inline-assembly
     assembly {
       impl := sload(slot)
     }
@@ -62,6 +64,7 @@ contract UpgradeabilityProxy is Proxy {
 
     bytes32 slot = IMPLEMENTATION_SLOT;
 
+    // solium-disable-next-line security/no-inline-assembly
     assembly {
       sstore(slot, newImplementation)
     }

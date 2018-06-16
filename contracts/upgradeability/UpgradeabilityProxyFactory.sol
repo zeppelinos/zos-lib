@@ -1,6 +1,7 @@
 pragma solidity ^0.4.21;
 
-import './AdminUpgradeabilityProxy.sol';
+import "./AdminUpgradeabilityProxy.sol";
+
 
 /**
  * @title UpgradeabilityProxyFactory
@@ -36,9 +37,12 @@ contract UpgradeabilityProxyFactory {
    * https://solidity.readthedocs.io/en/develop/abi-spec.html#function-selector-and-argument-encoding.
    * @return Address of the new proxy.
    */
-  function createProxyAndCall(address owner, address implementation, bytes data) public payable returns (AdminUpgradeabilityProxy) {
+  function createProxyAndCall(address owner, address implementation, bytes data)
+    public payable returns (AdminUpgradeabilityProxy)
+  {
     AdminUpgradeabilityProxy proxy = _createProxy(implementation);
     proxy.changeAdmin(owner);
+    // solium-disable-next-line security/no-call-value
     require(address(proxy).call.value(msg.value)(data));
     return proxy;
   }

@@ -3,6 +3,7 @@ pragma solidity ^0.4.21;
 import "openzeppelin-zos/contracts/ownership/Ownable.sol";
 import "openzeppelin-zos/contracts/math/SafeMath.sol";
 
+
 contract DonationsV1 is Ownable {
   using SafeMath for uint256;
 
@@ -20,7 +21,7 @@ contract DonationsV1 is Ownable {
     return donorBalances[_donor];
   }
 
-  function withdraw(address _wallet) onlyOwner {
+  function withdraw(address _wallet) public onlyOwner {
 
     // Withdraw all donated funds.
     _wallet.transfer(this.balance);

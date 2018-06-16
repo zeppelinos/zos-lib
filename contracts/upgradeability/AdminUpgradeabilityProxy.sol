@@ -1,6 +1,7 @@
 pragma solidity ^0.4.21;
 
-import './UpgradeabilityProxy.sol';
+import "./UpgradeabilityProxy.sol";
+
 
 /**
  * @title AdminUpgradeabilityProxy
@@ -95,6 +96,7 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
    */
   function upgradeToAndCall(address implementation, bytes data) payable external ifAdmin {
     _upgradeTo(implementation);
+    // solium-disable-next-line security/no-call-value
     require(address(this).call.value(msg.value)(data));
   }
 
@@ -103,6 +105,7 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
    */
   function _admin() internal returns (address admin) {
     bytes32 slot = ADMIN_SLOT;
+    // solium-disable-next-line security/no-inline-assembly
     assembly {
       admin := sload(slot)
     }
@@ -115,6 +118,7 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
   function _setAdmin(address newAdmin) internal {
     bytes32 slot = ADMIN_SLOT;
 
+    // solium-disable-next-line security/no-inline-assembly
     assembly {
       sstore(slot, newAdmin)
     }

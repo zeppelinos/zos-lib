@@ -2,6 +2,7 @@ pragma solidity ^0.4.21;
 
 import "../migrations/Migratable.sol";
 
+
 /**
  * @title MigratableMock
  * @dev This contract is a mock to test upgradeability functionality

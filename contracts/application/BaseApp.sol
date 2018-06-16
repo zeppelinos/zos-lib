@@ -5,6 +5,7 @@ import "../upgradeability/AdminUpgradeabilityProxy.sol";
 import "../upgradeability/UpgradeabilityProxyFactory.sol";
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
+
 /**
  * @title BaseApp
  * @dev Abstract base contract for upgradeable applications.
@@ -22,12 +23,6 @@ contract BaseApp is Ownable {
     require(address(_factory) != address(0));
     factory = _factory;
   }
-
-  /**
-   * @dev Abstract function to return the implementation provider.
-   * @return The implementation provider.
-   */
-  function getProvider() internal view returns (ImplementationProvider);
 
   /**
    * @dev Returns the implementation address for a given contract name, provided by the `ImplementationProvider`.
@@ -58,7 +53,7 @@ contract BaseApp is Ownable {
    * https://solidity.readthedocs.io/en/develop/abi-spec.html#function-selector-and-argument-encoding.
    * @return Address of the new proxy.
    */
-   function createAndCall(string contractName, bytes data) payable public returns (AdminUpgradeabilityProxy) {
+  function createAndCall(string contractName, bytes data) payable public returns (AdminUpgradeabilityProxy) {
     address implementation = getImplementation(contractName);
     return factory.createProxyAndCall.value(msg.value)(this, implementation, data);
   }
@@ -105,4 +100,11 @@ contract BaseApp is Ownable {
   function getProxyAdmin(AdminUpgradeabilityProxy proxy) public view returns (address) {
     return proxy.admin();
   }
+
+  /**
+   * @dev Abstract function to return the implementation provider.
+   * @return The implementation provider.
+   */
+  function getProvider() internal view returns (ImplementationProvider);
+
 }

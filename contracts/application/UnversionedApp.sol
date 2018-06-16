@@ -4,6 +4,7 @@ import "./BaseApp.sol";
 import "./versioning/ImplementationProvider.sol";
 import "../upgradeability/UpgradeabilityProxyFactory.sol";
 
+
 /**
  * @title UnversionedApp
  * @dev Basic implementation of an upgradable app with no versioning.
@@ -27,14 +28,6 @@ contract UnversionedApp is BaseApp {
   }
 
   /**
-   * @dev Returns the provider used by the app.
-   * @return The provider.
-   */
-  function getProvider() internal view returns (ImplementationProvider) {
-    return provider;
-  }
-
-  /**
    * @dev Sets a new implementation provider.
    * @param _provider New implementation provider
    */
@@ -42,4 +35,13 @@ contract UnversionedApp is BaseApp {
     require(address(_provider) != address(0));
     provider = _provider;
   }
+
+  /**
+   * @dev Returns the provider used by the app.
+   * @return The provider.
+   */
+  function getProvider() internal view returns (ImplementationProvider) {
+    return provider;
+  }
+
 }

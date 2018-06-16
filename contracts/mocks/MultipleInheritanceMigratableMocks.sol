@@ -1,16 +1,17 @@
 pragma solidity ^0.4.21;
 
-import '../migrations/Migratable.sol';
+import "../migrations/Migratable.sol";
 
 // Sample contracts showing upgradeability and migrations with multiple inheritance
 // Child contract inherits from Father and Mother contracts, and Father extends from Gramps
-// 
+//
 //              Gramps
 //                |
 //    Mother    Father
 //      |         |
 //      -- Child --
 //
+
 
 /**
  * Sample base migratable contract that defines a field mother
@@ -23,6 +24,7 @@ contract SampleMotherV1 is Migratable {
   }
 }
 
+
 /**
  * V2 for base mother contract
  */
@@ -31,6 +33,7 @@ contract SampleMotherV2 is SampleMotherV1 {
     mother = value;
   }
 }
+
 
 /**
  * Sample base migratable contract that defines a field gramps
@@ -43,6 +46,7 @@ contract SampleGrampsV1 is Migratable {
   }
 }
 
+
 /**
  * V2 for base gramps contract
  */
@@ -51,6 +55,7 @@ contract SampleGrampsV2 is SampleGrampsV1 {
     gramps = value;
   }
 }
+
 
 /**
  * Sample base migratable contract that defines a field father and extends from gramps
@@ -64,6 +69,7 @@ contract SampleFatherV1 is SampleGrampsV1 {
   }
 }
 
+
 /**
  * V2 for base father contract, which extends from grampsV2
  */
@@ -74,18 +80,22 @@ contract SampleFatherV2 is SampleFatherV1, SampleGrampsV2 {
   }
 }
 
+
 /**
  * ChildV1 extends from motherV1, fatherV1 (grampsV1)
  */
 contract SampleChildV1 is Migratable, SampleMotherV1, SampleFatherV1 {
   uint256 public child;
 
-  function initialize(uint256 _mother, uint256 _gramps, uint256 _father, uint256 _child) isInitializer("Child", "migration_1") public {
+  function initialize(uint256 _mother, uint256 _gramps, uint256 _father, uint256 _child)
+    isInitializer("Child", "migration_1") public
+  {
     SampleMotherV1.initialize(_mother);
     SampleFatherV1.initialize(_gramps, _father);
     child = _child;
   }
 }
+
 
 /**
  * ChildV2 extends from motherV1, fatherV1 (grampsV1)
@@ -96,31 +106,38 @@ contract SampleChildV2 is SampleChildV1 {
   }
 }
 
+
 /**
  * ChildV3 extends from motherV2, fatherV1 (grampsV1)
  */
-contract SampleChildV3 is SampleChildV2, SampleMotherV2  {
+contract SampleChildV3 is SampleChildV2, SampleMotherV2 {
   function migrate(uint256 _mother, uint256 _child) isMigration("Child", "migration_2", "migration_3") public {
     SampleMotherV2.migrate(_mother);
     child = _child;
   }
 }
 
+
 /**
  * ChildV4 extends from motherV2, fatherV2 (grampsV2)
  */
-contract SampleChildV4 is SampleChildV3, SampleFatherV2  {
-  function migrate(uint256 _gramps, uint256 _father, uint256 _child) isMigration("Child", "migration_3", "migration_4") public {
+contract SampleChildV4 is SampleChildV3, SampleFatherV2 {
+  function migrate(uint256 _gramps, uint256 _father, uint256 _child)
+    isMigration("Child", "migration_3", "migration_4") public
+  {
     SampleFatherV2.migrate(_gramps, _father);
     child = _child;
   }
 }
 
+
 /**
  * ChildV5 extends from motherV2, fatherV2 (grampsV2), has the same signature in migrate than V1, and allows to be initialized directly as well or from V3
  */
 contract SampleChildV5 is SampleChildV4 {
-  function initialize(uint256 _mother, uint256 _gramps, uint256 _father, uint256 _child) isInitializer("Child", "migration_5") public {
+  function initialize(uint256 _mother, uint256 _gramps, uint256 _father, uint256 _child)
+    isInitializer("Child", "migration_5") public
+  {
     SampleMotherV1.initialize(_mother);
     SampleMotherV2.migrate(_mother);
     SampleFatherV1.initialize(_gramps, _father);
@@ -128,7 +145,9 @@ contract SampleChildV5 is SampleChildV4 {
     child = _child;
   }
 
-  function migrateFromV3(uint256 _gramps, uint256 _father, uint256 _child) isMigration("Child", "migration_3", "migration_5") public {
+  function migrateFromV3(uint256 _gramps, uint256 _father, uint256 _child)
+    isMigration("Child", "migration_3", "migration_5") public
+  {
     SampleChildV4.migrate(_gramps, _father, _child);
   }
 

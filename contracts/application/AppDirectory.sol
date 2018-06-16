@@ -4,6 +4,7 @@ import "./versioning/ImplementationProvider.sol";
 import "./versioning/ImplementationDirectory.sol";
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
+
 /**
  * @title AppDirectory
  * @dev Implementation directory with a standard library as a fallback provider.
@@ -40,8 +41,10 @@ contract AppDirectory is ImplementationDirectory {
    */
   function getImplementation(string contractName) public view returns (address) {
     address implementation = super.getImplementation(contractName);
-    if(implementation != address(0)) return implementation;
-    if(stdlib != address(0)) return stdlib.getImplementation(contractName);
+    if (implementation != address(0))
+      return implementation;
+    if (stdlib != address(0))
+      return stdlib.getImplementation(contractName);
     return address(0);
   }
 

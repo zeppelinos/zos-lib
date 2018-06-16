@@ -1,6 +1,7 @@
 pragma solidity ^0.4.21;
 
-import '../migrations/Migratable.sol';
+import "../migrations/Migratable.sol";
+
 
 /**
  * @title MigratableMockV1
@@ -14,6 +15,7 @@ contract MigratableMockV1 is Migratable {
   }
 }
 
+
 /**
  * @title MigratableMockV2
  * @dev This contract is a mock to test migratable functionality with params
@@ -21,11 +23,14 @@ contract MigratableMockV1 is Migratable {
 contract MigratableMockV2 is MigratableMockV1 {
   uint256 public y;
 
-  function migrate(uint256 value, uint256 anotherValue) isMigration("MigratableMock", "migration_1", "migration_2") public payable {
+  function migrate(uint256 value, uint256 anotherValue)
+    isMigration("MigratableMock", "migration_1", "migration_2") public payable
+  {
     x = value;
     y = anotherValue;
   }
 }
+
 
 /**
  * @title MigratableMockV3
