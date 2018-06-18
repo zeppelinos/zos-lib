@@ -5,6 +5,7 @@ import Contracts from '../utils/Contracts'
 import App from './App'
 import PackageDeployer from "../package/PackageDeployer";
 import AppDirectoryDeployer from "../directory/AppDirectoryDeployer";
+import Package from "../package/Package";
 
 const log = new Logger('AppDeployer')
 
@@ -40,8 +41,7 @@ export default class AppDeployer {
   }
 
   async createPackage() {
-    const deployer = new PackageDeployer(this.txParams);
-    this.package = await deployer.deployForAppDirectories()
+    this.package = await Package.deploy(this.txParams)
   }
 
   async addVersion(version, stdlibAddress) {

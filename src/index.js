@@ -17,11 +17,7 @@ const assertRevert = helpers.assertRevert
 
 // model objects
 import App from './app/App'
-
-import PackageWithAppDirectories from './package/PackageWithAppDirectories'
-import PackageWithNonFreezableDirectories from './package/PackageWithNonFreezableDirectories'
-import PackageWithFreezableDirectories from './package/PackageWithFreezableDirectories'
-
+import Package from './package/Package'
 import AppDirectory from './directory/AppDirectory'
 import ImplementationDirectory from './directory/ImplementationDirectory'
 import FreezableImplementationDirectory from './directory/FreezableImplementationDirectory'
@@ -40,7 +36,5 @@ export {
   ImplementationDirectory,
   FreezableImplementationDirectory,
   AppDirectory,
-  PackageWithAppDirectories,
-  PackageWithNonFreezableDirectories,
-  PackageWithFreezableDirectories,
+  Package,
 }

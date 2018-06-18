@@ -1,8 +1,36 @@
 import Logger from '../utils/Logger'
+import PackageProvider from './PackageProvider'
+import PackageDeployer from './PackageDeployer'
 
 const log = new Logger('Package')
 
 export default class Package {
+
+  static fetch(address, txParams = {}, klass = require('./PackageWithAppDirectories')) {
+    const provider = new PackageProvider(txParams)
+    return provider.fetch(address, klass.default)
+  }
+
+  static async deploy(txParams = {}, klass = require('./PackageWithAppDirectories')) {
+    const deployer = new PackageDeployer(txParams)
+    return deployer.deploy(klass.default)
+  }
+
+  static async deployWithFreezableDirectories(txParams = {}) {
+    return this.deploy(txParams, require('./PackageWithFreezableDirectories'))
+  }
+
+  static fetchWithFreezableDirectories(address, txParams = {}) {
+    return this.fetch(address, txParams, require('./PackageWithFreezableDirectories'))
+  }
+
+  static async deployWithNonFreezableDirectories(txParams = {}) {
+    return this.deploy(txParams, require('./PackageWithNonFreezableDirectories'))
+  }
+
+  static fetchWithNonFreezableDirectories(address, txParams = {}) {
+    return this.fetch(address, txParams, require('./PackageWithNonFreezableDirectories'))
+  }
 
   constructor(_package, txParams = {}) {
     this.package = _package

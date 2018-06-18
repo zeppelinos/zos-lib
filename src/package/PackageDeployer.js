@@ -1,8 +1,5 @@
 import Logger from '../utils/Logger'
 import Contracts from '../utils/Contracts'
-import PackageWithAppDirectories from './PackageWithAppDirectories'
-import PackageWithFreezableDirectories from './PackageWithFreezableDirectories'
-import PackageWithNonFreezableDirectories from './PackageWithNonFreezableDirectories'
 
 const log = new Logger('PackageDeployer')
 
@@ -11,19 +8,9 @@ export default class PackageDeployer {
     this.txParams = txParams
   }
 
-  async deploy() {
+  async deploy(klass) {
     await this._createPackage()
-    return new PackageWithNonFreezableDirectories(this.package, this.txParams)
-  }
-
-  async deployForFreezableDirectories() {
-    await this._createPackage()
-    return new PackageWithFreezableDirectories(this.package, this.txParams)
-  }
-
-  async deployForAppDirectories() {
-    await this._createPackage()
-    return new PackageWithAppDirectories(this.package, this.txParams)
+    return new klass(this.package, this.txParams)
   }
 
   async _createPackage() {

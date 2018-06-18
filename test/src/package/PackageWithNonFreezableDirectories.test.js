@@ -1,8 +1,8 @@
 'use strict'
 require('../../setup')
 
+import Package from '../../../src/package/Package'
 import Contracts from '../../../src/utils/Contracts'
-import PackageWithNonFreezableDirectories from '../../../src/package/PackageWithNonFreezableDirectories'
 
 const DummyImplementation = Contracts.getFromLocal('DummyImplementation')
 
@@ -18,7 +18,7 @@ contract('PackageWithNonFreezableDirectories', function ([_, owner]) {
   }
 
   beforeEach('deploying package with non-freezable directories', async function () {
-    this.package = await PackageWithNonFreezableDirectories.deploy(txParams)
+    this.package = await Package.deployWithNonFreezableDirectories(txParams)
   })
 
   describe('deploy', function () {
@@ -27,7 +27,7 @@ contract('PackageWithNonFreezableDirectories', function ([_, owner]) {
 
   describe('fetch', function () {
     beforeEach("connecting to existing instance", async function () {
-      this.package = PackageWithNonFreezableDirectories.fetch(this.package.address, txParams)
+      this.package = Package.fetchWithNonFreezableDirectories(this.package.address, txParams)
     })
 
     shouldInitialize()
