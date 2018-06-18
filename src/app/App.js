@@ -141,7 +141,7 @@ export default class App {
   }
 
   _callInfo(initMethod, initArgs) {
-    return `${initMethod.name} with
-${initMethod.inputs.map((input, index) => ` - ${input.name} (${input.type}): ${JSON.stringify(initArgs[index])}`).join('\n')}`;
+    const args = initMethod.inputs.map((input, index) => ` - ${input.name} (${input.type}): ${JSON.stringify(initArgs[index])}`)
+    return `${initMethod.name} with: \n${args.join('\n')}`
   }
 }
