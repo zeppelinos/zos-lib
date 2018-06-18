@@ -7,9 +7,9 @@ import ImplementationDirectoryDeployer from "../directory/ImplementationDirector
 
 export default class PackageWithNonFreezableDirectories extends Package {
 
-  static async fetch(address, txParams = {}) {
+  static fetch(address, txParams = {}) {
     const provider = new PackageProvider(txParams)
-    return await provider.fetch(address)
+    return provider.fetch(address)
   }
 
   static async deploy(txParams = {}) {

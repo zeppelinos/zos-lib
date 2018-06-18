@@ -7,7 +7,7 @@ import AppDirectoryProvider from "./AppDirectoryProvider";
 
 export default class AppDirectory extends ImplementationDirectory {
 
-  static async fetch(address, txParams = {}) {
+  static fetch(address, txParams = {}) {
     const provider = new AppDirectoryProvider(txParams)
     return provider.fetch(address)
   }

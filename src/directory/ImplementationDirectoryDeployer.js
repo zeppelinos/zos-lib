@@ -43,8 +43,9 @@ export default class ImplementationDirectoryDeployer {
     await Promise.all(contracts.map(async contract => {
       const { alias: contractAlias, name: contractName } = contract
       const implementation = await deployMethod(contractName)
-      log.info('Registering implementation in implementation directory...')
+      log.info(`Registering ${contractAlias} implementation at ${implementation.address} in implementation directory...`)
       await this.directory.setImplementation(contractAlias, implementation.address, this.txParams)
+      log.info('Implementation set')
     }))
   }
 

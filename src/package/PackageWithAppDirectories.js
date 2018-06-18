@@ -7,9 +7,9 @@ import AppDirectoryDeployer from '../directory/AppDirectoryDeployer'
 
 export default class PackageWithAppDirectories extends Package {
 
-  static async fetch(address, txParams = {}) {
+  static fetch(address, txParams = {}) {
     const provider = new PackageProvider(txParams)
-    return await provider.fetchForAppDirectories(address)
+    return provider.fetchForAppDirectories(address)
   }
 
   static async deploy(txParams = {}) {

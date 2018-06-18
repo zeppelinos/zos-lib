@@ -32,8 +32,7 @@ export default class App {
     this.factory = factory
     this.package = _package
     this.version = version
-    this.directories = {}
-    this.directories[version] = appDirectory
+    this.directory = appDirectory
     this.txParams = txParams
   }
 
@@ -41,16 +40,12 @@ export default class App {
     return this._app.address
   }
 
-  currentDirectory() {
-    return this.directories[this.version]
-  }
-
   async currentStdlib() {
-    return this.currentDirectory().stdlib()
+    return this.directory.stdlib()
   }
 
   async getImplementation(contractName) {
-    return this.package.getImplementation(this.version, contractName)
+    return this._app.getImplementation(contractName)
   }
 
   async getProxyImplementation(proxyAddress) {
@@ -62,14 +57,14 @@ export default class App {
   }
 
   async setStdlib(stdlibAddress = 0x0) {
-    return this.currentDirectory().setStdlib(stdlibAddress)
+    return this.directory.setStdlib(stdlibAddress)
   }
 
   async newVersion(version, stdlibAddress = 0x0) {
     const directory = await this.package.newVersion(version, stdlibAddress)
     await this._app.setVersion(version, this.txParams)
-    log.info(`Version set`)
-    this.directories[version] = directory
+    log.info(`Version ${version} set in app.`)
+    this.directory = directory
     this.version = version
   }
 

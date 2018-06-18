@@ -32,12 +32,11 @@ contract('App', function ([_, owner]) {
 
     it('initializes all app properties', async function () {
       this.app.version.should.eq(initialVersion);
-      this.app.directories.should.have.key(initialVersion);
+      this.app.directory.should.not.be.null
     });
 
     it('returns the current directory', async function () {
-      const directory = await this.app.currentDirectory()
-      directory.address.should.be.not.null;
+      this.app.directory.address.should.be.not.null;
     });
   };
 
@@ -82,7 +81,7 @@ contract('App', function ([_, owner]) {
 
       it('updates own properties', async function () {
         this.app.version.should.eq(newVersion);
-        this.app.directories.should.include.key(newVersion);
+        this.app.directory.should.not.be.null
       });
 
       it('registers new version on package', async function () {
@@ -92,8 +91,7 @@ contract('App', function ([_, owner]) {
       it('returns the current directory', async function () {
         const appDirectory = await this.app.package.getImplementationDirectory(this.app.version)
 
-        const currentDirectory = this.app.currentDirectory()
-        currentDirectory.address.should.eq(appDirectory.address)
+        this.app.directory.address.should.eq(appDirectory.address)
       });
     });
 
@@ -109,7 +107,7 @@ contract('App', function ([_, owner]) {
       });
 
       it('should register implementation on directory', async function () {
-        const implementation = await this.app.currentDirectory().getImplementation(contractName);
+        const implementation = await this.app.directory.getImplementation(contractName);
         implementation.should.eq(this.implementation_v1.address);
       });
     });

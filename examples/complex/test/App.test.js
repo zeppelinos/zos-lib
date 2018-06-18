@@ -47,7 +47,7 @@ contract('App', ([_, owner, donor, wallet]) => {
       describe('when queried for the implementation', function() {
 
         it('returns a valid address', async function() {
-          validateAddress(await this.app.directories[initialVersion].getImplementation(contractName)).should.be.true;
+          validateAddress(await this.app.directory.getImplementation(contractName)).should.be.true;
         });
       });
     });

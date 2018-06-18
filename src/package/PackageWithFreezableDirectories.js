@@ -10,9 +10,9 @@ const log = new Logger('Package')
 
 export default class PackageWithFreezableDirectories extends Package {
 
-  static async fetch(address, txParams = {}) {
+  static fetch(address, txParams = {}) {
     const provider = new PackageProvider(txParams)
-    return await provider.fetchForFreezableDirectories(address)
+    return provider.fetchForFreezableDirectories(address)
   }
 
   static async deploy(txParams = {}) {

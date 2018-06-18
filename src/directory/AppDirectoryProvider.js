@@ -8,7 +8,7 @@ export default class AppDirectoryProvider {
     this.txParams = txParams
   }
 
-  async fetch(address) {
+  fetch(address) {
     this._fetchAppDirectory(address)
     return new AppDirectory(this.directory, this.txParams)
   }

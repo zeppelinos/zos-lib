@@ -18,8 +18,7 @@ export default class Package {
   }
 
   async getImplementation(version, contractName) {
-    const implementationDirectory = await this.getImplementationDirectory(version)
-    return implementationDirectory.getImplementation(contractName)
+    return this.package.getImplementation(version, contractName)
   }
 
   async setImplementation(version, contractClass, contractName) {

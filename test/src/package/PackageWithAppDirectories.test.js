@@ -26,8 +26,8 @@ contract('PackageWithAppDirectories', function ([_, owner]) {
   })
 
   describe('fetch', function () {
-    beforeEach("connecting to existing instance", async function () {
-      this.package = await PackageWithAppDirectories.fetch(this.package.address, txParams)
+    beforeEach('connecting to existing instance', async function () {
+      this.package = PackageWithAppDirectories.fetch(this.package.address, txParams)
     })
 
     shouldInitialize()

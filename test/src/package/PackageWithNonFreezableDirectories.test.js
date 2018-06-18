@@ -27,7 +27,7 @@ contract('PackageWithNonFreezableDirectories', function ([_, owner]) {
 
   describe('fetch', function () {
     beforeEach("connecting to existing instance", async function () {
-      this.package = await PackageWithNonFreezableDirectories.fetch(this.package.address, txParams)
+      this.package = PackageWithNonFreezableDirectories.fetch(this.package.address, txParams)
     })
 
     shouldInitialize()

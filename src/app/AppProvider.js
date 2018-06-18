@@ -24,12 +24,12 @@ export default class AppProvider {
   async _fetchAppDirectory() {
     this.version = await this.packagedApp.version()
     const appDirectory = await this.package.getImplementationDirectory(this.version)
-    this.appDirectory = await AppDirectory.fetch(appDirectory.address, this.txParams)
+    this.appDirectory = AppDirectory.fetch(appDirectory.address, this.txParams)
   }
   
   async _fetchPackage() {
     const packageAddress = await this.packagedApp.package()
-    this.package = await PackageWithAppDirectories.fetch(packageAddress, this.txParams)
+    this.package = PackageWithAppDirectories.fetch(packageAddress, this.txParams)
   }
 
   async _fetchFactory() {

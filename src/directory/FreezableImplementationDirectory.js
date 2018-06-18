@@ -24,6 +24,7 @@ export default class FreezableImplementationDirectory extends ImplementationDire
   async freeze() {
     this.log.info('Freezing implementation directory...')
     await this.directory.freeze(this.txParams)
+    this.log.info('Frozen')
   }
 
   async isFrozen() {
