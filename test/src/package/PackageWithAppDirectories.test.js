@@ -1,8 +1,8 @@
 'use strict'
 require('../../setup')
 
+import Package from '../../../src/package/Package'
 import Contracts from '../../../src/utils/Contracts'
-import PackageWithAppDirectories from '../../../src/package/PackageWithAppDirectories'
 
 const DummyImplementation = Contracts.getFromLocal('DummyImplementation')
 
@@ -18,7 +18,7 @@ contract('PackageWithAppDirectories', function ([_, owner]) {
   }
 
   beforeEach('deploying package with app directories', async function () {
-    this.package = await PackageWithAppDirectories.deploy(txParams)
+    this.package = await Package.deploy(txParams)
   })
 
   describe('deploy', function () {
@@ -27,7 +27,7 @@ contract('PackageWithAppDirectories', function ([_, owner]) {
 
   describe('fetch', function () {
     beforeEach('connecting to existing instance', async function () {
-      this.package = PackageWithAppDirectories.fetch(this.package.address, txParams)
+      this.package = Package.fetch(this.package.address, txParams)
     })
 
     shouldInitialize()

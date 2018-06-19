@@ -1,9 +1,9 @@
 'use strict'
 require('../../setup')
 
+import Package from '../../../src/package/Package'
 import Contracts from '../../../src/utils/Contracts'
 import assertRevert from '../../../src/test/helpers/assertRevert'
-import PackageWithFreezableDirectories from '../../../src/package/PackageWithFreezableDirectories'
 
 const DummyImplementation = Contracts.getFromLocal('DummyImplementation')
 
@@ -19,7 +19,7 @@ contract('PackageWithFreezableDirectories', function ([_, owner]) {
   }
 
   beforeEach('deploying package with freezable directories', async function () {
-    this.package = await PackageWithFreezableDirectories.deploy(txParams)
+    this.package = await Package.deployWithFreezableDirectories(txParams)
   })
 
   describe('deploy', function () {
@@ -28,7 +28,7 @@ contract('PackageWithFreezableDirectories', function ([_, owner]) {
 
   describe('fetch', function () {
     beforeEach("connecting to existing instance", async function () {
-      this.package = PackageWithFreezableDirectories.fetch(this.package.address, txParams)
+      this.package = Package.fetchWithFreezableDirectories(this.package.address, txParams)
     })
 
     shouldInitialize()
