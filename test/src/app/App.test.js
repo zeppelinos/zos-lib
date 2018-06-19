@@ -4,20 +4,20 @@ require('../../setup')
 import App from '../../../src/app/App';
 import Contracts from '../../../src/utils/Contracts'
 
-const AppDirectory = Contracts.getFromLocal('AppDirectory');
 const Impl = Contracts.getFromLocal('Impl');
 const ImplV1 = Contracts.getFromLocal('DummyImplementation');
 const ImplV2 = Contracts.getFromLocal('DummyImplementationV2');
+const AppDirectory = Contracts.getFromLocal('AppDirectory');
+const ImplementationDirectory = Contracts.getFromLocal('ImplementationDirectory');
 
 contract('App', function ([_, owner]) {
   const txParams = { from: owner }
   const initialVersion = '1.0';
   const contractName = 'Impl';
-  const stdlibAddress = '0x0000000000000000000000000000000000000010';
 
   const shouldInitialize = function () {
     it('deploys all contracts', async function() {
-      this.app.address().should.not.be.null;
+      this.app.address.should.not.be.null;
       this.app.factory.address.should.not.be.null;
       this.app.package.address.should.not.be.null;
     });
@@ -32,24 +32,27 @@ contract('App', function ([_, owner]) {
 
     it('initializes all app properties', async function () {
       this.app.version.should.eq(initialVersion);
-      this.app.directories.should.have.key(initialVersion);
+      this.app.directory.should.not.be.null
     });
 
     it('returns the current directory', async function () {
-      this.app.currentDirectory().address.should.be.not.null;
+      this.app.directory.address.should.be.not.null;
     });
   };
 
   const shouldConnectToStdlib = function () {
     it('should connect current directory to stdlib', async function () {
-      const address = await this.app.package.getVersion(this.app.version);
-      const currentDirectory = AppDirectory.at(address)
-      const currentStdlib = await currentDirectory.stdlib()
+      const appDirectory = await this.app.package.getImplementationDirectory(this.app.version)
+      const currentStdlib = await appDirectory.stdlib()
 
       const stdlib = await this.app.currentStdlib();
       stdlib.should.be.eq(currentStdlib)
     });
   };
+
+  beforeEach('deploying stdlib', async function () {
+    this.stdlib = await ImplementationDirectory.new({ from: owner })
+  });
 
   describe('without stdlib', function () {
     beforeEach('deploying', async function () {
@@ -60,9 +63,9 @@ contract('App', function ([_, owner]) {
       shouldInitialize();
     });
 
-    describe('connect', function () {
+    describe('fetch', function () {
       beforeEach('connecting to existing instance', async function () {
-        this.app = await App.fetch(this.app.address(), txParams);
+        this.app = await App.fetch(this.app.address, txParams);
       });
 
       shouldInitialize();
@@ -78,7 +81,7 @@ contract('App', function ([_, owner]) {
 
       it('updates own properties', async function () {
         this.app.version.should.eq(newVersion);
-        this.app.directories.should.include.key(newVersion);
+        this.app.directory.should.not.be.null
       });
 
       it('registers new version on package', async function () {
@@ -86,8 +89,9 @@ contract('App', function ([_, owner]) {
       });
 
       it('returns the current directory', async function () {
-        const currentDirectory = await this.app.package.getVersion(newVersion);
-        this.app.currentDirectory().address.should.eq(currentDirectory);
+        const appDirectory = await this.app.package.getImplementationDirectory(this.app.version)
+
+        this.app.directory.address.should.eq(appDirectory.address)
       });
     });
 
@@ -103,7 +107,7 @@ contract('App', function ([_, owner]) {
       });
 
       it('should register implementation on directory', async function () {
-        const implementation = await this.app.currentDirectory().getImplementation(contractName);
+        const implementation = await this.app.directory.getImplementation(contractName);
         implementation.should.eq(this.implementation_v1.address);
       });
     });
@@ -208,7 +212,7 @@ contract('App', function ([_, owner]) {
 
     describe('setStdlib', function () {
       beforeEach('setting stdlib from name', async function () {
-        await this.app.setStdlib(stdlibAddress);
+        await this.app.setStdlib(this.stdlib.address);
       });
 
       shouldConnectToStdlib();
@@ -217,7 +221,7 @@ contract('App', function ([_, owner]) {
 
   describe('with stdlib', function () {
     beforeEach('deploying', async function () {
-      this.app = await App.deployWithStdlib(initialVersion, stdlibAddress, txParams);
+      this.app = await App.deployWithStdlib(initialVersion, this.stdlib.address, txParams);
     });
 
     describe('deploy', function () {
@@ -225,9 +229,9 @@ contract('App', function ([_, owner]) {
       shouldConnectToStdlib();
     });
 
-    describe('connect', function () {
+    describe('fetch', function () {
       beforeEach('connecting to existing instance', async function () {
-        this.app = await App.fetch(this.app.address(), txParams);
+        this.app = await App.fetch(this.app.address, txParams);
       });
 
       shouldInitialize();
