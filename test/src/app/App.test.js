@@ -48,6 +48,10 @@ contract('App', function ([_, owner]) {
       const stdlib = await this.app.currentStdlib();
       stdlib.should.be.eq(currentStdlib)
     });
+
+    it('should tell whether current stdlib is zero', async function () {
+      (await this.app.hasStdlib()).should.be.false
+    })
   };
 
   beforeEach('deploying stdlib', async function () {
@@ -61,6 +65,10 @@ contract('App', function ([_, owner]) {
 
     describe('deploy', function () {
       shouldInitialize();
+
+      it('should not have an stdlib initially', async function () {
+        (await this.app.hasStdlib()).should.be.true
+      })
     });
 
     describe('fetch', function () {
@@ -69,6 +77,10 @@ contract('App', function ([_, owner]) {
       });
 
       shouldInitialize();
+
+      it('should not have an stdlib initially', async function () {
+        (await this.app.hasStdlib()).should.be.true
+      })
     });
 
     const newVersion = '2.0';
@@ -111,6 +123,16 @@ contract('App', function ([_, owner]) {
         implementation.should.eq(this.implementation_v1.address);
       });
     });
+
+    describe('unsetImplementation', function () {
+      beforeEach('setting implementation', setImplementation)
+
+      it('should unset implementation on directory', async function () {
+        await this.app.unsetImplementation(contractName)
+        const implementation = await this.app.currentDirectory().getImplementation(contractName)
+        implementation.should.be.zeroAddress
+      })
+    })
 
     const createProxy = async function () {
       this.proxy = await this.app.createProxy(ImplV1, contractName);
