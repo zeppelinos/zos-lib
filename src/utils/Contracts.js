@@ -14,7 +14,11 @@ const DEFAULT_COVERAGE_TX_PARAMS = {
 
 export default {
   getFromLocal(contractName) {
-    const buildDir = `${process.cwd()}/build/contracts`
+    let buildDir = `${process.cwd()}/build/contracts`
+    const truffleConfig = require(`${process.cwd()}/truffle.js`)
+    if (truffleConfig.contracts_build_directory) {
+      buildDir = truffleConfig.contracts_build_directory
+    }
     return this._getFromBuildDir(buildDir, contractName)
   },
 
