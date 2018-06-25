@@ -50,7 +50,7 @@ export default class App {
     return this.currentDirectory().stdlib()
   }
 
-  async isCurrentStdlibZero() {
+  async hasStdlib() {
     return (await this.currentStdlib()) === ZERO_ADDRESS
   }
 
