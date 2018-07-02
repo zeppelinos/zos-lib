@@ -15,6 +15,7 @@ const MigratableMockV3 = artifacts.require('MigratableMockV3')
 const MigratableMock = artifacts.require('MigratableMock')
 const DummyImplementation = artifacts.require('DummyImplementation')
 const ClashingImplementation = artifacts.require('ClashingImplementation')
+const GassyImplementation = artifacts.require('GassyImplementation')
 const AdminUpgradeabilityProxy = artifacts.require('AdminUpgradeabilityProxy')
 
 const sendTransaction = (target, method, args, values, opts) => {
@@ -445,6 +446,22 @@ contract('AdminUpgradeabilityProxy', ([_, admin, anotherAccount]) => {
 
       const res = await proxyInstance2.getValue();
       assert.equal(res.toString(), "0");
+    });
+  });
+
+  describe.only('out of gas', function () {
+    beforeEach('deploying gassy implementation', async function () {
+      this.gassy = await GassyImplementation.new();
+    });
+
+    it('returns out of gas when calling implementation directly', async function () {
+      await this.gassy.gassy().should.be.rejectedWith(/out of gas/);
+    });
+
+    it('returns out of gas when calling proxy', async function () {
+      const proxyInstance = await AdminUpgradeabilityProxy.new(this.gassy.address, { from: admin });
+      const proxy = await GassyImplementation.at(proxyInstance.address);
+      await proxy.gassy().should.be.rejectedWith(/out of gas/);
     });
   });
 })
