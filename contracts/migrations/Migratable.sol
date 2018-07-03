@@ -69,4 +69,12 @@ contract Migratable {
   function isMigrated(string contractName, string migrationId) public view returns(bool) {
     return migrated[contractName][migrationId];
   }
+
+  /**
+   * @dev Initializer that marks the contract as initialized.
+   * It is important to run this if you had deployed a previous version of a Migratable contract.
+   * For more information see https://github.com/zeppelinos/zos-lib/issues/158.
+   */
+  function initialize() isInitializer("Migratable", "1.2.1") {
+  }
 }
