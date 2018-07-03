@@ -29,6 +29,9 @@ contract Migratable {
    */
   mapping (string => mapping (string => bool)) internal migrated;
 
+  /**
+   * @dev Internal migration id used to specify that a contract has already been initialized.
+   */
   string constant private INITIALIZED_ID = "initialized";
 
 
