@@ -458,10 +458,22 @@ contract('AdminUpgradeabilityProxy', ([_, admin, anotherAccount]) => {
       await this.gassy.gassy().should.be.rejectedWith(/out of gas/);
     });
 
-    it('returns out of gas when calling proxy', async function () {
+    it('returns out of gas when calling proxy gassy function', async function () {
       const proxyInstance = await AdminUpgradeabilityProxy.new(this.gassy.address, { from: admin });
       const proxy = await GassyImplementation.at(proxyInstance.address);
       await proxy.gassy().should.be.rejectedWith(/out of gas/);
+    });
+
+    it('incorrectly returns out of gas when calling throw via proxy', async function () {
+      const proxyInstance = await AdminUpgradeabilityProxy.new(this.gassy.address, { from: admin });
+      const proxy = await GassyImplementation.at(proxyInstance.address);
+      await proxy.throws().should.be.rejectedWith(/out of gas/);
+    });
+
+    it('returns revert when calling revert via proxy', async function () {
+      const proxyInstance = await AdminUpgradeabilityProxy.new(this.gassy.address, { from: admin });
+      const proxy = await GassyImplementation.at(proxyInstance.address);
+      await proxy.reverts().should.be.rejectedWith(/revert/);
     });
   });
 })

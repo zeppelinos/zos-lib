@@ -34,17 +34,29 @@ contract Proxy {
       // Solidity scratch pad at memory position 0.
       calldatacopy(0, 0, calldatasize)
 
+      // Store how much gas we have available
+      let availablegas := gas
+
       // Call the implementation.
       // out and outsize are 0 because we don't know the size yet.
       let result := delegatecall(gas, implementation, 0, calldatasize, 0, 0)
+
+      // Assume we are out of gas if we have under 1/64 of gas remaining
+      let outofgas := lt(gas, div(availablegas, 64))
 
       // Copy the returned data.
       returndatacopy(0, 0, returndatasize)
 
       switch result
       // delegatecall returns 0 on error.
-      case 0 { revert(0, returndatasize) }
-      default { return(0, returndatasize) }
+      case 0 { 
+        switch outofgas
+        case 0 { revert(0, returndatasize) }
+        case 1 { for { } 1 { } { } }
+      }
+      default { 
+        return(0, returndatasize) 
+      }
     }
   }
 

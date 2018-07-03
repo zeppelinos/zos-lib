@@ -8,4 +8,14 @@ contract GassyImplementation {
       i = i + 1;
     }
   }
+
+  function throws() public {
+    i = 10;
+    assert(false);
+  }
+
+  function reverts() public {
+    i = 20;
+    require(false);
+  }
 }
