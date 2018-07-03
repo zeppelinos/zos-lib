@@ -35,6 +35,15 @@ contract('AppDirectory', ([_, appOwner, stdlibOwner, anotherAddress]) => {
     currentImplementation.should.be.eq(implementation.address)
   })
 
+  it('can unset implementations', async function () {
+    const implementation = await DummyImplementation.new()
+    await this.directory.setImplementation('DummyImplementation', implementation.address)
+    await this.directory.unsetImplementation('DummyImplementation')
+
+    const currentImplementation = await this.directory.getImplementation('DummyImplementation')
+    currentImplementation.should.be.zeroAddress
+  })
+
   it('can retrieve an implementation from the stdlib if not registered', async function () {
     let currentImplementation = await this.directory.getImplementation('DummyImplementation');
     currentImplementation.should.be.zeroAddress

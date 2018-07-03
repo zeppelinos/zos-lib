@@ -50,7 +50,7 @@ contract('App', function ([_, owner]) {
     });
 
     it('should tell whether current stdlib is zero', async function () {
-      (await this.app.hasStdlib()).should.be.false
+      (await this.app.hasStdlib()).should.be.true
     })
   };
 
@@ -67,7 +67,7 @@ contract('App', function ([_, owner]) {
       shouldInitialize();
 
       it('should not have an stdlib initially', async function () {
-        (await this.app.hasStdlib()).should.be.true
+        (await this.app.hasStdlib()).should.be.false
       })
     });
 
@@ -79,7 +79,7 @@ contract('App', function ([_, owner]) {
       shouldInitialize();
 
       it('should not have an stdlib initially', async function () {
-        (await this.app.hasStdlib()).should.be.true
+        (await this.app.hasStdlib()).should.be.false
       })
     });
 
@@ -129,7 +129,7 @@ contract('App', function ([_, owner]) {
 
       it('should unset implementation on directory', async function () {
         await this.app.unsetImplementation(contractName)
-        const implementation = await this.app.currentDirectory().getImplementation(contractName)
+        const implementation = await this.app.directory.getImplementation(contractName)
         implementation.should.be.zeroAddress
       })
     })
