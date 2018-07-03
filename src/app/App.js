@@ -63,7 +63,7 @@ export default class App {
 
   async unsetImplementation(contractName) {
     log.info(`Unsetting implementation of ${contractName} in directory...`)
-    await this.currentDirectory().unsetImplementation(contractName, this.txParams)
+    await this.directory.unsetImplementation(contractName, this.txParams)
     log.info(`Implementation unset`)
   }
 
