@@ -15,15 +15,8 @@ const DEFAULT_COVERAGE_TX_PARAMS = {
 export default {
 
   getLocalPath(contractName) {
-    let buildDir = `${process.cwd()}/build/contracts`
-    try {
-      const TruffleConfig = require('truffle-config')
-      const config = TruffleConfig.detect({ logger: console })
-      if (config.contracts_build_directory) {
-        buildDir = config.contracts_build_directory
-      }
-    } catch (error) {
-    }
+    let defaultBuildDir = `${process.cwd()}/build/contracts`
+    const buildDir = this._getTruffleBuildDir() || defaultBuildDir
     return `${buildDir}/${contractName}.json`
   },
 
@@ -53,6 +46,16 @@ export default {
       ? this._provideContractForTesting(contract)
       : this._provideContractForProduction(contract)
   },
+
+  _getTruffleBuildDir() {
+    try {
+      const TruffleConfig = require('truffle-config')
+      const config = TruffleConfig.detect({ logger: console })
+      return config.contracts_build_directory
+    } catch (error) {
+      return undefined
+    }
+  }
 
   _provideContractForProduction(contract) {
     truffleProvision(contract, this._artifactsDefaults())
