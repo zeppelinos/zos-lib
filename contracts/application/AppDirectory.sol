@@ -14,7 +14,7 @@ contract AppDirectory is ImplementationDirectory {
    * @dev Emitted when the standard library is changed.
    * @param newStdlib Address of the new standard library.
    */
-  event StdlibChanged(address newStdlib);
+  event StdlibChanged(address indexed newStdlib);
 
   /**
    * @dev Provider for standard library implementations.
