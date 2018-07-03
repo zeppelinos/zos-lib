@@ -58,6 +58,13 @@ export default class Package {
     return implementation
   }
 
+  async unsetImplementation (version, contractName) {
+    log.info(`Unsetting implementation of ${contractName} in version ${version}...`)
+    const directory = await this.getImplementationDirectory(version)
+    await directory.unsetImplementation(contractName, this.txParams)
+    log.info(`Implementation unset for ${contractName} in version ${version}`)
+  }
+
   async newVersion(version, stdlibAddress) {
     log.info('Adding new version...')
     const directory = await this.newDirectory(stdlibAddress)

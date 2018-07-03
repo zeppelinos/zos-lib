@@ -46,7 +46,7 @@ export default class App {
   }
 
   async hasStdlib() {
-    return (await this.currentStdlib()) === ZERO_ADDRESS
+    return (await this.currentStdlib()) !== ZERO_ADDRESS
   }
 
   async getImplementation(contractName) {
@@ -62,9 +62,7 @@ export default class App {
   }
 
   async unsetImplementation(contractName) {
-    log.info(`Unsetting implementation of ${contractName} in directory...`)
     await this.directory.unsetImplementation(contractName, this.txParams)
-    log.info(`Implementation unset`)
   }
 
   async setStdlib(stdlibAddress = 0x0) {

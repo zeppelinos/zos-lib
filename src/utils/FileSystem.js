@@ -17,6 +17,10 @@ export function createDir(dir) {
   fs.mkdirSync(dir)
 }
 
+export function isDir(path) {
+  return fs.lstatSync(path).isDirectory()
+}
+
 export function ifExistsThrow(filename, message) {
   if(exists(filename)) throw Error(message)
 }
@@ -50,8 +54,20 @@ export function write(filename, data) {
   fs.writeFileSync(filename, data)
 }
 
+export function append(filename, data) {
+  fs.appendFileSync(filename, data)
+}
+
 export function copy(source, target) {
   fs.copyFileSync(source, target)
+}
+
+export function remove(filename) {
+  fs.unlinkSync(filename)
+}
+
+export function removeDir(dir) {
+  fs.rmdirSync(dir)
 }
 
 /**
@@ -60,22 +76,19 @@ export function copy(source, target) {
  * @see https://stackoverflow.com/a/42505874/3027390
  */
 export function removeTree(dirPath) {
-  if (fs.existsSync(dirPath)) {
-    fs.readdirSync(dirPath).forEach(function(entry) {
-      var entryPath = path.join(dirPath, entry);
-      if (fs.lstatSync(entryPath).isDirectory()) {
-        removeTree(entryPath);
-      } else {
-        fs.unlinkSync(entryPath);
-      }
-    });
-    fs.rmdirSync(dirPath);
+  if (exists(dirPath)) {
+    readDir(dirPath).forEach(entry => {
+      const entryPath = path.join(dirPath, entry)
+      isDir(entryPath) ? removeTree(entryPath) : remove(entryPath)
+    })
+    removeDir(dirPath)
   }
 }
 
 export default {
   read,
   readDir,
+  isDir,
   exists,
   ifExistsThrow,
   ifNotExistsThrow,
@@ -85,6 +98,9 @@ export default {
   parseJsonIfExists,
   writeJson,
   write,
+  append,
   copy,
+  remove,
+  removeDir,
   removeTree
 }

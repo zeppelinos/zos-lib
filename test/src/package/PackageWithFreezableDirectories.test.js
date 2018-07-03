@@ -73,6 +73,14 @@ contract('PackageWithFreezableDirectories', function ([_, owner]) {
         const implementation = await this.package.getImplementation(version, contractName)
         implementation.should.eq(newImplementation.address)
       })
+
+      it('allows to unset an implementation', async function () {
+        await this.package.setImplementation(version, DummyImplementation, contractName)
+        await this.package.unsetImplementation(version, contractName)
+
+        const implementation = await this.package.getImplementation(version, contractName)
+        implementation.should.be.zeroAddress
+      })
     })
 
     describe('when current version is frozen', async function() {
@@ -82,6 +90,11 @@ contract('PackageWithFreezableDirectories', function ([_, owner]) {
 
       it('does not allow to register new implementations', async function() {
         await assertRevert(this.package.setImplementation(version, DummyImplementation, contractName))
+      })
+
+      // TODO: uncomment this test once the patch has been merged
+      xit('does not allow to unset an implementations', async function() {
+        await assertRevert(this.package.unsetImplementation(version, contractName))
       })
     })
   })
