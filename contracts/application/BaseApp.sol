@@ -18,7 +18,7 @@ contract BaseApp is Ownable {
    * @dev Constructor function
    * @param _factory Proxy factory
    */
-  function BaseApp(UpgradeabilityProxyFactory _factory) public {
+  constructor(UpgradeabilityProxyFactory _factory) public {
     require(address(_factory) != address(0));
     factory = _factory;
   }

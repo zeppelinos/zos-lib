@@ -43,7 +43,7 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
    * It sets the `msg.sender` as the proxy administrator.
    * @param _implementation address of the initial implementation.
    */
-  function AdminUpgradeabilityProxy(address _implementation) UpgradeabilityProxy(_implementation) public {
+  constructor(address _implementation) UpgradeabilityProxy(_implementation) public {
     assert(ADMIN_SLOT == keccak256("org.zeppelinos.proxy.admin"));
 
     _setAdmin(msg.sender);

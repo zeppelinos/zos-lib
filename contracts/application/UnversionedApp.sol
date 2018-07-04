@@ -19,10 +19,7 @@ contract UnversionedApp is BaseApp {
    * @param _provider Implementation provider.
    * @param _factory Proxy factory.
    */
-  function UnversionedApp(ImplementationProvider _provider, UpgradeabilityProxyFactory _factory)
-    BaseApp(_factory)
-    public
-  {
+  constructor(ImplementationProvider _provider, UpgradeabilityProxyFactory _factory) BaseApp(_factory) public {
     setProvider(_provider);
   }
 

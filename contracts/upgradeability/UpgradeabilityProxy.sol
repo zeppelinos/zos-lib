@@ -27,7 +27,7 @@ contract UpgradeabilityProxy is Proxy {
    * @dev Contract constructor.
    * @param _implementation Address of the initial implementation.
    */
-  function UpgradeabilityProxy(address _implementation) public {
+  constructor(address _implementation) public {
     assert(IMPLEMENTATION_SLOT == keccak256("org.zeppelinos.proxy.implementation"));
 
     _setImplementation(_implementation);

@@ -21,10 +21,7 @@ contract PackagedApp is BaseApp {
    * @param _version Initial version of the app.
    * @param _factory Proxy factory.
    */
-  function PackagedApp(Package _package, string _version, UpgradeabilityProxyFactory _factory)
-    BaseApp(_factory)
-    public
-  {
+  constructor(Package _package, string _version, UpgradeabilityProxyFactory _factory) BaseApp(_factory) public {
     require(address(_package) != address(0));
     require(_package.hasVersion(_version));
     package = _package;
