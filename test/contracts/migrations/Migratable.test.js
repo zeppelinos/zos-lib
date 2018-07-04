@@ -350,15 +350,19 @@ contract('Migratable', function ([_, owner, registrar]) {
   describe('an initialized migratable', function () {
     beforeEach('creating initialized migratable', async function () {
       this.migratable = await MigratableMock.new();
-      await this.migratable.initialize(0);
+      sendTransaction(this.migratable, 'initialize', ['uint256'], [0]);
     });
 
     it('should not allow rerunning the initializer', async function () {
-      await assertRevert(this.migratable.initialize(0));
+      await assertRevert(
+        sendTransaction(this.migratable, 'initialize', ['uint256'], [0])
+      );
     });
 
     it('should not allow running another initializer', async function () {
-      await assertRevert(this.migratable.secondInitialize());
+      await assertRevert(
+        sendTransaction(this.migratable, 'secondInitialize')
+      );
     });
   });
 });
