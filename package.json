@@ -54,7 +54,7 @@
     "bignumber.js": "^7.2.0",
     "chalk": "^2.4.1",
     "ethereumjs-abi": "^0.6.5",
-    "openzeppelin-solidity": "~1.9.0",
+    "openzeppelin-solidity": "~1.10.0",
     "truffle-contract": "^3.0.6",
     "truffle-provisioner": "^0.1.1",
     "web3": "^0.18.4"
