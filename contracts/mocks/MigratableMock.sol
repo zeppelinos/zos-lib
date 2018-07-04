@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.24;
 
 import "../migrations/Migratable.sol";
 
@@ -8,8 +8,6 @@ import "../migrations/Migratable.sol";
  */
 contract MigratableMock is Migratable {
   uint256 public x;
-
-  function MigratableMock() public {}
 
   function initialize(uint256 value) public payable isInitializer("MigratableMock", "0") {
     x = value;
