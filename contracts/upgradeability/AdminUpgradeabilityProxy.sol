@@ -69,7 +69,7 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
    * @param newAdmin Address to transfer proxy administration to.
    */
   function changeAdmin(address newAdmin) external ifAdmin {
-    require(newAdmin != address(0));
+    require(newAdmin != address(0), "Cannot change the admin of a proxy to the zero address");
     emit AdminChanged(_admin(), newAdmin);
     _setAdmin(newAdmin);
   }
@@ -124,7 +124,7 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
    * @dev Only fall back when the sender is not the admin.
    */
   function _willFallback() internal {
-    require(msg.sender != _admin());
+    require(msg.sender != _admin(), "Cannot call fallback function from the proxy admin");
     super._willFallback();
   }
 }

@@ -22,7 +22,7 @@ contract Initializable {
    * @dev Modifier to use in the initialization function of a contract.
    */
   modifier isInitializer() {
-    require(!initialized);
+    require(!initialized, "Contract instance has already been initialized");
     _;
     initialized = true;
   }

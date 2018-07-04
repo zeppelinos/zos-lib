@@ -19,7 +19,7 @@ contract BaseApp is Ownable {
    * @param _factory Proxy factory
    */
   constructor(UpgradeabilityProxyFactory _factory) public {
-    require(address(_factory) != address(0));
+    require(address(_factory) != address(0), "Cannot set the proxy factory of an app to the zero address");
     factory = _factory;
   }
 

@@ -14,7 +14,7 @@ contract MigratableMock is Migratable {
   }
 
   function fail() public pure {
-    require(false);
+    require(false, "MigratableMock forced failure");
   }
 
   function secondInitialize() public isInitializer("MigratableMock", "1") {

@@ -36,7 +36,7 @@ contract UnversionedApp is BaseApp {
    * @param _provider New implementation provider
    */
   function setProvider(ImplementationProvider _provider) public onlyOwner {
-    require(address(_provider) != address(0));
+    require(address(_provider) != address(0), "Cannot set the implementation provider of an app to the zero address");
     provider = _provider;
   }
 }

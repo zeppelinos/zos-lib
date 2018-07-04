@@ -38,7 +38,7 @@ contract Package is Ownable {
    * @param provider ImplementationProvider associated with the version.
    */
   function addVersion(string version, ImplementationProvider provider) public onlyOwner {
-    require(!hasVersion(version));
+    require(!hasVersion(version), "Given version is already registered in package");
     versions[version] = provider;
     emit VersionAdded(version, provider);
   }
