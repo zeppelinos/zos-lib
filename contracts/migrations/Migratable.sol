@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.24;
 
 
 /**
@@ -29,6 +29,11 @@ contract Migratable {
    */
   mapping (string => mapping (string => bool)) internal migrated;
 
+  /**
+   * @dev Internal migration id used to specify that a contract has already been initialized.
+   */
+  string constant private INITIALIZED_ID = "initialized";
+
 
   /**
    * @dev Modifier to use in the initialization function of a contract.
@@ -36,10 +41,12 @@ contract Migratable {
    * @param migrationId Identifier of the migration.
    */
   modifier isInitializer(string contractName, string migrationId) {
-    require(!isMigrated(contractName, migrationId));
+    validateMigrationIsPending(contractName, INITIALIZED_ID);
+    validateMigrationIsPending(contractName, migrationId);
     _;
     emit Migrated(contractName, migrationId);
     migrated[contractName][migrationId] = true;
+    migrated[contractName][INITIALIZED_ID] = true;
   }
 
   /**
@@ -50,7 +57,8 @@ contract Migratable {
    * @param newMigrationId Identifier of the new migration to be applied.
    */
   modifier isMigration(string contractName, string requiredMigrationId, string newMigrationId) {
-    require(isMigrated(contractName, requiredMigrationId) && !isMigrated(contractName, newMigrationId));
+    require(isMigrated(contractName, requiredMigrationId), "Prerequisite migration ID has not been run yet");
+    validateMigrationIsPending(contractName, newMigrationId);
     _;
     emit Migrated(contractName, newMigrationId);
     migrated[contractName][newMigrationId] = true;
@@ -64,5 +72,22 @@ contract Migratable {
    */
   function isMigrated(string contractName, string migrationId) public view returns(bool) {
     return migrated[contractName][migrationId];
+  }
+
+  /**
+   * @dev Initializer that marks the contract as initialized.
+   * It is important to run this if you had deployed a previous version of a Migratable contract.
+   * For more information see https://github.com/zeppelinos/zos-lib/issues/158.
+   */
+  function initialize() isInitializer("Migratable", "1.2.1") public {
+  }
+
+  /**
+   * @dev Reverts if the requested migration was already executed.
+   * @param contractName Name of the contract.
+   * @param migrationId Identifier of the migration.
+   */
+  function validateMigrationIsPending(string contractName, string migrationId) private {
+    require(!isMigrated(contractName, migrationId), "Requested target migration ID has already been run");
   }
 }
