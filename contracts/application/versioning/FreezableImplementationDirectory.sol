@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.24;
 
 import "./ImplementationDirectory.sol";
 
@@ -14,7 +14,7 @@ contract FreezableImplementationDirectory is ImplementationDirectory {
    * @dev Modifier that allows functions to be called only before the contract is frozen.
    */
   modifier whenNotFrozen() {
-    require(!frozen);
+    require(!frozen, "Cannot perform action for a frozen implementation directory");
     _;
   }
 
@@ -34,5 +34,14 @@ contract FreezableImplementationDirectory is ImplementationDirectory {
    */
   function setImplementation(string contractName, address implementation) public whenNotFrozen {
     super.setImplementation(contractName, implementation);
+  }
+
+  /**
+   * @dev Unsets the implementation of a contract.
+   * It overrides the parent function to prevent it from running if the directory is frozen.
+   * @param contractName Name of the contract.
+   */
+  function unsetImplementation(string contractName) public whenNotFrozen {
+    super.unsetImplementation(contractName);
   }
 }
