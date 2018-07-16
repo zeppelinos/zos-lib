@@ -10,6 +10,7 @@ import Proxy from './utils/Proxy'
 import Logger from './utils/Logger'
 import FileSystem from './utils/FileSystem'
 import Contracts from './utils/Contracts'
+import Deploy from './utils/Deploy'
 
 // test behaviors
 import { behaviors, helpers } from './test'
@@ -32,6 +33,7 @@ export {
   Logger,
   FileSystem,
   Contracts,
+  Deploy,
   App,
   Package,
   Release,

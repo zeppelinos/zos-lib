@@ -2,6 +2,7 @@
 
 import Logger from '../utils/Logger'
 import Contracts from '../utils/Contracts'
+import deploy from '../utils/Deploy'
 import App from './App'
 
 const log = new Logger('AppDeployer')
@@ -27,28 +28,28 @@ export default class AppDeployer {
   async createApp(version) {
     log.info('Deploying new PackagedApp...')
     const PackagedApp = Contracts.getFromLib('PackagedApp')
-    this.packagedApp = await PackagedApp.new(this.package.address, version, this.factory.address, this.txParams)
+    this.packagedApp = await deploy(PackagedApp, [this.package.address, version, this.factory.address], this.txParams)
     log.info(`Deployed PackagedApp ${this.packagedApp.address}`)
   }
 
   async createFactory() {
     log.info('Deploying new UpgradeabilityProxyFactory...')
     const UpgradeabilityProxyFactory = Contracts.getFromLib('UpgradeabilityProxyFactory')
-    this.factory = await UpgradeabilityProxyFactory.new(this.txParams)
+    this.factory = await deploy(UpgradeabilityProxyFactory, [], this.txParams)
     log.info(`Deployed UpgradeabilityProxyFactory ${this.factory.address}`)
   }
 
   async createPackage() {
     log.info('Deploying new Package...')
     const Package = Contracts.getFromLib('Package')
-    this.package = await Package.new(this.txParams)
+    this.package = await deploy(Package, [], this.txParams)
     log.info(`Deployed Package ${this.package.address}`)
   }
 
   async createAppDirectory(stdlibAddress) {
     log.info('Deploying new AppDirectory...')
     const AppDirectory = Contracts.getFromLib('AppDirectory')
-    this.appDirectory = await AppDirectory.new(stdlibAddress, this.txParams)
+    this.appDirectory = await deploy(AppDirectory, [stdlibAddress], this.txParams)
     log.info(`Deployed AppDirectory ${this.appDirectory.address}`)
   }
 

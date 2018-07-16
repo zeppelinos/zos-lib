@@ -2,6 +2,7 @@
 
 import Logger from '../utils/Logger'
 import Contracts from '../utils/Contracts'
+import deploy from '../utils/Deploy'
 import decodeLogs from '../helpers/decodeLogs'
 import encodeCall from '../helpers/encodeCall'
 
@@ -65,7 +66,7 @@ export default class App {
 
   async setImplementation(contractClass, contractName) {
     log.info(`Setting implementation of ${contractName} in directory...`)
-    const implementation = await contractClass.new(this.txParams)
+    const implementation = await deploy(contractClass, [], this.txParams)
     const directory = this.currentDirectory()
     await directory.setImplementation(contractName, implementation.address, this.txParams)
     log.info(` Implementation set: ${implementation.address}`)
@@ -87,7 +88,7 @@ export default class App {
   async newVersion(versionName, stdlibAddress = 0) {
     log.info(`Adding version ${versionName}...`)
     const AppDirectory = Contracts.getFromLib('AppDirectory')
-    const directory = await AppDirectory.new(stdlibAddress, this.txParams)
+    const directory = await deploy(AppDirectory, [stdlibAddress], this.txParams)
     log.info(` App directory: ${directory.address}`)
     await this.package.addVersion(versionName, directory.address, this.txParams)
     log.info(` Added version: ${versionName}`)

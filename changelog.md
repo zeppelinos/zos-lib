@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+- Contract deployments are executed with an estimate of the gas needed, instead of using the network default
+
 ### Fix
 - Mark truffle-config as a prod dependency
 

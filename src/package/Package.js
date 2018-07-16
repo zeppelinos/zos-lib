@@ -1,5 +1,6 @@
 import Logger from '../utils/Logger'
 import Contracts from '../utils/Contracts'
+import deploy from '../utils/Deploy'
 
 import PackageDeployer from './PackageDeployer'
 import PackageProvider from './PackageProvider'
@@ -40,7 +41,7 @@ export default class Package {
   async newVersion(version) {
     log.info('Adding new version...')
     const Release = Contracts.getFromLib('Release')
-    const release = await Release.new(this.txParams)
+    const release = await deploy(Release, [], this.txParams)
     await this.package.addVersion(version, release.address, this.txParams)
     log.info(' Added version:', version)
     return release
@@ -65,7 +66,7 @@ export default class Package {
 
   async setImplementation(version, contractClass, contractName) {
     log.info(`Setting implementation of ${contractName} in version ${version}...`)
-    const implementation = await contractClass.new(this.txParams)
+    const implementation = await deploy(contractClass, [], this.txParams)
     const release = await this.getRelease(version)
     await release.setImplementation(contractName, implementation.address, this.txParams)
     log.info(` Implementation set: ${implementation.address}`)
