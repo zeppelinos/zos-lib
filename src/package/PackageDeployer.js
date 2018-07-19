@@ -1,6 +1,6 @@
 import Package from './Package'
 import Contracts from '../utils/Contracts'
-import deploy from '../utils/Deploy'
+import { deploy, sendTransaction } from '../utils/Transactions'
 
 export default class PackageDeployer {
   constructor(txParams = {}) {

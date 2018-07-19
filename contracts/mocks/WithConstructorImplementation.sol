@@ -5,6 +5,7 @@ contract WithConstructorImplementation {
   string public text;
 
   constructor(uint256 _value, string _text) public {
+    require(_value > 0);
     value = _value;
     text = _text;
   }

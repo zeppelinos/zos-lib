@@ -1,7 +1,7 @@
 import Release from './Release'
 import Logger from '../utils/Logger'
 import Contracts from '../utils/Contracts'
-import deploy from '../utils/Deploy'
+import { deploy, sendTransaction } from '../utils/Transactions'
 
 const log = new Logger('ReleaseDeployer')
 
@@ -36,7 +36,7 @@ export default class ReleaseDeployer {
       const { alias: contractAlias, name: contractName } = contract
       const implementation = await deployMethod(contractName)
       log.info('Registering implementation in release...')
-      await this.release.setImplementation(contractAlias, implementation.address, this.txParams)
+      await sendTransaction(this.release.setImplementation, [contractAlias, implementation.address], this.txParams)
     }))
   }
 

@@ -2,7 +2,7 @@
 
 import Logger from '../utils/Logger'
 import Contracts from '../utils/Contracts'
-import deploy from '../utils/Deploy'
+import { deploy, sendTransaction } from '../utils/Transactions'
 import App from './App'
 
 const log = new Logger('AppDeployer')
@@ -56,7 +56,7 @@ export default class AppDeployer {
   async addVersion(version) {
     log.info('Adding new version...')
     this.version = version
-    await this.package.addVersion(version, this.appDirectory.address, this.txParams)
+    await sendTransaction(this.package.addVersion, [version, this.appDirectory.address], this.txParams)
     log.info(`Added version ${version}`)
   }
 }

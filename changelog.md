@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Changed
-- Contract deployments are executed with an estimate of the gas needed, instead of using the network default
+- Contract deployments and transactions are executed with an estimate of the gas needed, instead of using the network default ([#211](https://github.com/zeppelinos/zos-lib/pull/211))
 
 ### Fix
 - Mark truffle-config as a prod dependency
