@@ -1,4 +1,5 @@
 import Contracts from '../utils/Contracts'
+import { estimateGas } from '../utils/Transactions'
 
 const RECEIPT_CHECK_TIMEBOX = 1000
 const DEPLOYMENT_TIMEOUT_ERROR = 'Contract deployment timed out'
@@ -11,7 +12,8 @@ function callback(resolve, reject) {
   return (error, result) => error ? reject(error) : resolve(result)
 }
 
-function sendTransaction(params) {
+async function sendTransaction(params) {
+  if (!params.gas) params.gas = await estimateGas(params.data, params)
   return new Promise(function (resolve, reject) {
     web3.eth.sendTransaction(params, callback(resolve, reject))
   })
