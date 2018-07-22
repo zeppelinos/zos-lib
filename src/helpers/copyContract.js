@@ -1,6 +1,7 @@
-const RECEIPT_CHECK_TIMEBOX = 100
-const DEPLOYMENT_TIMEOUT = 60000
-const DEPLOYMENT_TIMEOUT_ERROR = 'Contact deployment timed out'
+import Contracts from '../utils/Contracts'
+
+const RECEIPT_CHECK_TIMEBOX = 1000
+const DEPLOYMENT_TIMEOUT_ERROR = 'Contract deployment timed out'
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -17,13 +18,20 @@ function sendTransaction(params) {
 }
 
 async function getTransactionReceipt(txHash) {
-  for (let i = 0; i < (DEPLOYMENT_TIMEOUT / RECEIPT_CHECK_TIMEBOX) ; i++) {
-    const receipt = await new Promise((resolve, reject) => {
+  let timeout = false
+  const timer = setTimeout(() => timeout = true, Contracts.getSyncTimeout())
+
+  while(!timeout) {
+    const receipt = await new Promise((resolve, reject) =>
       web3.eth.getTransactionReceipt(txHash, callback(resolve, reject))
-    })
-    if (receipt) return receipt
-    else await sleep(100)
+    )
+    if (receipt) {
+      clearTimeout(timer)
+      return receipt
+    }
+    await sleep(RECEIPT_CHECK_TIMEBOX)
   }
+
   throw Error(DEPLOYMENT_TIMEOUT_ERROR)
 }
 
