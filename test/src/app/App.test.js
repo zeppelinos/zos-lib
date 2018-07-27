@@ -3,6 +3,7 @@ require('../../setup')
 
 import App from '../../../src/app/App';
 import Contracts from '../../../src/utils/Contracts'
+import Proxy from '../../../src/utils/Proxy';
 
 const Impl = Contracts.getFromLocal('Impl');
 const ImplV1 = Contracts.getFromLocal('DummyImplementation');
@@ -10,7 +11,7 @@ const ImplV2 = Contracts.getFromLocal('DummyImplementationV2');
 const AppDirectory = Contracts.getFromLocal('AppDirectory');
 const ImplementationDirectory = Contracts.getFromLocal('ImplementationDirectory');
 
-contract('App', function ([_, owner]) {
+contract('App', function ([_, owner, otherAdmin]) {
   const txParams = { from: owner }
   const initialVersion = '1.0';
   const contractName = 'Impl';
@@ -42,7 +43,7 @@ contract('App', function ([_, owner]) {
 
   const shouldConnectToStdlib = function () {
     it('should connect current directory to stdlib', async function () {
-      const appDirectory = await this.app.package.getImplementationDirectory(this.app.version)
+      const appDirectory = await this.app.package.getDirectory(this.app.version)
       const currentStdlib = await appDirectory.stdlib()
 
       const stdlib = await this.app.currentStdlib();
@@ -101,7 +102,7 @@ contract('App', function ([_, owner]) {
       });
 
       it('returns the current directory', async function () {
-        const appDirectory = await this.app.package.getImplementationDirectory(this.app.version)
+        const appDirectory = await this.app.package.getDirectory(this.app.version)
 
         this.app.directory.address.should.eq(appDirectory.address)
       });
@@ -133,6 +134,60 @@ contract('App', function ([_, owner]) {
         implementation.should.be.zeroAddress
       })
     })
+
+    describe('createContract', function () {
+      beforeEach('setting implementation', setImplementation);
+
+      const shouldReturnANonUpgradeableInstance = function () {
+        it('should return a non-upgradeable instance', async function () {
+          this.instance.address.should.be.not.null;
+          (await this.instance.version()).should.be.eq('V1');
+          (await web3.eth.getCode(this.instance.address)).should.be.eq(ImplV1.deployedBytecode)
+        });
+      };
+
+      describe('without initializer', function () {
+        beforeEach('creating a non-upgradeable instance', async function () {
+          this.instance = await this.app.createContract(ImplV1, contractName);
+        });
+
+        shouldReturnANonUpgradeableInstance();
+      });
+
+      describe('with initializer', function () {
+        beforeEach('creating a proxy', async function () {
+          this.instance = await this.app.createContract(ImplV1, contractName, 'initialize', [10]);
+        });
+
+        shouldReturnANonUpgradeableInstance();
+
+        it('should have initialized the instance', async function () {
+          (await this.instance.value()).toNumber().should.eq(10);
+        });
+      });
+
+      describe('with complex initializer', function () {
+        beforeEach('creating a non-upgradeable instance', async function () {
+          this.instance = await this.app.createContract(ImplV1, contractName, 'initialize', [10, "foo", []]);
+        });
+
+        shouldReturnANonUpgradeableInstance();
+
+        it('should have initialized the proxy', async function () {
+          (await this.instance.value()).toNumber().should.eq(10);
+          (await this.instance.text()).should.eq("foo");
+          await this.instance.values(0).should.be.rejected;
+        });
+      });
+
+      describe('with implicit contract name', async function () {
+        beforeEach('creating a non-upgradeable instance', async function () {
+          this.instance = await this.app.createContract(Impl);
+        });
+
+        shouldReturnANonUpgradeableInstance();
+      });
+    });
 
     const createProxy = async function () {
       this.proxy = await this.app.createProxy(ImplV1, contractName);
@@ -238,6 +293,18 @@ contract('App', function ([_, owner]) {
       });
 
       shouldConnectToStdlib();
+    });
+
+    describe('changeProxyAdmin', function () {
+      beforeEach('setting implementation', setImplementation);
+      beforeEach('create proxy', createProxy);
+
+      it('should change proxy admin', async function () {
+        await this.app.changeProxyAdmin(this.proxy.address, otherAdmin);
+        const proxyWrapper = Proxy.at(this.proxy.address);
+        const actualAdmin = await proxyWrapper.admin();
+        actualAdmin.should.be.eq(otherAdmin);
+      });
     });
   });
 

@@ -1,5 +1,6 @@
 import Logger from '../utils/Logger'
 import Contracts from '../utils/Contracts'
+import { deploy } from '../utils/Transactions'
 
 const log = new Logger('PackageDeployer')
 
@@ -16,7 +17,7 @@ export default class PackageDeployer {
   async _createPackage() {
     log.info('Deploying new Package...')
     const Package = Contracts.getFromLib('Package')
-    this.package = await Package.new(this.txParams)
+    this.package = await deploy(Package, [], this.txParams)
     log.info(`Deployed Package ${this.package.address}`)
   }
 }

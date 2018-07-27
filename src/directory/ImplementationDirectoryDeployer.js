@@ -1,5 +1,6 @@
 import Logger from '../utils/Logger'
 import Contracts from '../utils/Contracts'
+import { deploy, sendTransaction } from '../utils/Transactions'
 
 const log = new Logger('ImplementationDirectoryDeployer')
 
@@ -35,7 +36,7 @@ export default class ImplementationDirectoryDeployer {
 
   async deployImplementationDirectory() {
     log.info(`Deploying a new ${this.contractClass.contractName}...`)
-    this.directory = await this.contractClass.new(this.txParams)
+    this.directory = await deploy(this.contractClass, [], this.txParams)
     log.info(`Deployed at ${this.directory.address}`)
   }
 
@@ -44,7 +45,7 @@ export default class ImplementationDirectoryDeployer {
       const { alias: contractAlias, name: contractName } = contract
       const implementation = await deployMethod(contractName)
       log.info(`Registering ${contractAlias} implementation at ${implementation.address} in implementation directory...`)
-      await this.directory.setImplementation(contractAlias, implementation.address, this.txParams)
+      await sendTransaction(this.directory.setImplementation, [contractAlias, implementation.address], this.txParams)
       log.info('Implementation set')
     }))
   }
@@ -52,7 +53,7 @@ export default class ImplementationDirectoryDeployer {
   async _deployLocalContract(contractName) {
     const contractClass = Contracts.getFromLib(contractName)
     log.info(`Deploying new ${contractName}...`)
-    const implementation = await contractClass.new()
+    const implementation = await deploy(contractClass, [], this.txParams)
     log.info(`Deployed ${contractName} ${implementation.address}`)
     return implementation
   }
@@ -60,7 +61,7 @@ export default class ImplementationDirectoryDeployer {
   async _deployDependencyContract(dependencyName, contractName) {
     const contractClass = await Contracts.getFromNodeModules(dependencyName, contractName)
     log.info(`Deploying new ${contractName} from dependency ${dependencyName}...`)
-    const implementation = await contractClass.new()
+    const implementation = await deploy(contractClass, [], this.txParams)
     log.info(`Deployed ${contractName} ${implementation.address}`)
     return implementation
   }

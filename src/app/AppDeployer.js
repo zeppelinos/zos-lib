@@ -2,10 +2,10 @@
 
 import Logger from '../utils/Logger'
 import Contracts from '../utils/Contracts'
+import { deploy, sendTransaction } from '../utils/Transactions'
+
 import App from './App'
-import PackageDeployer from "../package/PackageDeployer";
-import AppDirectoryDeployer from "../directory/AppDirectoryDeployer";
-import Package from "../package/Package";
+import Package from '../package/Package'
 
 const log = new Logger('AppDeployer')
 
@@ -29,14 +29,14 @@ export default class AppDeployer {
   async createApp(version) {
     log.info('Deploying new PackagedApp...')
     const PackagedApp = Contracts.getFromLib('PackagedApp')
-    this.packagedApp = await PackagedApp.new(this.package.address, version, this.factory.address, this.txParams)
+    this.packagedApp = await deploy(PackagedApp, [this.package.address, version, this.factory.address], this.txParams)
     log.info(`Deployed PackagedApp ${this.packagedApp.address}`)
   }
 
   async createFactory() {
     log.info('Deploying new UpgradeabilityProxyFactory...')
     const UpgradeabilityProxyFactory = Contracts.getFromLib('UpgradeabilityProxyFactory')
-    this.factory = await UpgradeabilityProxyFactory.new(this.txParams)
+    this.factory = await deploy(UpgradeabilityProxyFactory, [], this.txParams)
     log.info(`Deployed UpgradeabilityProxyFactory ${this.factory.address}`)
   }
 

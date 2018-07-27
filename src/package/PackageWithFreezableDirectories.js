@@ -1,31 +1,23 @@
-import Logger from '../utils/Logger'
-import Contracts from '../utils/Contracts'
-
 import Package from './Package'
-import ImplementationDirectoryDeployer from '../directory/ImplementationDirectoryDeployer'
-
-const log = new Logger('Package')
+import ImplementationDirectoryProvider from '../directory/ImplementationDirectoryProvider'
+import FreezableImplementationDirectory from '../directory/FreezableImplementationDirectory'
 
 export default class PackageWithFreezableDirectories extends Package {
-
-  async wrapImplementationDirectory(directoryAddress) {
-    const FreezableImplementationDirectory = Contracts.getFromLib('FreezableImplementationDirectory');
-    return new FreezableImplementationDirectory(directoryAddress)
+  wrapImplementationDirectory(directoryAddress) {
+    return ImplementationDirectoryProvider.freezable(directoryAddress, this.txParams)
   }
 
   async newDirectory() {
-    return ImplementationDirectoryDeployer.freezable(this.txParams).deployLocal()
+    return FreezableImplementationDirectory.deployLocal([], this.txParams)
   }
 
   async isFrozen(version) {
-    const directory = await this.getImplementationDirectory(version)
-    return await directory.frozen()
+    const directory = await this.getDirectory(version)
+    return await directory.isFrozen()
   }
 
   async freeze(version) {
-    log.info('Freezing new implementation directory...')
-    const directory = await this.getImplementationDirectory(version)
+    const directory = await this.getDirectory(version)
     await directory.freeze(this.txParams)
-    log.info('Implementation directory frozen')
   }
 }

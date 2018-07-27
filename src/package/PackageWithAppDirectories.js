@@ -1,16 +1,12 @@
-import Contracts from '../utils/Contracts'
-
 import Package from './Package'
-import AppDirectoryDeployer from '../directory/AppDirectoryDeployer'
+import AppDirectory from '../directory/AppDirectory'
 
 export default class PackageWithAppDirectories extends Package {
-  async wrapImplementationDirectory(directoryAddress) {
-    const AppDirectory = Contracts.getFromLib('AppDirectory');
-    return new AppDirectory(directoryAddress)
+  wrapImplementationDirectory(directoryAddress) {
+    return AppDirectory.fetch(directoryAddress, this.txParams)
   }
 
   async newDirectory(stdlibAddress) {
-    const deployer = new AppDirectoryDeployer(this.txParams)
-    return deployer.deploy(stdlibAddress)
+    return AppDirectory.deploy(stdlibAddress, this.txParams)
   }
 }

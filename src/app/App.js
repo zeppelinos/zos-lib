@@ -4,6 +4,8 @@ import Logger from '../utils/Logger'
 import Contracts from '../utils/Contracts'
 import decodeLogs from '../helpers/decodeLogs'
 import encodeCall from '../helpers/encodeCall'
+import copyContract from '../helpers/copyContract'
+import { deploy, sendTransaction } from '../utils/Transactions'
 
 import AppProvider from './AppProvider'
 import AppDeployer from './AppDeployer'
@@ -71,10 +73,23 @@ export default class App {
 
   async newVersion(version, stdlibAddress = 0x0) {
     const directory = await this.package.newVersion(version, stdlibAddress)
-    await this._app.setVersion(version, this.txParams)
+    await sendTransaction(this._app.setVersion, [version], this.txParams)
     log.info(`Version ${version} set in app.`)
     this.directory = directory
     this.version = version
+  }
+
+  async changeProxyAdmin(proxyAddress, newAdmin) {
+    log.info(`Changing admin for proxy ${proxyAddress} to ${newAdmin}...`)
+    await sendTransaction(this._app.changeProxyAdmin, [proxyAddress, newAdmin], this.txParams)
+    log.info(` Admin for proxy ${proxyAddress} set to ${newAdmin}`)
+  }
+
+  async createContract(contractClass, contractName, initMethodName, initArgs) {
+    if (!contractName) contractName = contractClass.contractName;
+    const instance = await this._copyContract(contractName, contractClass)
+    await this._initNonUpgradeableInstance(instance, contractClass, contractName, initMethodName, initArgs)
+    return instance
   }
 
   async createProxy(contractClass, contractName, initMethodName, initArgs) {
@@ -101,20 +116,18 @@ export default class App {
 
   async _createProxy(contractName) {
     log.info(`Creating ${contractName} proxy without initializing...`)
-    return this._app.create(contractName, this.txParams)
+    return sendTransaction(this._app.create, [contractName], this.txParams)
   }
 
-  async _createProxyAndCall(contractClass, contractName, initMethodName, initArgs) {    
-    const initMethod = this._validateInitMethod(contractClass, initMethodName, initArgs)
-    const initArgTypes = initMethod.inputs.map(input => input.type)
+  async _createProxyAndCall(contractClass, contractName, initMethodName, initArgs) {
+    const { initMethod, callData } = this._buildInitCallData(contractClass, initMethodName, initArgs)
     log.info(`Creating ${contractName} proxy and calling ${this._callInfo(initMethod, initArgs)}`)
-    const callData = encodeCall(initMethodName, initArgTypes, initArgs)
-    return this._app.createAndCall(contractName, callData, this.txParams)
+    return sendTransaction(this._app.createAndCall, [contractName, callData], this.txParams)
   }
 
   async _upgradeProxy(proxyAddress, contractName) {
     log.info(`Upgrading ${contractName} proxy without running migrations...`)
-    return this._app.upgrade(proxyAddress, contractName, this.txParams)
+    return sendTransaction(this._app.upgrade, [proxyAddress, contractName], this.txParams)
   }
 
   async _upgradeProxyAndCall(proxyAddress, contractClass, contractName, initMethodName, initArgs) {
@@ -122,12 +135,36 @@ export default class App {
     const initArgTypes = initMethod.inputs.map(input => input.type)
     log.info(`Upgrading ${contractName} proxy and calling ${this._callInfo(initMethod, initArgs)}...`)
     const callData = encodeCall(initMethodName, initArgTypes, initArgs)
-    return this._app.upgradeAndCall(proxyAddress, contractName, callData, this.txParams)
+    return sendTransaction(this._app.upgradeAndCall, [proxyAddress, contractName, callData], this.txParams)
+  }
+
+  async _copyContract(contractName, contractClass) {
+    log.info(`Creating new non-upgradeable instance of ${contractName}...`)
+    const implementation = await this.getImplementation(contractName)
+    const instance = await copyContract(contractClass, implementation, this.txParams)
+    log.info(`${contractName} instance created at ${instance.address}`)
+    return instance;
+  }
+
+  async _initNonUpgradeableInstance(instance, contractClass, contractName, initMethodName, initArgs) {
+    if (typeof(initArgs) !== 'undefined') {
+      // this could be front-run, waiting for new initializers model
+      const { initMethod, callData } = this._buildInitCallData(contractClass, initMethodName, initArgs)
+      log.info(`Initializing ${contractName} instance at ${instance.address} by calling ${this._callInfo(initMethod, initArgs)}`)
+      instance.sendTransaction(Object.assign({}, this.txParams, { data: callData }))
+    }
+  }
+
+  _buildInitCallData(contractClass, initMethodName, initArgs) {
+    const initMethod = this._validateInitMethod(contractClass, initMethodName, initArgs)
+    const initArgTypes = initMethod.inputs.map(input => input.type)
+    const callData = encodeCall(initMethodName, initArgTypes, initArgs)
+    return { initMethod, callData }
   }
 
   _validateInitMethod(contractClass, initMethodName, initArgs) {
     const initMethod = contractClass.abi.find(fn => fn.name === initMethodName && fn.inputs.length === initArgs.length)
-    if (!initMethod) throw `Could not find initialize method '${initMethodName}' with ${initArgs.length} arguments in contract class`
+    if (!initMethod) throw Error(`Could not find initialize method '${initMethodName}' with ${initArgs.length} arguments in contract class`)
     return initMethod
   }
 

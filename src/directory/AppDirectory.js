@@ -1,9 +1,11 @@
 'use strict';
 
 import Logger from '../utils/Logger'
+import { sendTransaction } from '../utils/Transactions'
+
 import AppDirectoryDeployer from './AppDirectoryDeployer'
 import ImplementationDirectory from './ImplementationDirectory'
-import AppDirectoryProvider from "./AppDirectoryProvider";
+import AppDirectoryProvider from './AppDirectoryProvider'
 
 export default class AppDirectory extends ImplementationDirectory {
 
@@ -28,7 +30,7 @@ export default class AppDirectory extends ImplementationDirectory {
 
   async setStdlib(stdlibAddress) {
     this.log.info(`Setting stdlib ${stdlibAddress}...`)
-    await this.directory.setStdlib(stdlibAddress, this.txParams)
+    await sendTransaction(this.directory.setStdlib, [stdlibAddress], this.txParams)
     this.log.info(`Stdlib ${stdlibAddress} set`)
     return stdlibAddress
   }

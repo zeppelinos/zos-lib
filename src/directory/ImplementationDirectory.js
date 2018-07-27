@@ -1,4 +1,6 @@
 import Logger from '../utils/Logger'
+import { sendTransaction } from '../utils/Transactions'
+
 import ImplementationDirectoryDeployer from './ImplementationDirectoryDeployer'
 
 export default class ImplementationDirectory {
@@ -35,13 +37,13 @@ export default class ImplementationDirectory {
 
   async setImplementation(contractName, implementationAddress) {
     this.log.info(`Setting ${contractName} implementation ${implementationAddress}...`)
-    await this.directory.setImplementation(contractName, implementationAddress, this.txParams)
+    await sendTransaction(this.directory.setImplementation, [contractName, implementationAddress], this.txParams)
     this.log.info(`Implementation set ${implementationAddress}`)
   }
 
   async unsetImplementation(contractName) {
     this.log.info(`Unsetting ${contractName} implementation...`)
-    await this.directory.unsetImplementation(contractName, this.txParams)
+    await sendTransaction(this.directory.unsetImplementation, [contractName], this.txParams)
     this.log.info(`${contractName} implementation unset`)
   }
 }
