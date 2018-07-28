@@ -1,4 +1,6 @@
 import Logger from '../utils/Logger'
+import { deploy, sendTransaction } from '../utils/Transactions'
+
 import PackageProvider from './PackageProvider'
 import PackageDeployer from './PackageDeployer'
 
@@ -42,7 +44,7 @@ export default class Package {
   }
 
   async hasVersion(version) {
-    return this.package.hasVersion(version, this.txParams)
+    return sendTransaction(this.package.hasVersion, [version], this.txParams)
   }
 
   async getImplementation(version, contractName) {
@@ -51,34 +53,32 @@ export default class Package {
 
   async setImplementation(version, contractClass, contractName) {
     log.info(`Setting implementation of ${contractName} in version ${version}...`)
-    const implementation = await contractClass.new(this.txParams)
-    const directory = await this.getImplementationDirectory(version)
-    await directory.setImplementation(contractName, implementation.address, this.txParams)
-    log.info(`Implementation set ${implementation.address}`)
+    const implementation = await deploy(contractClass, [], this.txParams)
+    const directory = await this.getDirectory(version)
+    await directory.setImplementation(contractName, implementation.address)
     return implementation
   }
 
   async unsetImplementation (version, contractName) {
     log.info(`Unsetting implementation of ${contractName} in version ${version}...`)
-    const directory = await this.getImplementationDirectory(version)
+    const directory = await this.getDirectory(version)
     await directory.unsetImplementation(contractName, this.txParams)
-    log.info(`Implementation unset for ${contractName} in version ${version}`)
   }
 
   async newVersion(version, stdlibAddress) {
     log.info('Adding new version...')
     const directory = await this.newDirectory(stdlibAddress)
-    await this.package.addVersion(version, directory.address, this.txParams)
+    await sendTransaction(this.package.addVersion, [version, directory.address], this.txParams)
     log.info(`Added version ${version}`)
     return directory
   }
 
-  async getImplementationDirectory(version) {
+  async getDirectory(version) {
     const directoryAddress = await this.package.getVersion(version)
     return this.wrapImplementationDirectory(directoryAddress)
   }
 
-  async wrapImplementationDirectory() {
+  wrapImplementationDirectory() {
     throw Error('Cannot call abstract method wrapImplementationDirectory()')
   }
 

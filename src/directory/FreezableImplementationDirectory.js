@@ -1,5 +1,7 @@
 import Logger from '../utils/Logger'
-import ImplementationDirectory from "./ImplementationDirectory";
+import { sendTransaction } from '../utils/Transactions'
+
+import ImplementationDirectory from './ImplementationDirectory'
 import ImplementationDirectoryDeployer from './ImplementationDirectoryDeployer'
 
 export default class FreezableImplementationDirectory extends ImplementationDirectory {
@@ -23,11 +25,11 @@ export default class FreezableImplementationDirectory extends ImplementationDire
 
   async freeze() {
     this.log.info('Freezing implementation directory...')
-    await this.directory.freeze(this.txParams)
+    await sendTransaction(this.directory.freeze, [], this.txParams)
     this.log.info('Frozen')
   }
 
   async isFrozen() {
-    return await this.directory.frozen(this.txParams)
+    return await this.directory.frozen()
   }
 }

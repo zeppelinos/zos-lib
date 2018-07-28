@@ -56,6 +56,15 @@ contract BaseApp is Ownable {
   }
 
   /**
+   * @dev Changes the admin of a proxy.
+   * @param proxy Proxy to change admin.
+   * @param newAdmin Address to transfer proxy administration to.
+   */
+  function changeProxyAdmin(AdminUpgradeabilityProxy proxy, address newAdmin) public onlyOwner {
+    proxy.changeAdmin(newAdmin);
+  }
+
+  /**
    * @dev Creates a new proxy for the given contract.
    * @param contractName Name of the contract.
    * @return Address of the new proxy.
