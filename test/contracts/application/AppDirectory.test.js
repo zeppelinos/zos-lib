@@ -9,126 +9,124 @@ const AppDirectory = Contracts.getFromLocal('AppDirectory')
 const DummyImplementation = Contracts.getFromLocal('DummyImplementation')
 const ImplementationDirectory = Contracts.getFromLocal('ImplementationDirectory')
 
-contract('AppDirectory', ([_, appOwner, stdlibOwner, anotherAddress]) => {
-  before(async function () {
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+
+contract('AppDirectory', ([_, appOwner, depsOwner, anotherAddress]) => {
+  beforeEach(async function () {
     this.implementation_v0 = (await DummyImplementation.new()).address
     this.implementation_v1 = (await DummyImplementation.new()).address
-    this.stdlibImplementation = (await DummyImplementation.new()).address
+    
+    this.contractA = (await DummyImplementation.new()).address
+    this.contractB = (await DummyImplementation.new()).address
+    this.depA = await ImplementationDirectory.new({ from: depsOwner })
+    this.depB = await ImplementationDirectory.new({ from: depsOwner })
+    await this.depA.setImplementation('contractA', this.contractA, { from: depsOwner })
+    await this.depB.setImplementation('contractB', this.contractB, { from: depsOwner })
+
+    this.directory = await AppDirectory.new({ from: appOwner })
   })
 
-  beforeEach(async function () {
-    this.directory = await AppDirectory.new(0x0, { from: appOwner })
-    this.stdlib = await ImplementationDirectory.new({ from: stdlibOwner })
-  })
+  describe('without dependencies', function () {
+    shouldBehaveLikeImplementationDirectory(appOwner, anotherAddress)
+  });
 
-  shouldBehaveLikeImplementationDirectory(appOwner, anotherAddress)
-
-  describe('getImplementation', function () {
+  describe('with dependencies', function () {
     const contractName = 'ERC721'
 
-    describe('when no stdlib was set', function () {
-      describe('when the requested contract was registered in the directory', function () {
-        beforeEach(async function () {
-          await this.directory.setImplementation(contractName, this.implementation_v0, { from: appOwner })
-        })
+    beforeEach('registering project implementations', async function () {
+      await this.directory.setImplementation(contractName, this.implementation_v0, { from: appOwner })
+    });
 
-        it('returns the directory implementation', async function () {
-          const implementation = await this.directory.getImplementation(contractName)
-          implementation.should.be.equal(this.implementation_v0)
-        })
-      })
+    beforeEach('registering dependencies', async function () {
+      await this.directory.setDependency('depA', this.depA.address, { from: appOwner })
+      await this.directory.setDependency('depB', this.depB.address, { from: appOwner })
+    });
 
-      describe('when the requested contract was not registered in the directory', function () {
-        it('returns the zero address', async function () {
-          const implementation = await this.directory.getImplementation(contractName)
-          implementation.should.be.zeroAddress
-        })
-      })
-    })
+    describe('getImplementation', function () {
+      it('returns a project implementation', async function () {
+        (await this.directory.getImplementation(contractName)).should.eq(this.implementation_v0);
+      });
 
-    describe('when a stdlib was set', function () {
-      beforeEach(async function () {
-        await this.directory.setStdlib(this.stdlib.address, { from: appOwner })
-      })
+      it('does not return a contract implemented in a dependency', async function () {
+        (await this.directory.getImplementation('contractA')).should.be.zeroAddress;
+      });
 
-      describe('when the requested contract was registered in the directory', function () {
-        beforeEach(async function () {
-          await this.directory.setImplementation(contractName, this.implementation_v0, { from: appOwner })
-        })
+      it('does not return a non-existing contract', async function () {
+        (await this.directory.getImplementation('notExists')).should.be.zeroAddress;
+      });
+    });
 
-        describe('when the requested contract was registered in the stdlib', function () {
-          beforeEach(async function () {
-            await this.stdlib.setImplementation(contractName, this.stdlibImplementation, { from: stdlibOwner })
-          })
+    describe('getPackageImplementation', function () {
+      it('returns an implementation from a dependency', async function () {
+        (await this.directory.getPackageImplementation("depA", "contractA")).should.eq(this.contractA);
+        (await this.directory.getPackageImplementation("depB", "contractB")).should.eq(this.contractB);
+      });
 
-          it('returns the directory implementation', async function () {
-            const implementation = await this.directory.getImplementation(contractName)
-            implementation.should.be.equal(this.implementation_v0)
-          })
-        })
+      it('does not return a project implementation', async function () {
+        (await this.directory.getPackageImplementation("", contractName)).should.be.zeroAddress;
+      });
 
-        describe('when the requested contract was not registered in the stdlib', function () {
-          it('returns the directory implementation', async function () {
-            const implementation = await this.directory.getImplementation(contractName)
-            implementation.should.be.equal(this.implementation_v0)
-          })
-        })
-      })
+      it('does not return an implementation from another package', async function () {
+        (await this.directory.getPackageImplementation("depA", "contractB")).should.be.zeroAddress;
+      });
 
-      describe('when the requested contract was not registered in the directory', function () {
-        describe('when the requested contract was registered in the stdlib', function () {
-          beforeEach(async function () {
-            await this.stdlib.setImplementation(contractName, this.stdlibImplementation, { from: stdlibOwner })
-          })
+      it('does not return a non-existing implementation', async function () {
+        (await this.directory.getPackageImplementation("depA", "notExists")).should.be.zeroAddress;
+      });
 
-          it('returns the stdlib implementation', async function () {
-            const implementation = await this.directory.getImplementation(contractName)
-            implementation.should.be.equal(this.stdlibImplementation)
-          })
-        })
+      it('does not return an implementation from a non registered dependency', async function () {
+        (await this.directory.getPackageImplementation("noDep", "contractA")).should.be.zeroAddress;
+      });
+    });
+  });
 
-        describe('when the requested contract was not registered in the stdlib', function () {
-          it('returns the zero address', async function () {
-            const implementation = await this.directory.getImplementation(contractName)
-            implementation.should.be.zeroAddress
-          })
-        })
-      })
-    })
-  })
+  describe('setDependency', function () {
+    it('should add a dependency', async function () {
+      const { logs } = await this.directory.setDependency("depA", this.depA.address, { from: appOwner });
+      logs[0].event.should.eq('DependencyChanged');
+      logs[0].args.should.deep.eq({ name: 'depA', dependency: this.depA.address });
+      const found = await this.directory.getDependency('depA');
+      found.should.eq(this.depA.address);
+    });
 
-  describe('setStdlib', function () {
-    describe('when the sender is the owner', function () {
-      const from = appOwner
+    it('should overwrite a dependency', async function () {
+      await this.directory.setDependency("depA", this.depB.address, { from: appOwner });
 
-      beforeEach(async function () {
-        await this.directory.setStdlib(this.stdlib.address, { from })
-      })
+      const { logs } = await this.directory.setDependency("depA", this.depA.address, { from: appOwner });
+      logs[0].event.should.eq('DependencyChanged');
+      logs[0].args.should.deep.eq({ name: 'depA', dependency: this.depA.address });
+      const found = await this.directory.getDependency('depA');
+      found.should.eq(this.depA.address);
+    });
 
-      it('can set a new stdlib', async function () {
-        const stdlib = await this.directory.stdlib()
-        stdlib.should.be.equal(this.stdlib.address)
-      })
+    it('should fail to add a dependency from a non-owner', async function () {
+      await assertRevert(this.directory.setDependency("depA", this.depA.address, { from: anotherAddress }))
+    });
 
-      it('can reset a stdlib', async function () {
-        const anotherStdlib = await ImplementationDirectory.new({ from: stdlibOwner })
-        await this.directory.setStdlib(anotherStdlib.address, { from })
+    it('should fail to add a null dependency', async function () {
+      await assertRevert(this.directory.setDependency("depA", 0x0, { from: appOwner }))
+    });
+  });
 
-        const stdlib = await this.directory.stdlib()
-        stdlib.should.be.equal(anotherStdlib.address)
-      })
+  describe('unsetDependency', function () {
+    beforeEach('setting dependency', async function () {
+      await this.directory.setDependency("depA", this.depA.address, { from: appOwner });
+    });
 
-      it('can unset a stdlib', async function () {
-        await this.directory.setStdlib(0, { from })
-        const stdlib = await this.directory.stdlib()
-        stdlib.should.be.zeroAddress
-      })
-    })
+    it('should remove a dependency', async function () {
+      const { logs } = await this.directory.unsetDependency("depA", { from: appOwner });
+      logs[0].event.should.eq('DependencyChanged');
+      logs[0].args.should.deep.eq({ name: 'depA', dependency: ZERO_ADDRESS });
+      const found = await this.directory.getDependency('depA');
+      found.should.be.zeroAddress;
+    });
 
-    describe('when the sender is not the owner', function () {
-      it('reverts', async function () {
-        await assertRevert(this.directory.setStdlib(this.stdlib.address, { from: anotherAddress }))
-      })
-    })
-  })
-})
+    it('should fail to remove a non-existent dependency', async function () {
+      await assertRevert(this.directory.unsetDependency("depB", { from: appOwner }));
+    });
+
+    it('should fail to remove a dependency by a non-owner', async function () {
+      await assertRevert(this.directory.unsetDependency("depA", { from: anotherAddress }));
+    });
+  });
+});
