@@ -32,6 +32,7 @@ export default class ImplementationDirectory {
   }
 
   async getImplementation(contractName) {
+    if (!contractName) throw Error('Contract name is required to retrieve an implementation')
     return await this.directory.getImplementation(contractName, this.txParams)
   }
 

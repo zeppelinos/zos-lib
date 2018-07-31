@@ -7,20 +7,15 @@ import AppDirectory from '../../../src/directory/AppDirectory'
 const DummyImplementation = Contracts.getFromLocal('DummyImplementation')
 const ImplementationDirectory = Contracts.getFromLocal('ImplementationDirectory')
 
-contract('AppDirectory', ([_, appOwner, stdlibOwner, anotherAddress]) => {
+contract('AppDirectory', ([_, appOwner, depOwner, anotherAddress]) => {
   const txParams = { from: appOwner }
 
   beforeEach('deploying app directory', async function () {
-    this.stdlib = await ImplementationDirectory.new({ from: stdlibOwner })
-    this.directory = await AppDirectory.deploy(this.stdlib.address, txParams)
+    this.directory = await AppDirectory.deploy(txParams)
   })
 
   it('has an address', async function () {
     (await this.directory.address).should.not.be.null
-  })
-
-  it('has an stdlib', async function () {
-    (await this.directory.stdlib()).should.be.eq(this.stdlib.address)
   })
 
   it('has an owner', async function () {
@@ -44,23 +39,25 @@ contract('AppDirectory', ([_, appOwner, stdlibOwner, anotherAddress]) => {
     currentImplementation.should.be.zeroAddress
   })
 
-  it('can retrieve an implementation from the stdlib if not registered', async function () {
-    let currentImplementation = await this.directory.getImplementation('DummyImplementation');
-    currentImplementation.should.be.zeroAddress
+  describe('with dependencies', function () {
+    beforeEach('setting dependency', async function () {
+      this.dependency = await ImplementationDirectory.new({ from: depOwner })
+      await this.directory.setDependency("MyDependency", this.dependency.address)
+    })
 
-    const implementation = await DummyImplementation.new()
-    await this.stdlib.setImplementation('DummyImplementation', implementation.address, { from: stdlibOwner })
-
-    currentImplementation = await this.directory.getImplementation('DummyImplementation')
-    currentImplementation.should.be.eq(implementation.address)
-  })
-
-  it('can set another stdlib', async function () {
-    const anotherStdlib = await ImplementationDirectory.new({ from: stdlibOwner })
-
-    await this.directory.setStdlib(anotherStdlib.address)
-
-    const currentStdlib = await this.directory.stdlib();
-    currentStdlib.should.be.eq(anotherStdlib.address)
-  })
+    it('gets a dependency by name', async function () {
+      (await this.directory.getDependency("MyDependency")).should.eq(this.dependency.address);
+    })
+  
+    it('can retrieve an implementation from a dependency', async function () {
+      const implementation = await DummyImplementation.new();
+      await this.dependency.setImplementation('DummyImplementation', implementation.address, { from: depOwner });
+  
+      const implementationFromApp = await this.directory.getImplementation('DummyImplementation');
+      implementationFromApp.should.be.zeroAddress;
+      
+      const implementationFromPackage = await this.directory.getPackageImplementation('MyDependency', 'DummyImplementation');
+      implementationFromPackage.should.eq(implementation.address);
+    })
+  })  
 })

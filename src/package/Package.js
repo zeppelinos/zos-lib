@@ -65,9 +65,9 @@ export default class Package {
     await directory.unsetImplementation(contractName, this.txParams)
   }
 
-  async newVersion(version, stdlibAddress) {
+  async newVersion(version) {
     log.info('Adding new version...')
-    const directory = await this.newDirectory(stdlibAddress)
+    const directory = await this.newDirectory()
     await sendTransaction(this.package.addVersion, [version, directory.address], this.txParams)
     log.info(`Added version ${version}`)
     return directory

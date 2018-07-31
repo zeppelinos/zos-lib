@@ -6,7 +6,7 @@ export default class PackageWithAppDirectories extends Package {
     return AppDirectory.fetch(directoryAddress, this.txParams)
   }
 
-  async newDirectory(stdlibAddress) {
-    return AppDirectory.deploy(stdlibAddress, this.txParams)
+  async newDirectory() {
+    return AppDirectory.deploy(this.txParams)
   }
 }

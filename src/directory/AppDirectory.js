@@ -14,9 +14,9 @@ export default class AppDirectory extends ImplementationDirectory {
     return provider.fetch(address)
   }
 
-  static async deploy(stdlibAddress = 0x0, txParams = {}) {
+  static async deploy(txParams = {}) {
     const deployer = new AppDirectoryDeployer(txParams)
-    return deployer.deploy(stdlibAddress)
+    return deployer.deploy()
   }
 
   constructor(directory, txParams = {}) {
@@ -24,14 +24,24 @@ export default class AppDirectory extends ImplementationDirectory {
     super(directory, txParams, log)
   }
 
-  async stdlib() {
-    return this.directory.stdlib()
+  async getPackageImplementation(packageName, contractName) {
+    return await this.directory.getPackageImplementation(packageName, contractName, this.txParams)
   }
 
-  async setStdlib(stdlibAddress) {
-    this.log.info(`Setting stdlib ${stdlibAddress}...`)
-    await sendTransaction(this.directory.setStdlib, [stdlibAddress], this.txParams)
-    this.log.info(`Stdlib ${stdlibAddress} set`)
-    return stdlibAddress
+  async setDependency(name, dependencyAddress) {
+    this.log.info(`Setting dependency ${name} to ${dependencyAddress}...`)
+    await sendTransaction(this.directory.setDependency, [name, dependencyAddress], this.txParams)
+    this.log.info(`Dependency ${name} set to ${dependencyAddress}`)
+    return dependencyAddress
+  }
+
+  async unsetDependency(name) {
+    this.log.info(`Removing dependency ${name}...`)
+    await sendTransaction(this.directory.unsetDependency, [name], this.txParams)
+    this.log.info(`Dependency ${name} was removed`)
+  }
+
+  async getDependency(name) {
+    return this.directory.getDependency(name);
   }
 }

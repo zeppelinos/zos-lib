@@ -15,13 +15,9 @@ export default class AppDeployer {
   }
 
   async deploy(version) {
-    return this.deployWithStdlib(version, 0x0)
-  }
-
-  async deployWithStdlib(version, stdlibAddress) {
     await this.createFactory()
     await this.createPackage()
-    await this.addVersion(version, stdlibAddress)
+    await this.addVersion(version)
     await this.createApp(version)
     return new App(this.packagedApp, this.factory, this.appDirectory, this.package, this.version, this.txParams)
   }
@@ -44,8 +40,8 @@ export default class AppDeployer {
     this.package = await Package.deploy(this.txParams)
   }
 
-  async addVersion(version, stdlibAddress) {
+  async addVersion(version) {
     this.version = version
-    this.appDirectory = await this.package.newVersion(version, stdlibAddress)
+    this.appDirectory = await this.package.newVersion(version)
   }
 }

@@ -13,15 +13,15 @@ export default class AppDirectoryDeployer {
     this.txParams = txParams
   }
 
-  async deploy(stdlibAddress = 0x0) {
-    await this._deployAppDirectory(stdlibAddress)
+  async deploy() {
+    await this._deployAppDirectory()
     return new AppDirectory(this.directory, this.txParams)
   }
 
-  async _deployAppDirectory(stdlibAddress) {
+  async _deployAppDirectory() {
     log.info('Deploying new AppDirectory...')
     const AppDirectory = Contracts.getFromLib('AppDirectory')
-    this.directory = await deploy(AppDirectory, [stdlibAddress], this.txParams)
+    this.directory = await deploy(AppDirectory, [], this.txParams)
     log.info(`App directory created at ${this.directory.address}`)
   }
 }

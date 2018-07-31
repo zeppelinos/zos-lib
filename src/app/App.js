@@ -25,11 +25,6 @@ export default class App {
     return await deployer.deploy(version)
   }
 
-  static async deployWithStdlib(version, stdlibAddress, txParams = {}) {
-    const deployer = new AppDeployer(txParams)
-    return await deployer.deployWithStdlib(version, stdlibAddress)
-  }
-
   constructor(_app, factory, appDirectory, _package, version, txParams = {}) {
     this._app = _app
     this.factory = factory
@@ -41,14 +36,6 @@ export default class App {
 
   get address() {
     return this._app.address
-  }
-
-  async currentStdlib() {
-    return this.directory.stdlib()
-  }
-
-  async hasStdlib() {
-    return (await this.currentStdlib()) !== ZERO_ADDRESS
   }
 
   async getImplementation(contractName) {
@@ -67,12 +54,24 @@ export default class App {
     await this.directory.unsetImplementation(contractName, this.txParams)
   }
 
-  async setStdlib(stdlibAddress = 0x0) {
-    return this.directory.setStdlib(stdlibAddress)
+  async hasDependency(name) {
+    return (await this.directory.getDependency(name)) !== ZERO_ADDRESS;
   }
 
-  async newVersion(version, stdlibAddress = 0x0) {
-    const directory = await this.package.newVersion(version, stdlibAddress)
+  async getDependency(name) {
+    return this.directory.getDependency(name)
+  }
+
+  async setDependency(name, dependencyAddress) {
+    return this.directory.setDependency(name, dependencyAddress);
+  }
+
+  async unsetDependency(name) {
+    return this.directory.unsetDependency(name);
+  }
+
+  async newVersion(version) {
+    const directory = await this.package.newVersion(version)
     await sendTransaction(this._app.setVersion, [version], this.txParams)
     log.info(`Version ${version} set in app.`)
     this.directory = directory
