@@ -5,7 +5,7 @@ import "zos-lib/contracts/migrations/Initializable.sol";
 
 
 contract MyContract_v1 is Initializable {
-  uint256 public x;
+  uint256 public value;
   
   function initialize(uint256 _value) isInitializer public {
     value = _value;
